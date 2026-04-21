@@ -5,9 +5,6 @@ def clean_category(category):
     }
 
 def clean_categories(categories):
-    cleaned = []
-
-    for category in categories:
-        cleaned.append(clean_category(category))
+    cleaned = [clean_category(category) for category in categories]
 
     return cleaned

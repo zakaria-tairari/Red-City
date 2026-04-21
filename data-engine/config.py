@@ -4,7 +4,7 @@ import os
 load_dotenv()
 
 API_CATEGORIES_URL = os.getenv("API_CATEGORIES_URL")
-
+API_PLACES_URL = os.getenv("API_PLACES_URL")
 HEADERS = {
     "User-Agent": os.getenv("API_USER_AGENT"),
     "Accept": os.getenv("API_ACCEPT"),
