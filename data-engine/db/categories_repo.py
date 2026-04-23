@@ -1,15 +1,16 @@
 from db.connection import get_connection
 import pandas as pd
+from utils.logger import logger
 
 def insert_categories(categories):
     db = get_connection()
     cursor = db.cursor()
     df = pd.DataFrame(categories)
+
     COLUMNS = ["name", "code"]
 
     try:
         df = df.reindex(columns=COLUMNS)
-        df = df.astype(object).where(pd.notnull(df), None)
 
         sql = """
         INSERT INTO categories (name, code)
@@ -21,11 +22,12 @@ def insert_categories(categories):
         values = df.to_records(index=False).tolist()
 
         cursor.executemany(sql, values)
+        logger.info(f"Insert/Update successful: {cursor.rowcount} rows")
         db.commit()
 
     except Exception as e:
         db.rollback()
-        print(f"Error inserting categories: {e}")
+        logger.error(f"Insert/Update failed: {e}")
     
     finally:
         cursor.close()
@@ -43,7 +45,7 @@ def get_categories():
         return result
 
     except Exception as e:
-        print(f"Error fetching categories: {e}")
+        logger.error(f"DB fetching failed: {e}")
         return []
 
     finally:

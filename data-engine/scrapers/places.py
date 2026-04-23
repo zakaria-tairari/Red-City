@@ -1,5 +1,6 @@
 import requests
 from config import API_PLACES_URL, HEADERS
+from utils.logger import logger
 
 def fetch_places_by_category(category_code, locale="fr", page=1, page_size=300):
     try:
@@ -14,8 +15,10 @@ def fetch_places_by_category(category_code, locale="fr", page=1, page_size=300):
         "populate[2]": "videos",
         })
 
-        data = response.json()
-        return data.get("data", [])
+        data = response.json().get("data", [])
+
+        logger.info(f"Scraping successful: {len(data)} places scraped")
+        return data
     
     except Exception as e:
-        print(f"Error fetching places: {e}")
+        logger.error(f"Scraping failed: {e}")

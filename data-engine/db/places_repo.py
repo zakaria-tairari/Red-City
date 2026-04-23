@@ -1,5 +1,6 @@
 from db.connection import get_connection
 import pandas as pd
+from utils.logger import logger
 
 def insert_places(places):
     db = get_connection()
@@ -13,7 +14,6 @@ def insert_places(places):
 
     try:
         df = df.reindex(columns=COLUMNS)
-        df = df.astype(object).where(pd.notnull(df), None)
 
         sql = """
         INSERT INTO places (
@@ -37,11 +37,12 @@ def insert_places(places):
         values = df.to_records(index=False).tolist()
 
         cursor.executemany(sql, values)
+        logger.info(f"Insert/Update successful: {cursor.rowcount} rows")
         db.commit()
 
     except Exception as e:
         db.rollback()
-        print(f"Error inserting places: {e}")
+        logger.error(f"Insert/Update failed: {e}")
 
     finally:
         cursor.close()
@@ -59,7 +60,7 @@ def get_places():
         return result
 
     except Exception as e:
-        print(f"Error fetching categories: {e}")
+        logger.error(f"DB fetching failed: {e}")
         return []
 
     finally:

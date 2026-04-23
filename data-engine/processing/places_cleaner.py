@@ -59,4 +59,7 @@ def clean_places(places, category_id):
         "description"
     ]]
 
+    df = df.replace(r'^\s*$', None, regex=True)
+    df = df.astype(object).where(pd.notnull(df), None)
+
     return df

@@ -13,4 +13,7 @@ def clean_categories(categories):
 
     df = df.drop_duplicates(subset=["code"])
 
+    df = df.replace(r'^\s*$', None, regex=True)
+    df = df.astype(object).where(pd.notnull(df), None)
+
     return df[["name", "code"]]
