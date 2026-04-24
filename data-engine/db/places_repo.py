@@ -66,3 +66,25 @@ def get_places():
     finally:
         cursor.close()
         db.close()
+
+
+def get_places_mapping():
+    db = get_connection()
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT id, document_id FROM places")
+        rows = cursor.fetchall()
+
+        return {
+            row["document_id"]: row["id"]
+            for row in rows
+        }
+
+    except Exception as e:
+        logger.error(f"Mapping failed: {e}")
+        return {}
+
+    finally:
+        cursor.close()
+        db.close()

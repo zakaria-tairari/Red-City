@@ -13,5 +13,3 @@ def run_categories():
 
     logger.info("Inserting categories...")
     insert_categories(cleaned)
-
-run_categories()
