@@ -5,6 +5,7 @@ from utils.logger import logger
 def fetch_categories():
     try:
         response = requests.get(API_CATEGORIES_URL, headers=HEADERS)
+        logger.info(f"HTTP Request: GET {API_CATEGORIES_URL} | Status: {response.status_code} {response.reason}")
 
         data = response.json().get("data", [])
 

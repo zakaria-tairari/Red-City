@@ -14,6 +14,7 @@ def fetch_places_by_category(category_code, locale="fr", page=1, page_size=300):
         "populate[1]": "coverImage",
         "populate[2]": "videos",
         })
+        logger.info(f"HTTP Request: GET {API_PLACES_URL} | Status: {response.status_code} {response.reason}")
 
         data = response.json().get("data", [])
 
