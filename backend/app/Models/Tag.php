@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Tag extends Model
 {
     public function places() {
-        return $this->hasMany(Place::class);
+        return $this->belongsToMany(Place::class)->withPivot('score');
     }
 }

@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('code', 50);
+            $table->foreignId('place_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['image', 'video'])->default('image');
+            $table->string('mime', 50);
+            $table->text('original_url');
+            $table->text('app_url');
+            $table->integer('position');
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('media');
     }
 };
