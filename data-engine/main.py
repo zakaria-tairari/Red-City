@@ -1,12 +1,14 @@
 from pipelines.run_categories import run_categories
 from pipelines.run_places import run_places
 from ai.tags_generator import generate_tags
+from db.tags_seeder import seed_tags
 from utils.logger import logger
 
 def main():
     logger.info("Starting full ETL pipeline...")
     run_categories()
     run_places()
+    seed_tags()
     logger.info("ETL finished successfully.")
 
     logger.info("Starting tags generation...")

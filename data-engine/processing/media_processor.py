@@ -14,14 +14,16 @@ def extract_media(place, place_id):
     for i, item in enumerate(items):
         url = item.get("url")
         mime = item.get("mime", "")
-        media_type = "video" if "video" in mime else "image"
+        media_type, subtype = mime.split("/")
+        ext = "jpg" if subtype == "jpeg" else subtype
 
         if url:
             media.append({
                 "place_id": place_id,
                 "type": media_type,
+                "ext": ext,
                 "mime": mime,
-                "url": url,
+                "original_url": url,
                 "position": i,
             })
 

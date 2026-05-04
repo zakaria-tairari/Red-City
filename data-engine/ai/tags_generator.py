@@ -16,38 +16,41 @@ def generate_tags():
   categories = get_categories()
 
   for category in categories:
-    places = get_places_by_category(category["id"], only_untagged=True)
+    while True:
+      places = get_places_by_category(category["id"], only_untagged=True)
 
+      if not places:
+         break
+      
+      for batch in batched(places, 20):
+        prompt = build_tags_prompt(batch, category["id"])
 
-    for batch in batched(places, 20):
-      prompt = build_tags_prompt(batch, category["id"])
+        try:
+            response = client.chat.completions.create(
+              model="openai/gpt-oss-120b:free",
+              messages=[
+                      {
+                        "role": "user",
+                        "content": prompt,
+                      }
+                    ],
+              extra_body={"reasoning": {"enabled": True}}
+            )
 
-      try:
-          response = client.chat.completions.create(
-            model="openai/gpt-oss-120b:free",
-            messages=[
-                    {
-                      "role": "user",
-                      "content": prompt,
-                    }
-                  ],
-            extra_body={"reasoning": {"enabled": True}}
-          )
+            response = response.choices[0].message
+            print(response.content)
 
-          response = response.choices[0].message
-          print(response.content)
+            data = json.loads(response.content)
 
-          data = json.loads(response.content)
+            for item in data:
+                place_id = item["id"]
+                tags = item["tags"]
 
-          for item in data:
-              place_id = item["id"]
-              tags = item["tags"]
+                for tag in tags:
+                    tag_id = get_tag_id(tag["tag"])
+                    insert_place_tag(place_id, tag_id, tag["score"])
 
-              for tag in tags:
-                  tag_id = get_tag_id(tag["tag"])
-                  insert_place_tag(place_id, tag_id, tag["score"])
+            logger.info(f"Batch inserted for category {category['code']}")
 
-          logger.info(f"Batch inserted for category {category['code']}")
-
-      except Exception as e:
-          logger.error(f"Error fetching AI response: {e}")
+        except Exception as e:
+            logger.error(f"Error fetching AI response: {e}")

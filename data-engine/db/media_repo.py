@@ -7,7 +7,7 @@ def insert_media(media):
     cursor = db.cursor()
     df = pd.DataFrame(media)
 
-    COLUMNS = ["place_id", "type", "mime", "url", "position"]
+    COLUMNS = ["place_id", "type", "ext", "mime", "original_url", "position"]
 
     try:
         df = df.reindex(columns=COLUMNS)
@@ -16,11 +16,12 @@ def insert_media(media):
             INSERT INTO media (
                 place_id,
                 type,
+                ext,
                 mime,
-                url,
+                original_url,
                 position
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s)
 
             ON DUPLICATE KEY UPDATE
                 type = VALUES(type),
