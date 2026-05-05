@@ -8,12 +8,14 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:run-scraper')
+Schedule::command('app:web-scraper')
     ->dailyAt('02:00')
-    ->withoutOverlapping()
-    ->onSuccess(function () {
-        Artisan::call('app:run-media-download');
-    })
-    ->onFailure(function () {
-        logger()->error('Scraper failed (check Python logs)');
-    });
+    ->withoutOverlapping(60)
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/laravel.log'));
+
+Schedule::command('app:media-download')
+    ->dailyAt('02:10')
+    ->withoutOverlapping(60)
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/laravel.log'));

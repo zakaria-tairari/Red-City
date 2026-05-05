@@ -13,19 +13,32 @@ use Illuminate\Support\Facades\Log;
 #[Description('Downloands the scraped media in the local storage')]
 class MediaDownload extends Command
 {
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         Log::info('Starting media download...');
 
-        $media = Media::whereNull('app_url')->get();
+        $count = 0;
+        Media::where('storage_status', 'pending')
+            ->chunk(100, function ($media) use (&$count) {
+                foreach ($media as $item) {
 
-        foreach ($media as $item) {
-            MediaDownloadJob::dispatch($item->id);
-        }
+                    $updated = Media::where('id', $item->id)
+                        ->where('status', 'pending')
+                        ->update([
+                            'status' => 'processing'
+                        ]);
 
-        Log::info("Jobs dispatched: " . $media->count());
+                    if ($updated) {
+                        MediaDownloadJob::dispatch($item->id)
+                            ->onQueue('media');
+
+                        $count++;
+                    }
+                }
+            });
+
+        Log::info('Media jobs dispatched', [
+            'count' => $count
+        ]);
     }
 }

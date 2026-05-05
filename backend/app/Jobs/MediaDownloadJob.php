@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Media;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
@@ -11,9 +12,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class MediaDownloadJob implements ShouldQueue
+class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
+
+    public $tries = 3;
+    public $backoff = [10, 30, 60];
+    public $uniqueFor = 3600;
 
     /**
      * Create a new job instance.
@@ -21,6 +26,10 @@ class MediaDownloadJob implements ShouldQueue
     public function __construct(public int $mediaId)
     {
         //
+    }
+
+    public function uniqid() {
+        return $this->mediaId;
     }
 
     /**
@@ -31,7 +40,7 @@ class MediaDownloadJob implements ShouldQueue
         try {
             $item = Media::find($this->mediaId);
 
-            if (!$item || $item->app_url) {
+            if (!$item || $item->storage_status == 'done') {
                 return;
             }
 
@@ -56,7 +65,8 @@ class MediaDownloadJob implements ShouldQueue
             }
 
             $item->update([
-                'app_url' => $relativePath
+                'app_url' => $relativePath,
+                'storage_status' => 'done'
             ]);
 
             Log::info('Media download successful', [
