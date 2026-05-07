@@ -23,9 +23,9 @@ class MediaDownload extends Command
                 foreach ($media as $item) {
 
                     $updated = Media::where('id', $item->id)
-                        ->where('status', 'pending')
+                        ->where('storage_status', 'pending')
                         ->update([
-                            'status' => 'processing'
+                            'storage_status' => 'processing'
                         ]);
 
                     if ($updated) {

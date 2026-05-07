@@ -5,11 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
 
-#[Signature('app:web-scraper')]
-#[Description('Runs the scraping pipeline')]
-class WebScraper extends Command
+#[Signature('app:update-dataset')]
+#[Description('Runs the full ETL pipeline')]
+class UpdateDataset extends Command
 {
     /**
      * Execute the console command.
@@ -33,8 +35,16 @@ class WebScraper extends Command
         });
 
         if (!$process->isSuccessful()) {
+            Log::error('Python scraper failed', [
+                'error' => $process->getErrorOutput()
+            ]);
+            
             $this->error($process->getErrorOutput());
-            return;
+            return self::FAILURE;
         }
+
+        Artisan::call('app:media-download');
+
+        return self::SUCCESS;
     }
 }

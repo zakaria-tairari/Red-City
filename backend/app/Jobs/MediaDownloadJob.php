@@ -7,18 +7,22 @@ use Exception;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\Backoff;
+use Illuminate\Queue\Attributes\Timeout;
+use Illuminate\Queue\Attributes\Tries;
+use Illuminate\Queue\Attributes\UniqueFor;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+#[Tries(3)]
+#[Backoff([10, 30, 60])]
+#[UniqueFor(3600)]
+#[Timeout(240)]
 class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
-
-    public $tries = 3;
-    public $backoff = [10, 30, 60];
-    public $uniqueFor = 3600;
 
     /**
      * Create a new job instance.
