@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 #[Tries(3)]
 #[Backoff([10, 30, 60])]
@@ -65,7 +66,7 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
                     'status' => $response->status(),
                     'url' => $item->original_url
                 ]);
-                return;
+                throw new Exception("Media download failed");
             }
 
             $item->update([
@@ -79,12 +80,24 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
             ]);
         }
         catch (Exception $e) {
-            Log::error('Media download exception', [
+            Log::error('Media download attempt failed', [
                 'media_id' => $this->mediaId,
                 'error' => $e->getMessage()
             ]);
 
             throw $e;
         }
+    }
+
+    public function failed(Throwable $e)
+    {
+        Media::where('id', $this->mediaId)->update([
+            'storage_status' => 'failed'
+        ]);
+
+        Log::error('Media job permanently failed', [
+            'media_id' => $this->mediaId,
+            'error' => $e->getMessage()
+        ]);
     }
 }
