@@ -67,15 +67,18 @@ def get_places():
         cursor.close()
         db.close()
 
-def get_places_by_category(category_id, only_untagged=False):
+def get_places_by_category(category_id, only_untagged=False, only_untranslated=False):
     db = get_connection()
     cursor = db.cursor(dictionary=True)
 
     try:
+        sql = "SELECT * FROM places WHERE category_id = %s"
+
         if only_untagged:
-            sql = "SELECT * FROM places WHERE category_id = %s AND tags_generated = 0"
-        else:
-            sql = "SELECT * FROM places WHERE category_id = %s"
+            sql += " AND tags_generated = 0"
+
+        if only_untranslated:
+            sql += " AND translated = 0"
 
         cursor.execute(sql, (category_id,))
 

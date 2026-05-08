@@ -16,6 +16,8 @@ def generate_tags():
   categories = get_categories()
 
   for category in categories:
+    logger.info(f"Generating tags for category {category['code']}...")
+
     while True:
       places = get_places_by_category(category["id"], only_untagged=True)
 
@@ -50,7 +52,7 @@ def generate_tags():
                     tag_id = get_tag_id(tag["tag"])
                     insert_place_tag(place_id, tag_id, tag["score"])
 
-            logger.info(f"Batch inserted for category {category['code']}")
+            logger.info(f"Batch ({batch.count()}) inserted")
 
         except Exception as e:
             logger.error(f"Error fetching AI response: {e}")

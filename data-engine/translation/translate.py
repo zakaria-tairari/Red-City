@@ -1,15 +1,17 @@
 import requests
 from db.places_repo import get_places_by_category
 from db.categories_repo import get_categories
-from db.translations_repo import insert_translations
+from db.translations_repo import insert_translation, set_translated
 from config import OPENTRANSLATE_URL
 from utils.logger import logger
 
-def translate(text, source, target):
+TARGET_LANGUAGES = ['en', 'es']
+
+def translate(text, lang):
     payload = {
         "q": text,
-        "source": source,
-        "target": target,
+        "source": "fr",
+        "target": lang,
         "format": "text",
     }
     headers = {
@@ -17,44 +19,38 @@ def translate(text, source, target):
     }
 
     response = requests.post(OPENTRANSLATE_URL, json=payload, headers=headers)
-    return response.json()["translatedText"]
+    data = response.json()
+    return data.get("translatedText", None)
 
 def translate_places():
     categories = get_categories()
 
     for category in categories:
-        logger.info(f"Generating translations for category {category["code"]}...")
-        places = get_places_by_category(category["id"])
-        translations = []
+        places = get_places_by_category(category["id"], only_untranslated=True)
+        logger.info(f"Generating translations for category {category['code']}...")
 
         for place in places:
-            try:
-                place_id = place["id"]
-                summary_fr = place.get("summary", "")
-                description_fr = place.get("description", "")
+            place_id = place["id"]
+            summary = place.get("summary", "")
+            description = place.get("description", "")
 
-                summary_en = translate(summary_fr, "fr", "en")
-                description_en = translate(description_fr, "fr", "en")
+            for lang in TARGET_LANGUAGES:
+                try:
+                    summary_tr = translate(summary, lang)
+                    description_tr = translate(description, lang)
 
-                translations.append({
-                    "place_id": place_id,
-                    "language": "en",
-                    "summary": summary_en,
-                    "description": description_en
-                })
+                    translation = {
+                        "place_id": place_id,
+                        "language": lang,
+                        "summary": summary_tr,
+                        "description": description_tr
+                    }
 
-                summary_ar = translate(summary_en, "en", "ar")
-                description_ar = translate(description_en, "en", "ar")
+                    insert_translation(translation)
 
-                translations.append({
-                    "place_id": place_id,
-                    "language": "ar",
-                    "summary": summary_ar,
-                    "description": description_ar
-                })
+                except Exception as e:
+                    logger.error(f"Translations failed for place {place_id} lang {lang}: {e}")
+                    break
 
-            except Exception as e:
-                logger.error(f"Translation failed for place {place_id}: {e}")
-
-        if translations:
-            insert_translations(translations)
+            set_translated(place_id)
+            logger.info(f"Translations completed for place {place_id}")

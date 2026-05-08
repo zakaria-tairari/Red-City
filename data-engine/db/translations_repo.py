@@ -1,34 +1,45 @@
 from db.connection import get_connection
-import pandas as pd
 from utils.logger import logger
 
-def insert_translations(translations):
+def insert_translation(translation):
     db = get_connection()
     cursor = db.cursor()
-    df = pd.DataFrame(translations)
-
-    COLUMNS = ["place_id", "language", "summary", "description"]
 
     try:
-        df = df.reindex(columns=COLUMNS)
-
         sql = """
-        INSERT IGNORE INTO translations
+        INSERT INTO translations
         (place_id, language, summary, description)
         VALUES (%s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            summary = VALUES(summary),
+            description = VALUES(description)
         """
 
-        df = df.where(pd.notnull(df), None)
-        values = df.to_records(index=False).tolist()
+        values = ( translation["place_id"], translation["language"], translation["summary"], translation["description"] )
 
-        cursor.executemany(sql, values)
-
-        logger.info(f"Insert/Update successful: {cursor.rowcount} rows")
+        cursor.execute(sql, values)
         db.commit()
 
     except Exception as e:
         db.rollback()
         logger.error(f"Insert/Update failed: {e}")
+        raise
+
+    finally:
+        cursor.close()
+        db.close()
+
+def set_translated(place_id):
+    db = get_connection()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute("UPDATE places SET translated = 1 WHERE id = %s", (place_id,))
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Setting translated status failed: {e}")
 
     finally:
         cursor.close()
