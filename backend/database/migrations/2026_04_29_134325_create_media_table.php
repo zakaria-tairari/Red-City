@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
+
             $table->enum('type', ['image', 'video'])->default('image');
-            $table->string('mime', 50);
+            $table->string('ext', 10)->nullable();
+            $table->string('mime', 50)->nullable();
             $table->text('original_url');
-            $table->text('app_url');
+            $table->text('app_url')->nullable();
             $table->integer('position');
+            $table->enum('storage_status', ['pending', 'processing', 'done', 'failed'])->default('pending');
             $table->timestamps();
+
+            $table->unique(['place_id', 'original_url'], 'unique_place_url');
         });
     }
 

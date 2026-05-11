@@ -17,4 +17,16 @@ class Place extends Model
     public function tags() {
         return $this->belongsToMany(Tag::class)->withPivot('score');
     }
+
+    public function translations() {
+        return $this->hasMany(Translation::class);
+    }
+
+    public function reviews() {
+        return $this->hasMany(Review::class);
+    }
+
+    public function UsersFavoritedBy() {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
 }

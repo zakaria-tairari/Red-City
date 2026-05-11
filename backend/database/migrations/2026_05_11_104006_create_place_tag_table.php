@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
-            $table->id();
+        Schema::create('place_tag', function (Blueprint $table) {
+            $table->foreignId('place_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
 
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
-
-            $table->string('name', 100)->unique();
-            $table->timestamps();
+            $table->float('score');
+            
+            $table->primary(['place_id', 'tag_id']);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('place_tag');
     }
 };

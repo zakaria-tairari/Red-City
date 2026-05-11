@@ -13,19 +13,22 @@ return new class extends Migration
     {
         Schema::create('places', function (Blueprint $table) {
             $table->id();
-            $table->integer('document_id');
+
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
+
+            $table->integer('document_id')->unique();
             $table->string('name', 255);
-            $table->string('email', 255);
-            $table->string('phone', 50);
-            $table->string('website', 255);
-            $table->string('area', 150);
-            $table->text('address');
-            $table->decimal('lat', 10, 6);
-            $table->decimal('lon', 10, 6);
-            $table->text('summary');
-            $table->longText('description');
+            $table->string('email', 255)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('website', 255)->nullable();
+            $table->string('area', 150)->nullable();
+            $table->text('address')->nullable();
+            $table->decimal('lat', 10, 6)->nullable();
+            $table->decimal('lon', 10, 6)->nullable();
+            $table->text('summary')->nullable();
+            $table->longText('description')->nullable();
             $table->boolean('tags_generated');
+            $table->boolean('translated');
             $table->timestamps();
         });
     }
