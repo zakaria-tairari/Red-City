@@ -19,7 +19,7 @@ class MediaDownload extends Command
 
         $count = 0;
         Media::where('storage_status', 'pending')
-            ->chunk(100, function ($media) use (&$count) {
+            ->chunkById(100, function ($media) use (&$count) {
                 foreach ($media as $item) {
 
                     $updated = Media::where('id', $item->id)

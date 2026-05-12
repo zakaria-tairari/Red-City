@@ -19,10 +19,10 @@ return new class extends Migration
 
             $table->tinyInteger('rating');
             $table->text('comment')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->unique(['user_id', 'place_id'], 'unique_user_place');
-            $table->check('rating >= 1 AND rating <= 5');
         });
     }
 

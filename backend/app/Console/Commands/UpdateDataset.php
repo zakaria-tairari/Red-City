@@ -28,7 +28,7 @@ class UpdateDataset extends Command
         ]);
 
         $process->setWorkingDirectory($projectPath);
-        $process->setTimeout(3600);
+        $process->setTimeout(null);
 
         $process->run(function ($type, $buffer) {
             $this->output->write($buffer);

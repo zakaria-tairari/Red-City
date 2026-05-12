@@ -23,7 +23,8 @@ return new class extends Migration
             $table->text('app_url')->nullable();
             $table->integer('position');
             $table->enum('storage_status', ['pending', 'processing', 'done', 'failed'])->default('pending');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->unique(['place_id', 'original_url'], 'unique_place_url');
         });

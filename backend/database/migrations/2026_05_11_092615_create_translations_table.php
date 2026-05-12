@@ -19,7 +19,8 @@ return new class extends Migration
             $table->char('language', 2);
             $table->text('summary')->nullable();
             $table->longText('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->unique(['place_id', 'language'], 'unique_place_language');
         });

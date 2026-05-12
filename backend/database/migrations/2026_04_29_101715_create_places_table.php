@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
 
-            $table->integer('document_id')->unique();
+            $table->string('document_id', 255)->unique();
             $table->string('name', 255);
             $table->string('email', 255)->nullable();
             $table->string('phone', 50)->nullable();
@@ -27,9 +27,10 @@ return new class extends Migration
             $table->decimal('lon', 10, 6)->nullable();
             $table->text('summary')->nullable();
             $table->longText('description')->nullable();
-            $table->boolean('tags_generated');
-            $table->boolean('translated');
-            $table->timestamps();
+            $table->boolean('tags_generated')->default(false);
+            $table->boolean('translated')->default(false);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

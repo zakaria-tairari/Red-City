@@ -33,7 +33,7 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
         //
     }
 
-    public function uniqid() {
+    public function uniqueid() {
         return $this->mediaId;
     }
 
@@ -45,7 +45,7 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
         try {
             $item = Media::find($this->mediaId);
 
-            if (!$item || $item->storage_status == 'done') {
+            if (!$item || $item->storage_status !== 'processing') {
                 return;
             }
 
