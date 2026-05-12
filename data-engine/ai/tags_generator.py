@@ -52,7 +52,7 @@ def generate_tags():
                     tag_id = get_tag_id(tag["tag"])
                     insert_place_tag(place_id, tag_id, tag["score"])
 
-            logger.info(f"Batch ({batch.count()}) inserted")
+            logger.info(f"Batch:{len(batch)} inserted")
 
         except Exception as e:
             logger.error(f"Error fetching AI response: {e}")
