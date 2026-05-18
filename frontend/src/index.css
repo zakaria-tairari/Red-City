@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary-50:  #fff1f0;
+  --color-primary-100: #ffd9d4;
+  --color-primary-200: #ffb3aa;
+  --color-primary-300: #ff8577;
+  --color-primary-400: #f95c49;
+  --color-primary-500: #e53922;
+  --color-primary-600: #c92d18;
+  --color-primary-700: #a52212;
+  --color-primary-800: #861c11;
+  --color-primary-900: #6d1710;
+  --color-primary-950: #3d0905;
+}
+
+@layer base {
+  body {
+    @apply bg-stone-50
+  }
+  ::selection {
+    @apply bg-primary-600 text-white
+  }
+}
