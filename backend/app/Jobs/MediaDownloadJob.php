@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
 
-#[Tries(3)]
-#[Backoff([10, 30, 60])]
+#[Tries(5)]
+#[Backoff([30, 60, 300])]
 #[UniqueFor(3600)]
 #[Timeout(240)]
 class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
@@ -33,7 +33,7 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
         //
     }
 
-    public function uniqueid() {
+    public function uniqueId() {
         return $this->mediaId;
     }
 
