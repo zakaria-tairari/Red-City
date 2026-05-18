@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +23,7 @@ class AuthController extends Controller
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
-        event(new Registered($user));
+        $user->sendEmailVerificationNotification();
 
         return ApiResponse::success('Registration successful. Please verify your email');
     }
@@ -41,6 +40,12 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+
+        $user = $request->user();
+        if (!$user->hasVerifiedEmail()) {
+            Auth::logout();            
+            return ApiResponse::error('Email not verified');
+        }
 
         return ApiResponse::success('User logged in successfully', $request->user());
     }
