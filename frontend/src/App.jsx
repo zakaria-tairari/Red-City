@@ -1,18 +1,40 @@
-import React from "react"
-import { Navigate, Route, Routes } from "react-router-dom"
-import Home from "./pages/Home"
-import MainLayout from "./layouts/MainLayout"
+import { Navigate, Route, Routes } from 'react-router-dom'
+import MainLayout from '@/layouts/MainLayout'
+import AuthLayout from '@/layouts/AuthLayout'
+import DashboardLayout from '@/layouts/DashboardLayout'
+import Home from '@/pages/Home'
+import Explore from '@/pages/Explore'
+import PlaceDetails from '@/pages/PlaceDetails'
+import Login from '@/pages/Login'
+import Register from '@/pages/Register'
+import VerifyEmail from '@/pages/VerifyEmail'
+import Dashboard from '@/pages/Dashboard'
+import Favorites from '@/pages/Favorites'
+import DashboardReviews from '@/pages/DashboardReviews'
 
-const App = () => {
+export default function App() {
   return (
     <Routes>
-      <Route path="/" element={ <MainLayout /> }>
+      <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
+        <Route path="explore" element={<Explore />} />
+        <Route path="places/:id" element={<PlaceDetails />} />
+      </Route>
 
-        <Route path="*" element={<Navigate to={"/"} />} />
-      </Route>    
+      <Route path="/" element={<AuthLayout />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+      </Route>
+
+      <Route path="verify-email" element={<VerifyEmail />} />
+
+      <Route path="/dashboard" element={ <DashboardLayout /> }>
+        <Route index element={<Dashboard />} />
+        <Route path="favorites" element={<Favorites />} />
+        <Route path="reviews" element={<DashboardReviews />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
-
-export default App

@@ -1,9 +1,18 @@
-import React from 'react'
+import HeroSection from '@/components/home/HeroSection'
+import FeaturedPlaces from '@/components/home/FeaturedPlaces'
+import CategorySection from '@/components/home/CategorySection'
+import { CATEGORIES } from '@/data/categories'
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>Home</div>
+    <>
+      <HeroSection />
+      <FeaturedPlaces />
+      <div className="bg-stone-50">
+        {CATEGORIES.map((category) => (
+          <CategorySection key={category.id} category={category} />
+        ))}
+      </div>
+    </>
   )
 }
-
-export default Home

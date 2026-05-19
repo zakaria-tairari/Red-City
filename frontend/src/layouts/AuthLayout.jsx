@@ -1,0 +1,47 @@
+import { Outlet, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Compass } from 'lucide-react'
+
+const AUTH_IMAGE =
+  'https://images.unsplash.com/photo-1565008576549-57569a48283d?auto=format&fit=crop&w=1200&q=80'
+
+export default function AuthLayout() {
+  return (
+    <div className="min-h-screen grid lg:grid-cols-2">
+      <div className="hidden lg:relative lg:block overflow-hidden">
+        <img src={AUTH_IMAGE} alt="Marrakech" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/80 to-stone-900/60" />
+        <div className="relative z-10 flex h-full flex-col justify-between p-12 text-white">
+          <Link to="/" className="inline-flex items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+              <Compass className="h-5 w-5" />
+            </div>
+            <span className="font-display text-2xl font-bold">Red City</span>
+          </Link>
+          <div>
+            <h2 className="font-display text-4xl font-bold leading-tight">
+              Your journey through Marrakech starts here
+            </h2>
+            <p className="mt-4 text-lg text-white/80 max-w-md">
+              Save favorites, write reviews, and get personalized recommendations.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center p-6 sm:p-12">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="w-full max-w-md"
+        >
+          <Link to="/" className="lg:hidden inline-flex items-center gap-2 mb-8">
+            <Compass className="h-6 w-6 text-primary-600" />
+            <span className="font-display text-xl font-bold">Red City</span>
+          </Link>
+          <Outlet />
+        </motion.div>
+      </div>
+    </div>
+  )
+}
