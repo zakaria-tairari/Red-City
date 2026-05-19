@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Models\User;
-use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -26,7 +25,7 @@ class VerificationController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return ApiResponse::success("Email verified successfully");
+        return redirect(config('app.frontend_url'));
     }
 
     public function resend(Request $request)
