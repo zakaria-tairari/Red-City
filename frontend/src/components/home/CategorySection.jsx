@@ -7,11 +7,6 @@ import { fetchCategoryPlaces } from '@/services/placesService'
 import { PlaceCard } from '@/components/ui/PlaceCard'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-function CategoryIcon({ name }) {
-  const Icon = LucideIcons[name] || LucideIcons.MapPin
-  return <Icon className="h-5 w-5 text-primary-600" />
-}
-
 export default function CategorySection({ category }) {
   const { data: places, isLoading } = useQuery({
     queryKey: ['category-places', category.id],
@@ -23,9 +18,6 @@ export default function CategorySection({ category }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-start justify-between gap-4 mb-8">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-50">
-              <CategoryIcon name={category.icon} />
-            </div>
             <div>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">
                 {category.name}

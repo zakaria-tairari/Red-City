@@ -43,7 +43,7 @@ export default function Explore() {
   }
 
   return (
-    <motion.div className="min-h-screen pt-16">
+    <motion.div className="min-h-screen py-16 mt-20">
       <SearchFilters
         query={query}
         onQueryChange={(v) => {
@@ -76,8 +76,8 @@ export default function Explore() {
         </div>
 
         {exploreViewMode === 'map' ? (
-          <div className="grid h-[calc(100vh-220px)] min-h-[500px] gap-4 lg:grid-cols-5">
-            <div className="overflow-y-auto space-y-3 pr-2 col-span-2">
+          <div className="grid h-[calc(100vh-220px)] min-h-125 gap-4 lg:grid-cols-10">
+            <div className="overflow-y-auto pb-20 space-y-3 pr-2 col-span-3">
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <Skeleton key={i} className="h-28 w-full rounded-xl" />
@@ -88,7 +88,7 @@ export default function Explore() {
             </div>
             <PlacesMap
               places={data?.items ?? []}
-              className="sticky top-36 h-full col-span-3"
+              className="sticky top-36 h-full col-span-7"
             />
           </div>
         ) : (
@@ -96,7 +96,7 @@ export default function Explore() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {isLoading
                 ? Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} className="aspect-[4/3] w-full rounded-2xl" />
+                    <Skeleton key={i} className="aspect-4/3 w-full rounded-2xl" />
                   ))
                 : data?.items.map((place, i) => (
                     <motion.div

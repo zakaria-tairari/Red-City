@@ -17,17 +17,15 @@ export default function SearchFilters({
   onQueryChange,
   category,
   onCategoryChange,
-  minRating,
-  onMinRatingChange,
   sortBy,
   onSortByChange,
 }) {
   const { exploreViewMode, setExploreViewMode } = useUIStore()
 
   return (
-    <div className="sticky top-16 z-40 border-b border-stone-100 bg-white/95 backdrop-blur-md">
+    <div className="fixed top-16 z-40 border-b w-full border-stone-100 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Input
               value={query}
@@ -38,9 +36,9 @@ export default function SearchFilters({
             <SlidersHorizontal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Select value={category || 'all'} onValueChange={(v) => onCategoryChange(v === 'all' ? '' : v)}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-40">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -51,20 +49,8 @@ export default function SearchFilters({
               </SelectContent>
             </Select>
 
-            <Select value={String(minRating)} onValueChange={(v) => onMinRatingChange(Number(v))}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder="Rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">Any rating</SelectItem>
-                <SelectItem value="4">4+ stars</SelectItem>
-                <SelectItem value="4.5">4.5+ stars</SelectItem>
-                <SelectItem value="4.8">4.8+ stars</SelectItem>
-              </SelectContent>
-            </Select>
-
             <Select value={sortBy} onValueChange={onSortByChange}>
-              <SelectTrigger className="w-[130px]">
+              <SelectTrigger className="w-40">
                 <SelectValue placeholder="Sort" />
               </SelectTrigger>
               <SelectContent>
@@ -77,10 +63,11 @@ export default function SearchFilters({
 
             <div className="flex rounded-xl border border-stone-200 p-1">
               <button
+                title="Grid view"
                 type="button"
                 onClick={() => setExploreViewMode('grid')}
                 className={cn(
-                  'rounded-lg p-2 transition-colors',
+                  'rounded-lg py-2 px-3 transition-colors',
                   exploreViewMode === 'grid' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
                 )}
                 aria-label="Grid view"
@@ -88,10 +75,11 @@ export default function SearchFilters({
                 <Grid3X3 className="h-4 w-4" />
               </button>
               <button
+                title='Map view'
                 type="button"
                 onClick={() => setExploreViewMode('map')}
                 className={cn(
-                  'rounded-lg p-2 transition-colors',
+                  'rounded-lg py-2 px-3 transition-colors',
                   exploreViewMode === 'map' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
                 )}
                 aria-label="Map view"

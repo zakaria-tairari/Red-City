@@ -36,7 +36,7 @@ export function SelectContent({ className, children, position = 'popper', ...pro
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-xl border border-stone-100 bg-white text-stone-900 shadow-lg',
+          'relative z-50 max-h-96 min-w-40 overflow-hidden rounded-xl border border-stone-100 bg-white text-stone-900 shadow-lg',
           position === 'popper' && 'data-[side=bottom]:translate-y-1',
           className
         )}
@@ -53,7 +53,7 @@ export function SelectItem({ className, children, ...props }) {
   return (
     <SelectPrimitive.Item
       className={cn(
-        'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2 pl-8 pr-2 text-sm outline-none focus:bg-stone-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2 pl-8 pr-2 text-sm outline-none focus:text-primary-600 data-disabled:pointer-events-none data-disabled:opacity-50',
         className
       )}
       {...props}

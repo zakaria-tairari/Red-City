@@ -9,7 +9,7 @@ export function PlaceMapPopup({ place, onClose }) {
 
   return (
     <article className="w-full overflow-hidden bg-white">
-      <div className="relative aspect-4/3 overflow-hidden">
+      <div className="relative aspect-3/4 overflow-hidden">
         <img
           src={place.images[0]}
           alt={place.name}
@@ -52,34 +52,20 @@ export function PlaceMapPopup({ place, onClose }) {
           </div>
         </div>
       </div>
-
-      <div className="flex items-center gap-2 border-t border-stone-100 bg-stone-50/80 px-3 py-2.5">
-        {priceLabel && (
-          <span className="shrink-0 rounded-lg bg-white px-2.5 py-1 text-xs font-semibold tracking-wide text-stone-600 ring-1 ring-stone-200/80">
-            {priceLabel}
-          </span>
-        )}
-        {place.distance != null && (
-          <span className="text-xs text-stone-500">
-            {place.distance.toFixed(1)} km
-          </span>
-        )}
-        <Link
-          to={`/places/${place.id}`}
-          className={cn(
-            'ml-auto inline-flex items-center justify-center gap-1.5 rounded-xl text-primary-600 px-3.5 py-2 text-xs font-semibold hover:text-primary-700',
-            !priceLabel && place.distance == null && 'flex-1'
+      <div className="flex items-center justify-between gap-2 border-t border-stone-100 bg-stone-50/80 px-3 py-2.5">
+        <div>
+          {place.distance != null && (
+            <span className="text-xs text-stone-500">
+              {place.distance.toFixed(1)} km
+            </span>
           )}
-        >
-          View place
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+        </div>
         <Link
           to={`/places/${place.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="mt-2 inline-block text-xs font-medium text-primary-600 hover:text-primary-700"
+          className="inline-block text-xs font-medium"
         >
-          View details →
+          <span className="text-primary-600 hover:text-primary-700">View details →</span>
         </Link>
       </div>
     </article>

@@ -17,7 +17,7 @@ export default function Header() {
   const navigate = useNavigate()
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-stone-100/80 bg-white/90 backdrop-blur-md">
+    <header className="fixed top-0 z-50 w-full bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 group">
           <span className="font-display text-xl font-bold tracking-tight text-stone-900">

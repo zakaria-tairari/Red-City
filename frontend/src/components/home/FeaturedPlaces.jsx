@@ -17,9 +17,6 @@ export default function FeaturedPlaces() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between gap-4 mb-10">
           <div>
-            <p className="text-primary-600 text-sm font-semibold uppercase tracking-wider mb-2">
-              Top Rated
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-stone-900">
               Featured Places
             </h2>

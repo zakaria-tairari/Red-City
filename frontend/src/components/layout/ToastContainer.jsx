@@ -38,14 +38,14 @@ function ToastItem({ notification, onClose }) {
     success: <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0" />,
     error: <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />,
     warning: <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />,
-    info: <Info className="h-5 w-5 text-primary-500 shrink-0" />,
+    info: <Info className="h-5 w-5 text-sky-500 shrink-0" />,
   }
 
   const borders = {
-    success: 'border-emerald-100 bg-white shadow-[0_4px_20px_rgba(16,185,129,0.08)]',
-    error: 'border-red-100 bg-white shadow-[0_4px_20px_rgba(239,68,68,0.08)]',
-    warning: 'border-amber-100 bg-white shadow-[0_4px_20px_rgba(245,158,11,0.08)]',
-    info: 'border-primary-100 bg-white shadow-[0_4px_20px_rgba(229,57,34,0.08)]',
+    success: 'border-emerald-100 shadow-emerald-100',
+    error: 'border-red-100 shadow-red-100',
+    warning: 'border-amber-100 shadow-amber-100',
+    info: 'border-sky-100 shadow-sky-100',
   }
 
   return (
@@ -54,7 +54,7 @@ function ToastItem({ notification, onClose }) {
       initial={{ opacity: 0, y: -20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.2 } }}
-      className={`pointer-events-auto flex items-start gap-3 rounded-2xl border p-4 shadow-lg ${borders[type]}`}
+      className={`pointer-events-auto flex items-start gap-3 rounded-2xl bg-white border p-4 shadow-lg ${borders[type]}`}
     >
       {icons[type] || icons.info}
       

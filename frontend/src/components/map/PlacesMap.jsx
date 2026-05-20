@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 import { useUIStore } from '@/store/useUIStore'
 import { PlaceMapPopup } from './PlaceMapPopup'
 
-const MARRAKECH_CENTER = [31.6295, -7.9811]
+const MARRAKECH_CENTER = [31.6287, -7.9920]
 
 const defaultIcon = L.divIcon({
   className: 'red-city-marker',
@@ -89,7 +89,7 @@ function PlaceMarker({ place, isSelected }) {
         maxWidth={300}
         closeButton={false}
         autoPan
-        offset={[0, -8]}
+        offset={[4, -6]}
       >
         <PlaceMapPopup
           place={place}
@@ -107,12 +107,13 @@ export default function PlacesMap({ places, className }) {
     <MapContainer
       center={MARRAKECH_CENTER}
       zoom={13}
+      minZoom={10}
       zoomControl={false}
       className={cn('h-full min-h-[400px] w-full rounded-xl', className)}
     >
       <TileLayer
-        attribution="© OpenStreetMap"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
       <ZoomControl position="bottomright" />
       <FitBounds places={places} />

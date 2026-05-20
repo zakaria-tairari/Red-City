@@ -85,8 +85,8 @@ export default function Favorites() {
       {favoritePlaces.length === 0 ? (
         <div className="py-20 text-center rounded-2xl border border-dashed border-stone-200">
           <Heart className="mx-auto h-12 w-12 text-stone-300" />
-          <p className="mt-4 font-serif text-xl text-stone-600">No favorites yet</p>
-          <p className="mt-2 text-stone-400">Save places you love to find them here.</p>
+          <p className="mt-4 font-serif font-bold text-xl text-stone-600">No favorites yet</p>
+          <p className="mt-2 text-stone-400 text-sm">Save places you love to find them here.</p>
           <Button asChild className="mt-6">
             <Link to="/explore">Explore places</Link>
           </Button>

@@ -29,13 +29,13 @@ export default function ExploreListItem({ place }) {
         'flex w-full cursor-pointer gap-4 rounded-xl border p-3 text-left transition-all',
         isSelected
           ? 'border-primary-200 bg-primary-50 shadow-md'
-          : 'border-stone-100 bg-white hover:border-stone-200 hover:shadow-md'
+          : 'border-stone-100 shadow-sm bg-white hover:border-stone-200 hover:shadow-md hover:-translate-y-0.5'
       )}
     >
       <img
         src={place.images[0]}
         alt={place.name}
-        className="h-20 w-24 shrink-0 rounded-lg object-cover"
+        className="max-h-24 w-20 shrink-0 rounded-lg object-cover"
       />
       <div className="min-w-0 flex-1">
         <h3 className="truncate font-serif font-semibold text-stone-900">
