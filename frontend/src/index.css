@@ -64,6 +64,42 @@
 }
 
 .red-city-marker.active {
-  background: #861c11;
+  background: #e53922;
   transform: scale(1.2);
+}
+
+.red-city-popup.leaflet-popup {
+  margin-bottom: 28px;
+}
+
+.red-city-popup .leaflet-popup-content-wrapper {
+  background: white;
+  border-radius: 1rem;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgb(231 229 228 / 0.9);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.07),
+    0 20px 40px -12px rgb(0 0 0 / 0.18);
+}
+
+.red-city-popup .leaflet-popup-content {
+  margin: 0;
+  width: 300px !important;
+  line-height: inherit;
+}
+
+.red-city-popup .leaflet-popup-tip-container {
+  width: 32px;
+  height: 16px;
+  margin-top: -1px;
+}
+
+.red-city-popup .leaflet-popup-tip {
+  width: 16px;
+  height: 16px;
+  margin: -8px auto 0;
+  background: rgb(250 250 249);
+  border: 1px solid rgb(231 229 228 / 0.9);
+  box-shadow: 0 4px 8px -2px rgb(0 0 0 / 0.1);
 }

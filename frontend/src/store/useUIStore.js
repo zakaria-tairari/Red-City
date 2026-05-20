@@ -3,8 +3,8 @@ import { create } from 'zustand'
 export const useUIStore = create((set) => ({
   exploreViewMode: 'grid',
   setExploreViewMode: (mode) => set({ exploreViewMode: mode }),
-  hoveredPlaceId: null,
-  setHoveredPlaceId: (id) => set({ hoveredPlaceId: id }),
+  selectedPlaceId: null,
+  setSelectedPlaceId: (id) => set({ selectedPlaceId: id }),
   notifications: [],
   addNotification: (notification) =>
     set((state) => ({

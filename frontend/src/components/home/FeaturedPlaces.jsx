@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { fetchFeaturedPlaces } from '@/services/placesService'
 import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function FeaturedPlaces() {
   const { data: places, isLoading } = useQuery({

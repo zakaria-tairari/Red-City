@@ -2,11 +2,12 @@ import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { Label } from '@/components/ui/Label'
+import { Checkbox } from '@/components/ui/Checkbox'
+import { Progress } from '@/components/ui/Progress'
+import { useUIStore } from '@/store/useUIStore'
 
 const schema = z
   .object({
@@ -65,9 +66,15 @@ export default function Register() {
     // Template only — wire up your auth API here
     setTimeout(() => {
       setLoading(false)
+      useUIStore.getState().addNotification({
+        type: 'success',
+        title: 'Account Created!',
+        message: `Welcome, ${form.firstName}! A verification link has been sent to ${form.email}.`,
+      })
       navigate('/verify-email')
     }, 600)
   }
+
 
   return (
     <div>

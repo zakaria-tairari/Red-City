@@ -4,15 +4,15 @@ import { Heart, Share2, Trash2 } from 'lucide-react'
 import { MOCK_PLACES } from '@/data/mockPlaces'
 import { useFavoritesStore } from '@/store/useFavoritesStore'
 import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/components/ui/Dialog'
 
 export default function Favorites() {
   const { favorites, removeFavorite, collections, addCollection } = useFavoritesStore()

@@ -1,26 +1,30 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ThumbsUp, Filter } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts'
 import { fetchPlaceReviews } from '@/services/placesService'
 import { getRatingBreakdown } from '@/data/mockReviews'
 import { RatingStars } from '@/components/ui/RatingStars'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Avatar, AvatarFallback } from '@/components/ui/Avatar'
+import { Button } from '@/components/ui/Button'
+import { Skeleton } from '@/components/ui/Skeleton'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/Select'
+import { Badge } from '@/components/ui/Badge'
+import { Input } from '@/components/ui/Input'
+import { Label } from '@/components/ui/Label'
+import { useUIStore } from '@/store/useUIStore'
 
 export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
   const [filter, setFilter] = useState('all')
+  const [selectedRating, setSelectedRating] = useState('5')
+  const queryClient = useQueryClient()
+
   const { data: reviews, isLoading } = useQuery({
     queryKey: ['reviews', placeId],
     queryFn: () => fetchPlaceReviews(placeId),
@@ -32,6 +36,54 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
   })
 
   const breakdown = reviews ? getRatingBreakdown(reviews) : []
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault()
+    const form = e.target
+    const title = form.querySelector('input[type="text"]').value
+    const body = form.querySelector('textarea').value
+
+    if (!title.trim() || !body.trim()) {
+      useUIStore.getState().addNotification({
+        type: 'error',
+        title: 'Submission Failed',
+        message: 'Please enter both a title and review body before submitting.',
+      })
+      return
+    }
+
+    const newReview = {
+      id: `rev-${Date.now()}`,
+      rating: Number(selectedRating),
+      title,
+      body,
+      date: new Date().toISOString(),
+      helpful: 0,
+      verified: true,
+      images: [],
+      author: {
+        name: 'You (Traveler)',
+        avatar: 'YT',
+        country: 'Morocco',
+      },
+    }
+
+    // Dynamic React Query cache updates!
+    queryClient.setQueryData(['reviews', placeId], (oldReviews) => {
+      return oldReviews ? [newReview, ...oldReviews] : [newReview]
+    })
+
+    // Rich animated toast alert
+    useUIStore.getState().addNotification({
+      type: 'success',
+      title: 'Review Submitted!',
+      message: 'Thank you! Your feedback is now visible in the reviews section below.',
+    })
+
+    // Reset inputs
+    form.reset()
+    setSelectedRating('5')
+  }
 
   return (
     <div className="space-y-8">
@@ -61,14 +113,14 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
 
         <form
           className="rounded-2xl border border-stone-100 bg-stone-50 p-6"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleReviewSubmit}
         >
           <h3 className="font-serif text-lg font-semibold mb-4">Write a review</h3>
           <div className="space-y-4">
             <div>
               <Label>Your rating</Label>
-              <Select defaultValue="5">
-                <SelectTrigger className="mt-1">
+              <Select value={selectedRating} onValueChange={setSelectedRating}>
+                <SelectTrigger className="mt-1 bg-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -80,19 +132,21 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
             </div>
             <div>
               <Label>Title</Label>
-              <Input className="mt-1" placeholder="Summarize your experience" />
+              <Input className="mt-1 bg-white" placeholder="Summarize your experience" required type="text" />
             </div>
             <div>
               <Label>Review</Label>
               <textarea
                 className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                 placeholder="Share your experience..."
+                required
               />
             </div>
             <Button type="submit" className="w-full">Submit review</Button>
           </div>
         </form>
       </div>
+
 
       <div className="flex items-center gap-4">
         <Filter className="h-4 w-4 text-stone-400" />

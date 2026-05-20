@@ -24,10 +24,16 @@ import ReviewsSection from '@/components/place/ReviewsSection'
 import PlacesMap from '@/components/map/PlacesMap'
 import { PlaceCard } from '@/components/ui/PlaceCard'
 import { RatingStars } from '@/components/ui/RatingStars'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
+import { Skeleton } from '@/components/ui/Skeleton'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/Tabs'
+import { useUIStore } from '@/store/useUIStore'
 import { cn } from '@/lib/utils'
 
 export default function PlaceDetails() {
@@ -72,9 +78,23 @@ export default function PlaceDetails() {
 
   const handleShare = async () => {
     if (navigator.share) {
-      await navigator.share({ title: place.name, url: window.location.href })
+      try {
+        await navigator.share({ title: place.name, url: window.location.href })
+        useUIStore.getState().addNotification({
+          type: 'success',
+          title: 'Shared successfully!',
+          message: `Shared link to "${place.name}".`,
+        })
+      } catch (err) {
+        // user cancelled
+      }
     } else {
       navigator.clipboard?.writeText(window.location.href)
+      useUIStore.getState().addNotification({
+        type: 'success',
+        title: 'Link Copied!',
+        message: `Copied details link of "${place.name}" to clipboard.`,
+      })
     }
   }
 
@@ -141,6 +161,13 @@ export default function PlaceDetails() {
                 href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => {
+                  useUIStore.getState().addNotification({
+                    type: 'info',
+                    title: 'Opening Map Directions',
+                    message: `Routing path to "${place.name}" on Google Maps...`,
+                  })
+                }}
               >
                 <Navigation className="h-4 w-4" /> Directions
               </a>

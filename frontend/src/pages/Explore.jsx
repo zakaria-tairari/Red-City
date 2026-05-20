@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -7,16 +7,15 @@ import { searchPlaces } from '@/services/placesService'
 import SearchFilters from '@/components/explore/SearchFilters'
 import ExploreListItem from '@/components/explore/ExploreListItem'
 import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Button } from '@/components/ui/Button'
 import PlacesMap from '@/components/map/PlacesMap'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useUIStore } from '@/store/useUIStore'
 
 export default function Explore() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
-  const { exploreViewMode, setHoveredPlaceId } = useUIStore()
+  const { exploreViewMode } = useUIStore()
 
   const [query, setQuery] = useState(searchParams.get('q') || '')
   const [category, setCategory] = useState(searchParams.get('category') || '')
@@ -77,27 +76,19 @@ export default function Explore() {
         </div>
 
         {exploreViewMode === 'map' ? (
-          <div className="grid h-[calc(100vh-220px)] min-h-[500px] gap-4 lg:grid-cols-2">
-            <div className="overflow-y-auto space-y-3 pr-2">
+          <div className="grid h-[calc(100vh-220px)] min-h-[500px] gap-4 lg:grid-cols-5">
+            <div className="overflow-y-auto space-y-3 pr-2 col-span-2">
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <Skeleton key={i} className="h-28 w-full rounded-xl" />
                   ))
                 : data?.items.map((place) => (
-                    <div
-                      key={place.id}
-                      onMouseEnter={() => setHoveredPlaceId(place.id)}
-                      onMouseLeave={() => setHoveredPlaceId(null)}
-                      className="cursor-pointer"
-                    >
-                      <ExploreListItem place={place} />
-                    </div>
+                    <ExploreListItem key={place.id} place={place} />
                   ))}
             </div>
             <PlacesMap
               places={data?.items ?? []}
-              className="sticky top-36 h-full"
-              onPlaceClick={(p) => navigate(`/places/${p.id}`)}
+              className="sticky top-36 h-full col-span-3"
             />
           </div>
         ) : (

@@ -1,108 +1,65 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Clock, Heart, Star } from 'lucide-react'
+import { ArrowRight, MapPin, Compass, Sparkles } from 'lucide-react'
 import { MOCK_PLACES } from '@/data/mockPlaces'
 import { useFavoritesStore } from '@/store/useFavoritesStore'
 import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
 import { getTopRated } from '@/data/mockPlaces'
-
-const recentActivity = [
-  { id: 1, action: 'Saved', place: 'Jardin Majorelle', time: '2 hours ago' },
-  { id: 2, action: 'Reviewed', place: 'Nomad', time: 'Yesterday' },
-  { id: 3, action: 'Viewed', place: 'Royal Mansour', time: '2 days ago' },
-]
+import DashboardStats from '@/components/dashboard/DashboardStats'
+import DashboardRecommendations from '@/components/dashboard/DashboardRecommendations'
 
 export default function Dashboard() {
   const favorites = useFavoritesStore((s) => s.favorites)
   const favoritePlaces = MOCK_PLACES.filter((p) => favorites.includes(p.id)).slice(0, 4)
-  const recommendations = getTopRated(4)
+  const recommendations = getTopRated(6) // Fetch 6 items for horizontal scrolling layout
 
   return (
-    <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-3">
-        {[
-          { label: 'Saved places', value: favorites.length, icon: Heart, color: 'text-primary-600' },
-          { label: 'Reviews written', value: 3, icon: Star, color: 'text-amber-500' },
-          { label: 'Places visited', value: 12, icon: Clock, color: 'text-stone-500' },
-        ].map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="flex items-center gap-4 p-6">
-              <div className={`rounded-xl bg-stone-50 p-3 ${stat.color}`}>
-                <stat.icon className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-stone-900">{stat.value}</p>
-                <p className="text-sm text-stone-500">{stat.label}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    <div className="space-y-10">
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="font-display">Favorite Places</CardTitle>
+      {/* Reusable Statistics Grid Widget */}
+      <DashboardStats favoritesCount={favorites.length} />
+
+      {/* Favorites Collection List */}
+      <Card className="overflow-hidden border-stone-100 shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-stone-50 bg-stone-50/30 px-6 py-4">
+          <div className="space-y-1">
+            <CardTitle className="font-display text-lg">My Favorites</CardTitle>
+            <p className="text-xs text-stone-500">Quick access to saved places</p>
+          </div>
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/dashboard/favorites">View all <ArrowRight className="h-4 w-4" /></Link>
+            <Link to="/dashboard/favorites" className="gap-1.5">
+              View all <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           {favoritePlaces.length === 0 ? (
-            <p className="text-stone-500 text-sm py-8 text-center">
-              No favorites yet.{' '}
-              <Link to="/explore" className="text-primary-600 hover:underline">Start exploring</Link>
-            </p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="rounded-full bg-stone-50 p-4 mb-4">
+                <Compass className="h-8 w-8 text-stone-400" />
+              </div>
+              <p className="text-stone-500 text-sm max-w-sm mb-4">
+                You haven't saved any places yet. Browse the catalog and save riads, cafés, or souks to view them here.
+              </p>
+              <Button asChild size="sm">
+                <Link to="/explore">Start exploring</Link>
+              </Button>
+            </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {favoritePlaces.map((place) => (
-                <PlaceCard key={place.id} place={place} />
+                <PlaceCard key={place.id} place={place} className="h-full" />
               ))}
             </div>
           )}
         </CardContent>
       </Card>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-display">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentActivity.map((item) => (
-              <div key={item.id} className="flex items-center justify-between border-b border-stone-50 pb-3 last:border-0">
-                <div>
-                  <p className="text-sm font-medium text-stone-800">
-                    {item.action} <span className="text-primary-600">{item.place}</span>
-                  </p>
-                  <p className="text-xs text-stone-400">{item.time}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-display">Recommended for You</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recommendations.map((place) => (
-              <Link
-                key={place.id}
-                to={`/places/${place.id}`}
-                className="flex items-center gap-3 rounded-xl p-2 hover:bg-stone-50 transition-colors"
-              >
-                <img src={place.images[0]} alt="" className="h-12 w-12 rounded-lg object-cover" />
-                <div>
-                  <p className="font-medium text-sm text-stone-800">{place.name}</p>
-                  <p className="text-xs text-stone-400">★ {place.rating} · {place.location}</p>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+      {/* Recommended for You scrollable horizontal Section */}
+      <DashboardRecommendations recommendations={recommendations} />
     </div>
   )
 }
+
+

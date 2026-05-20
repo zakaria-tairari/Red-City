@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from '@/layouts/MainLayout'
 import AuthLayout from '@/layouts/AuthLayout'
-import DashboardLayout from '@/layouts/DashboardLayout'
+import DashboardOutlet from '@/layouts/DashboardOutlet'
 import Home from '@/pages/Home'
 import Explore from '@/pages/Explore'
 import PlaceDetails from '@/pages/PlaceDetails'
@@ -19,6 +19,11 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="explore" element={<Explore />} />
         <Route path="places/:id" element={<PlaceDetails />} />
+        <Route path="dashboard" element={<DashboardOutlet />}>
+          <Route index element={<Dashboard />} />
+          <Route path="favorites" element={<Favorites />} />
+          <Route path="reviews" element={<DashboardReviews />} />
+        </Route>
       </Route>
 
       <Route path="/" element={<AuthLayout />}>
@@ -27,12 +32,6 @@ export default function App() {
       </Route>
 
       <Route path="verify-email" element={<VerifyEmail />} />
-
-      <Route path="/dashboard" element={ <DashboardLayout /> }>
-        <Route index element={<Dashboard />} />
-        <Route path="favorites" element={<Favorites />} />
-        <Route path="reviews" element={<DashboardReviews />} />
-      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

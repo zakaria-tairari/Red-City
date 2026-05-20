@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { Label } from '@/components/ui/Label'
+import { Checkbox } from '@/components/ui/Checkbox'
+import { Separator } from '@/components/ui/Separator'
+import { useUIStore } from '@/store/useUIStore'
 
 const schema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -37,9 +38,15 @@ export default function Login() {
     // Template only — wire up your auth API here
     setTimeout(() => {
       setLoading(false)
+      useUIStore.getState().addNotification({
+        type: 'success',
+        title: 'Welcome Back!',
+        message: `Successfully logged in as ${email}. Experience Marrakech!`,
+      })
       navigate('/dashboard')
     }, 600)
   }
+
 
   return (
     <div>

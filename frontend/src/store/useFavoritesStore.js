@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useUIStore } from './useUIStore'
+import { MOCK_PLACES } from '@/data/mockPlaces'
 
 export const useFavoritesStore = create(
   persist(
@@ -23,6 +25,17 @@ export const useFavoritesStore = create(
               }
             : c
         )
+        
+        // Dynamic visual feedback using Toast Container
+        const placeName = MOCK_PLACES.find((p) => p.id === placeId)?.name || 'Place'
+        useUIStore.getState().addNotification({
+          type: isFav ? 'info' : 'success',
+          title: isFav ? 'Removed from Favorites' : 'Saved to Favorites',
+          message: isFav 
+            ? `Removed "${placeName}" from your favorites.`
+            : `Saved "${placeName}" to your favorites collection!`,
+        })
+
         set({ favorites: newFavorites, collections: newCollections })
       },
 
@@ -37,9 +50,18 @@ export const useFavoritesStore = create(
         set((state) => ({
           collections: [...state.collections, { id, name, placeIds: [] }],
         }))
+
+        // Notification feedback
+        useUIStore.getState().addNotification({
+          type: 'success',
+          title: 'Collection Created',
+          message: `Successfully created custom collection "${name}"!`,
+        })
+
         return id
       },
     }),
     { name: 'red-city-favorites' }
   )
 )
+

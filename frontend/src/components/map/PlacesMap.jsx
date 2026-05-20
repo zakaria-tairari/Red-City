@@ -1,8 +1,16 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
-import 'leaflet.markercluster'
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  ZoomControl,
+  useMap,
+} from 'react-leaflet'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/store/useUIStore'
+import { PlaceMapPopup } from './PlaceMapPopup'
 
 const MARRAKECH_CENTER = [31.6295, -7.9811]
 
@@ -18,77 +26,104 @@ const activeIcon = L.divIcon({
   iconAnchor: [9, 9],
 })
 
-export default function PlacesMap({ places, className, onPlaceClick }) {
-  const mapRef = useRef(null)
-  const containerRef = useRef(null)
-  const markersRef = useRef({})
-  const clusterRef = useRef(null)
-  const { hoveredPlaceId, setHoveredPlaceId } = useUIStore()
+function FitBounds({ places }) {
+  const map = useMap()
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
+    if (!places.length) return
+    const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]))
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
+  }, [map, places])
 
-    mapRef.current = L.map(containerRef.current, {
-      center: MARRAKECH_CENTER,
-      zoom: 13,
-      zoomControl: false,
-    })
+  return null
+}
 
-    L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current)
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-    }).addTo(mapRef.current)
-
-    clusterRef.current = L.markerClusterGroup({
-      maxClusterRadius: 50,
-      spiderfyOnMaxZoom: true,
-    })
-    mapRef.current.addLayer(clusterRef.current)
-
-    return () => {
-      mapRef.current?.remove()
-      mapRef.current = null
-    }
-  }, [])
+function FocusSelectedPlace({ places, selectedPlaceId }) {
+  const map = useMap()
 
   useEffect(() => {
-    if (!mapRef.current || !clusterRef.current) return
+    if (!selectedPlaceId) return
+    const place = places.find((p) => p.id === selectedPlaceId)
+    if (!place) return
 
-    clusterRef.current.clearLayers()
-    markersRef.current = {}
-
-    places.forEach((place) => {
-      const marker = L.marker([place.lat, place.lng], { icon: defaultIcon })
-      marker.bindPopup(`
-        <div style="min-width:180px;font-family:system-ui">
-          <img src="${place.images[0]}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px" alt="${place.name}" />
-          <strong style="font-size:14px">${place.name}</strong>
-          <p style="margin:4px 0 0;font-size:12px;color:#666">★ ${place.rating} · ${place.location}</p>
-          <a href="/places/${place.id}" style="display:inline-block;margin-top:8px;font-size:12px;color:#c92d18">View details →</a>
-        </div>
-      `)
-      marker.on('mouseover', () => setHoveredPlaceId(place.id))
-      marker.on('mouseout', () => setHoveredPlaceId(null))
-      marker.on('click', () => onPlaceClick?.(place))
-      markersRef.current[place.id] = marker
-      clusterRef.current.addLayer(marker)
+    map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 15), {
+      animate: true,
+      duration: 0.4,
     })
+  }, [map, places, selectedPlaceId])
 
-    if (places.length > 0) {
-      const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]))
-      mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
-    }
-  }, [places, onPlaceClick, setHoveredPlaceId])
+  return null
+}
+
+function PlaceMarker({ place, isSelected }) {
+  const markerRef = useRef(null)
+  const setSelectedPlaceId = useUIStore((s) => s.setSelectedPlaceId)
 
   useEffect(() => {
-    Object.entries(markersRef.current).forEach(([id, marker]) => {
-      marker.setIcon(id === hoveredPlaceId ? activeIcon : defaultIcon)
-      if (id === hoveredPlaceId) marker.openPopup()
-    })
-  }, [hoveredPlaceId])
+    if (!isSelected) return
+    const timer = setTimeout(() => markerRef.current?.openPopup(), 450)
+    return () => clearTimeout(timer)
+  }, [isSelected])
 
   return (
-    <div ref={containerRef} className={cn('h-full min-h-[400px] w-full rounded-xl', className)} />
+    <Marker
+      ref={markerRef}
+      position={[place.lat, place.lng]}
+      icon={isSelected ? activeIcon : defaultIcon}
+      eventHandlers={{
+        click: (e) => {
+          L.DomEvent.stopPropagation(e)
+          setSelectedPlaceId(place.id)
+          markerRef.current?.openPopup()
+        },
+        popupclose: () => {
+          if (useUIStore.getState().selectedPlaceId === place.id) {
+            setSelectedPlaceId(null)
+          }
+        },
+      }}
+    >
+      <Popup
+        className="red-city-popup"
+        minWidth={300}
+        maxWidth={300}
+        closeButton={false}
+        autoPan
+        offset={[0, -8]}
+      >
+        <PlaceMapPopup
+          place={place}
+          onClose={() => markerRef.current?.closePopup()}
+        />
+      </Popup>
+    </Marker>
+  )
+}
+
+export default function PlacesMap({ places, className }) {
+  const selectedPlaceId = useUIStore((s) => s.selectedPlaceId)
+
+  return (
+    <MapContainer
+      center={MARRAKECH_CENTER}
+      zoom={13}
+      zoomControl={false}
+      className={cn('h-full min-h-[400px] w-full rounded-xl', className)}
+    >
+      <TileLayer
+        attribution="© OpenStreetMap"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <ZoomControl position="bottomright" />
+      <FitBounds places={places} />
+      <FocusSelectedPlace places={places} selectedPlaceId={selectedPlaceId} />
+        {places.map((place) => (
+          <PlaceMarker
+            key={place.id}
+            place={place}
+            isSelected={place.id === selectedPlaceId}
+          />
+        ))}
+    </MapContainer>
   )
 }

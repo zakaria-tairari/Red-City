@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Compass, Heart, Menu, Search, User, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 const navLinks = [

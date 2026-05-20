@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Compass, Globe, Mail, MessageCircle, Share2, Video } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { CATEGORIES } from '@/data/categories'
+import { useUIStore } from '@/store/useUIStore'
 
 const quickLinks = [
   { label: 'Explore', to: '/explore' },
@@ -92,6 +93,16 @@ export default function Footer() {
               className="mt-4 flex gap-2"
               onSubmit={(e) => {
                 e.preventDefault()
+                const input = e.target.querySelector('input')
+                const email = input?.value
+                if (email) {
+                  useUIStore.getState().addNotification({
+                    type: 'success',
+                    title: 'Subscription Successful!',
+                    message: `You've successfully subscribed as ${email}. Welcome to Red City!`,
+                  })
+                  if (input) input.value = ''
+                }
               }}
             >
               <Input
@@ -110,6 +121,7 @@ export default function Footer() {
             </p>
           </div>
         </div>
+
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-stone-800 pt-8 text-sm text-stone-500 sm:flex-row">
           <p>© {new Date().getFullYear()} Red City. All rights reserved.</p>

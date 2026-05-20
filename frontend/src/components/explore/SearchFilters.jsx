@@ -1,13 +1,13 @@
 import { Grid3X3, Map, SlidersHorizontal } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/ui/Select'
 import { CATEGORIES } from '@/data/categories'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/store/useUIStore'

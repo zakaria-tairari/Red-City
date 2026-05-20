@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { fetchCategoryPlaces } from '@/services/placesService'
 import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 function CategoryIcon({ name }) {
   const Icon = LucideIcons[name] || LucideIcons.MapPin

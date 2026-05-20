@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Expand, Play, X } from 'lucide-react'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
 export default function PlaceGallery({ images = [], videoUrl }) {
