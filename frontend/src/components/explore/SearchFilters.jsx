@@ -1,4 +1,4 @@
-import { Grid3X3, Map, SlidersHorizontal } from 'lucide-react'
+import { LayoutGrid, MapPin, SlidersHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import {
@@ -67,24 +67,24 @@ export default function SearchFilters({
                 type="button"
                 onClick={() => setExploreViewMode('grid')}
                 className={cn(
-                  'rounded-lg py-2 px-3 transition-colors',
+                  'rounded-lg py-1 px-3 transition-colors',
                   exploreViewMode === 'grid' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
                 )}
                 aria-label="Grid view"
               >
-                <Grid3X3 className="h-4 w-4" />
+                <LayoutGrid className="h-4 w-4" />
               </button>
               <button
                 title='Map view'
                 type="button"
                 onClick={() => setExploreViewMode('map')}
                 className={cn(
-                  'rounded-lg py-2 px-3 transition-colors',
+                  'rounded-lg py-1 px-3 transition-colors',
                   exploreViewMode === 'map' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
                 )}
                 aria-label="Map view"
               >
-                <Map className="h-4 w-4" />
+                <MapPin className="h-4 w-4" />
               </button>
             </div>
           </div>

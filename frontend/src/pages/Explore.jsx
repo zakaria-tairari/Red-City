@@ -77,9 +77,9 @@ export default function Explore() {
 
       <div className="mx-auto">
         {exploreViewMode === "map" ? (
-          <div className="flex gap-4 mt-18">
-            {/* LEFT: LIST */}
-            <div className="w-95 pl-5 pt-5">
+          <div className="flex mt-18">
+
+            <div className="w-110 px-5 pt-6 border-r border-stone-200">
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-stone-500">
                   {isLoading
@@ -89,7 +89,7 @@ export default function Explore() {
                 </p>
               </div>
 
-              <div className="h-[calc(100vh-200px)] overflow-y-auto">
+              <div className="h-[calc(100vh-200px)] overflow-y-auto scrollbar-hide">
                 <div className="pb-20 space-y-3 pr-2">
                   {isLoading
                     ? Array.from({ length: 6 }).map((_, i) => (
@@ -102,7 +102,6 @@ export default function Explore() {
               </div>
             </div>
 
-            {/* RIGHT: MAP */}
             <div className="flex-1">
               <PlacesMap
                 places={data?.items ?? []}

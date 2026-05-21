@@ -8,7 +8,7 @@ export default function AuthLayout() {
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="hidden lg:relative lg:block overflow-hidden">
         <img src={AUTH_IMAGE} alt="Marrakech" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-linear-to-b from-primary-500/10 via-stone-50/20 to-stone-900/60" />
+        <div className="absolute inset-0 bg-linear-to-b from-stone-50/10 via-stone-50/25 to-stone-900/60" />
         <div className="relative z-10 flex h-full flex-col justify-between p-12 text-white">
           <Link to="/" className="inline-flex items-center gap-2">
             <span className="font-display text-2xl font-bold">Red City</span>

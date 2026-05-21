@@ -51,10 +51,9 @@ export default function Header() {
               <Heart className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/dashboard">
-              <User className="h-4 w-4" />
-              Dashboard
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/dashboard" aria-label="Favorites">
+              <User className="h-5 w-5" />
             </Link>
           </Button>
           <Button variant="ghost" asChild>
