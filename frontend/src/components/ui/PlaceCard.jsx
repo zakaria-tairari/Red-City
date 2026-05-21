@@ -5,7 +5,7 @@ import { cn, formatReviewCount } from '@/lib/utils'
 import { CATEGORY_MAP } from '@/data/categories'
 
 export function PlaceCard({ place, variant = 'default', className, onMouseEnter, onMouseLeave }) {
-  const category = CATEGORY_MAP[place.category]
+  const category = place.category;
 
   if (variant === 'featured') {
     return (
@@ -17,7 +17,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
       >
         <Link to={`/places/${place.id}`} className="block h-full">
           <img
-            src={place.images[0]}
+            src={place.cover?.app_url || place.cover?.original_url}
             alt={place.name}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
@@ -50,7 +50,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
       >
         <Link to={`/places/${place.id}`} className="block h-full">
           <img
-            src={place.images[0]}
+            src={place.cover?.app_url || place.cover?.original_url}
             alt={place.name}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -79,7 +79,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
       <Link to={`/places/${place.id}`}>
         <div className="relative aspect-3/4 overflow-hidden">
           <img
-            src={place.images[0]}
+            src={place.cover?.app_url || place.cover?.original_url}
             alt={place.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -110,12 +110,12 @@ function PlaceMeta({ place, light = false, compact = false }) {
     <div className={cn('mt-2 flex flex-wrap items-center gap-2 text-sm', textClass, compact && 'mt-1 text-xs')}>
       <span className="inline-flex items-center gap-1">
         <Star className={cn('h-3.5 w-3.5', light ? 'fill-amber-400 text-amber-400' : 'fill-amber-500 text-amber-500')} />
-        <span className={cn('font-semibold', light ? 'text-white' : 'text-stone-800')}>{place.rating}</span>
+        <span className={cn('font-semibold', light ? 'text-white' : 'text-stone-800')}>4.5</span>
       </span>
-      <span>({formatReviewCount(place.reviewCount)} reviews)</span>
+      <span>1.2k</span>
       <span className="inline-flex items-center gap-1">
         <MapPin className="h-3 w-3 shrink-0" />
-        {place.location}
+        {place.area}
       </span>
     </div>
   )

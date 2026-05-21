@@ -1,24 +1,5 @@
 import api from '@/lib/api'
 
-/**
- * Places API Service
- * Reusable functions to fetch and filter places from the backend API.
- * URLs are configured as placeholders; adjust to match your backend routing.
- */
-
-/**
- * Fetch and filter places based on queries, categories, rating, distance, etc.
- * @param {Object} params
- * @param {string} [params.query] - Search keyword
- * @param {string} [params.category] - Category identifier
- * @param {number} [params.minRating] - Filter by minimum stars rating (0 to 5)
- * @param {string} [params.sortBy] - Sort field ('rating', 'reviews', 'distance', 'name')
- * @param {number} [params.page] - Page number for pagination
- * @param {number} [params.limit] - Number of items per page
- * @param {number} [params.userLat] - Current user latitude for distance sorting
- * @param {number} [params.userLng] - Current user longitude for distance sorting
- * @returns {Promise<Object>} Object containing { items, total, page, totalPages, hasMore }
- */
 export async function getPlaces({
   query = '',
   category = '',
@@ -42,6 +23,21 @@ export async function getPlaces({
     },
   })
   return response.data
+}
+
+export async function fetchPlacesByCategory(categoryId, count = 10) {
+  const response = await api.get("/api/places", {
+    params: {
+      category: categoryId,
+      count,
+    }
+  });
+  return response.data;
+}
+
+export async function fetchFeaturedPlaces() {
+  const response = await api.get("/api/places/featured");
+  return response.data;
 }
 
 /**

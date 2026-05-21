@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
-import { fetchCategoryPlaces } from '@/services/placesService'
+import { fetchPlacesByCategory } from '@/services/places'
 import { PlaceCard } from '@/components/ui/PlaceCard'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function CategorySection({ category }) {
   const { data: places, isLoading } = useQuery({
     queryKey: ['category-places', category.id],
-    queryFn: () => fetchCategoryPlaces(category.id, 10),
+    queryFn: () => fetchPlacesByCategory(category.id, 10),
   })
 
   return (
@@ -22,7 +22,6 @@ export default function CategorySection({ category }) {
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">
                 {category.name}
               </h2>
-              <p className="mt-1 text-stone-500 max-w-xl">{category.description}</p>
             </div>
           </div>
           <Link

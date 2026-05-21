@@ -1,17 +1,16 @@
-import { useQuery } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
-import { fetchFeaturedPlaces } from '@/services/placesService'
-import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Skeleton } from '@/components/ui/Skeleton'
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { fetchFeaturedPlaces } from "@/services/places";
+import { PlaceCard } from "@/components/ui/PlaceCard";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function FeaturedPlaces() {
   const { data: places, isLoading } = useQuery({
-    queryKey: ['featured-places'],
+    queryKey: ["featured-places"],
     queryFn: fetchFeaturedPlaces,
-  })
-
+  });
   return (
     <section className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -20,7 +19,7 @@ export default function FeaturedPlaces() {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-stone-900">
               Featured Places
             </h2>
-            <p className="mt-2 text-stone-500 max-w-lg">
+            <p className="mt-2 text-stone-500 max-w-xl">
               The highest-rated experiences in Marrakech, loved by travelers worldwide.
             </p>
           </div>
@@ -45,7 +44,7 @@ export default function FeaturedPlaces() {
             className="grid gap-6 grid-cols-2 lg:grid-cols-4"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
+            viewport={{ once: true, margin: "-50px" }}
             variants={{
               hidden: {},
               visible: { transition: { staggerChildren: 0.1 } },
@@ -58,14 +57,18 @@ export default function FeaturedPlaces() {
                   hidden: { opacity: 0, y: 24 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                className={i === 0 ? 'col-span-2 md:row-span-2' : ''}
+                className={i === 0 ? "col-span-2 md:row-span-2" : ""}
               >
-                <PlaceCard place={place} variant="featured" className={i === 0 ? 'h-150 md:h-full min-h-105' : 'h-90'} />
+                <PlaceCard
+                  place={place}
+                  variant="featured"
+                  className={i === 0 ? "h-150 md:h-full min-h-105" : "h-90"}
+                />
               </motion.div>
             ))}
           </motion.div>
         )}
       </div>
     </section>
-  )
+  );
 }
