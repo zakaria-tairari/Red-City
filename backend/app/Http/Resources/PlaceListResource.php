@@ -21,7 +21,7 @@ class PlaceListResource extends JsonResource
             'area' => $this->area,
             'lat' => $this->lat,
             'lon' => $this->lon,
-            'cover' => MediaResource::collection($this->media->where('position', 0)->take(1)),
+            'cover' => new MediaResource($this->media->where('position', 0)->first()),
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'translations' => TranslationResource::collection($this->whenLoaded('translations')),

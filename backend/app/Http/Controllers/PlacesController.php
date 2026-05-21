@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\PlaceListResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,28 +22,46 @@ class PlacesController extends Controller
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
             }
-    
-            if ($request->filled('search')) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('summary', 'like', "%{$request->search}%")
-                    ->orWhere('description', 'like', "%{$request->search}%");
-                });
+
+            if ($request->filled('count')) {
+                $query->limit($request->count);
             }
 
-            return $query->get()->toArray();
+            return serialize($query->get());
         });
 
-        return ApiResponse::success('Places retreived successfully', $places);
+        return ApiResponse::success(
+            'Places retreived successfully', 
+            PlaceListResource::collection(unserialize($places)),
+        );
     }
 
     public function show(int $id) {
         $cacheKey = 'place_' . $id;
 
         $place = Cache::remember($cacheKey, 3600, function () use ($id) {
-            return Place::with('category', 'media', 'tags')->findOrFail($id)->toArray();
+            $query = Place::with('category', 'media', 'tags')->findOrFail($id);
+            return serialize($query);
         });
 
-        return ApiResponse::success("Place $id retreived successfully", $place);
+        return ApiResponse::success(
+            "Place $id retreived successfully", 
+            new PlaceListResource(unserialize($place)),
+        );
+    }
+
+    public function featured() {
+        $places = Cache::remember('featured_places', 3600, function () {
+            $query = 
+            Place::with('category', 'media', 'tags')
+                ->limit(5);
+
+            return serialize($query->get());
+        });
+
+        return ApiResponse::success(
+            'Places retreived successfully', 
+            PlaceListResource::collection(unserialize($places)),
+        );
     }
 }

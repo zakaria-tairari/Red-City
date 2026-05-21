@@ -28,7 +28,7 @@ class PlaceResource extends JsonResource
             'summary' => $this->summary,
             'description' => $this->description,
             'media' => [
-                'cover' => MediaResource::collection($this->media->where('position', 0)->take(1)),
+                'cover' => new MediaResource($this->media->where('position', 0)->first()),
                 'images' => MediaResource::collection($this->media->where('type', 'image')->where('position', '>', 0)),
                 'videos' => MediaResource::collection($this->media->where('type', 'videos')),
             ],

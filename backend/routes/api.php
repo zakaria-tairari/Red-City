@@ -14,6 +14,7 @@ Route::prefix('categories')->controller(CategoriesController::class)->group( fun
 
 Route::prefix('places')->controller(PlacesController::class)->group( function () {
     Route::get('/', 'index');
+    Route::get('/featured', 'featured');
     Route::get('/{id}', 'show');
 });
 
