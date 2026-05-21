@@ -14,7 +14,7 @@ export default function AuthLayout() {
             <span className="font-display text-2xl font-bold">Red City</span>
           </Link>
           <div>
-            <h2 className="font-display text-4xl font-bold leading-tight">
+            <h2 className="font-display text-[2.5rem] font-bold leading-tight">
               Your journey through Marrakech starts here
             </h2>
             <p className="mt-4 text-lg text-white/80 max-w-md">

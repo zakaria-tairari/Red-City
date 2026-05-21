@@ -9,7 +9,7 @@ export function PlaceMapPopup({ place, onClose }) {
 
   return (
     <article className="w-full overflow-hidden bg-white">
-      <div className="relative aspect-3/4 overflow-hidden">
+      <div className="relative aspect-9/10 overflow-hidden">
         <img
           src={place.images[0]}
           alt={place.name}

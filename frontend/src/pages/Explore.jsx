@@ -1,102 +1,132 @@
-import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { useQuery, keepPreviousData } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { searchPlaces } from '@/services/placesService'
-import SearchFilters from '@/components/explore/SearchFilters'
-import ExploreListItem from '@/components/explore/ExploreListItem'
-import { PlaceCard } from '@/components/ui/PlaceCard'
-import { Skeleton } from '@/components/ui/Skeleton'
-import { Button } from '@/components/ui/Button'
-import PlacesMap from '@/components/map/PlacesMap'
-import { useDebounce } from '@/hooks/useDebounce'
-import { useUIStore } from '@/store/useUIStore'
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { searchPlaces } from "@/services/placesService";
+import SearchFilters from "@/components/explore/SearchFilters";
+import ExploreListItem from "@/components/explore/ExploreListItem";
+import { PlaceCard } from "@/components/ui/PlaceCard";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Button } from "@/components/ui/Button";
+import PlacesMap from "@/components/map/PlacesMap";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useUIStore } from "@/store/useUIStore";
 
 export default function Explore() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { exploreViewMode } = useUIStore()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { exploreViewMode } = useUIStore();
 
-  const [query, setQuery] = useState(searchParams.get('q') || '')
-  const [category, setCategory] = useState(searchParams.get('category') || '')
-  const [minRating, setMinRating] = useState(Number(searchParams.get('rating') || 0))
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'rating')
-  const [page, setPage] = useState(1)
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [category, setCategory] = useState(searchParams.get("category") || "");
+  const [minRating, setMinRating] = useState(
+    Number(searchParams.get("rating") || 0),
+  );
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "rating");
+  const [page, setPage] = useState(1);
 
-  const debouncedQuery = useDebounce(query, 400)
+  const debouncedQuery = useDebounce(query, 400);
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ['search', debouncedQuery, category, minRating, sortBy, page],
+    queryKey: ["search", debouncedQuery, category, minRating, sortBy, page],
     queryFn: () =>
-      searchPlaces({ query: debouncedQuery, category, minRating, sortBy, page }),
+      searchPlaces({
+        query: debouncedQuery,
+        category,
+        minRating,
+        sortBy,
+        page,
+      }),
     placeholderData: keepPreviousData,
-  })
+  });
 
-  const updateFilters = (updates) => {
-    const params = new URLSearchParams(searchParams)
+  const updateFilters = updates => {
+    const params = new URLSearchParams(searchParams);
     Object.entries(updates).forEach(([k, v]) => {
-      if (v) params.set(k, v)
-      else params.delete(k)
-    })
-    setSearchParams(params)
-    setPage(1)
-  }
+      if (v) params.set(k, v);
+      else params.delete(k);
+    });
+    setSearchParams(params);
+    setPage(1);
+  };
 
   return (
-    <motion.div className="min-h-screen py-16 mt-20">
+    <motion.div className="min-h-screen pt-16">
       <SearchFilters
         query={query}
-        onQueryChange={(v) => {
-          setQuery(v)
-          updateFilters({ q: v })
+        onQueryChange={v => {
+          setQuery(v);
+          updateFilters({ q: v });
         }}
         category={category}
-        onCategoryChange={(v) => {
-          setCategory(v)
-          updateFilters({ category: v })
+        onCategoryChange={v => {
+          setCategory(v);
+          updateFilters({ category: v });
         }}
         minRating={minRating}
-        onMinRatingChange={(v) => {
-          setMinRating(v)
-          updateFilters({ rating: v || '' })
+        onMinRatingChange={v => {
+          setMinRating(v);
+          updateFilters({ rating: v || "" });
         }}
         sortBy={sortBy}
-        onSortByChange={(v) => {
-          setSortBy(v)
-          updateFilters({ sort: v })
+        onSortByChange={v => {
+          setSortBy(v);
+          updateFilters({ sort: v });
         }}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-stone-500">
-            {isLoading ? 'Searching...' : `${data?.total ?? 0} places found`}
-            {isFetching && !isLoading && ' · Updating...'}
-          </p>
-        </div>
+      <div className="mx-auto">
+        {exploreViewMode === "map" ? (
+          <div className="flex gap-4 mt-18">
+            {/* LEFT: LIST */}
+            <div className="w-95 pl-5 pt-5">
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm text-stone-500">
+                  {isLoading
+                    ? "Searching..."
+                    : `${data?.total ?? 0} places found`}
+                  {isFetching && !isLoading && " · Updating..."}
+                </p>
+              </div>
 
-        {exploreViewMode === 'map' ? (
-          <div className="grid h-[calc(100vh-220px)] min-h-125 gap-4 lg:grid-cols-10">
-            <div className="overflow-y-auto pb-20 space-y-3 pr-2 col-span-3">
-              {isLoading
-                ? Array.from({ length: 6 }).map((_, i) => (
-                    <Skeleton key={i} className="h-28 w-full rounded-xl" />
-                  ))
-                : data?.items.map((place) => (
-                    <ExploreListItem key={place.id} place={place} />
-                  ))}
+              <div className="h-[calc(100vh-200px)] overflow-y-auto">
+                <div className="pb-20 space-y-3 pr-2">
+                  {isLoading
+                    ? Array.from({ length: 6 }).map((_, i) => (
+                        <Skeleton key={i} className="h-28 w-full rounded-xl" />
+                      ))
+                    : data?.items.map(place => (
+                        <ExploreListItem key={place.id} place={place} />
+                      ))}
+                </div>
+              </div>
             </div>
-            <PlacesMap
-              places={data?.items ?? []}
-              className="sticky top-36 h-full col-span-7"
-            />
+
+            {/* RIGHT: MAP */}
+            <div className="flex-1">
+              <PlacesMap
+                places={data?.items ?? []}
+                className="w-full h-full"
+              />
+            </div>
           </div>
         ) : (
-          <>
+          <div className="max-w-7xl mx-auto mt-23 pb-12">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm text-stone-500">
+                {isLoading
+                  ? "Searching..."
+                  : `${data?.total ?? 0} places found`}
+                {isFetching && !isLoading && " · Updating..."}
+              </p>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {isLoading
                 ? Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} className="aspect-4/3 w-full rounded-2xl" />
+                    <Skeleton
+                      key={i}
+                      className="aspect-4/3 w-full rounded-2xl"
+                    />
                   ))
                 : data?.items.map((place, i) => (
                     <motion.div
@@ -116,7 +146,7 @@ export default function Explore() {
                   variant="outline"
                   size="icon"
                   disabled={page <= 1}
-                  onClick={() => setPage((p) => p - 1)}
+                  onClick={() => setPage(p => p - 1)}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -127,22 +157,24 @@ export default function Explore() {
                   variant="outline"
                   size="icon"
                   disabled={!data.hasMore}
-                  onClick={() => setPage((p) => p + 1)}
+                  onClick={() => setPage(p => p + 1)}
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             )}
-          </>
+          </div>
         )}
 
         {!isLoading && data?.items.length === 0 && (
           <div className="py-20 text-center">
             <p className="font-serif text-xl text-stone-600">No places found</p>
-            <p className="mt-2 text-stone-400">Try adjusting your filters or search term.</p>
+            <p className="mt-2 text-stone-400">
+              Try adjusting your filters or search term.
+            </p>
           </div>
         )}
       </div>
     </motion.div>
-  )
+  );
 }

@@ -34,15 +34,15 @@ export default function FeaturedPlaces() {
 
         {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-[420px] md:col-span-2 lg:row-span-2" />
-            <Skeleton className="h-[200px]" />
-            <Skeleton className="h-[200px]" />
-            <Skeleton className="h-[200px]" />
-            <Skeleton className="h-[200px]" />
+            <Skeleton className="h-105 col-span-2 lg:row-span-2" />
+            <Skeleton className="h-50" />
+            <Skeleton className="h-50" />
+            <Skeleton className="h-50" />
+            <Skeleton className="h-50" />
           </div>
         ) : (
           <motion.div
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+            className="grid gap-6 grid-cols-2 lg:grid-cols-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
@@ -58,9 +58,9 @@ export default function FeaturedPlaces() {
                   hidden: { opacity: 0, y: 24 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                className={i === 0 ? 'md:col-span-2 md:row-span-2' : ''}
+                className={i === 0 ? 'col-span-2 md:row-span-2' : ''}
               >
-                <PlaceCard place={place} variant="featured" className={i === 0 ? 'h-[520px] md:h-full min-h-[420px]' : 'h-[280px]'} />
+                <PlaceCard place={place} variant="featured" className={i === 0 ? 'h-150 md:h-full min-h-105' : 'h-90'} />
               </motion.div>
             ))}
           </motion.div>

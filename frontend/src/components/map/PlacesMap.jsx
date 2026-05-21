@@ -46,7 +46,7 @@ function FocusSelectedPlace({ places, selectedPlaceId }) {
     const place = places.find((p) => p.id === selectedPlaceId)
     if (!place) return
 
-    map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 15), {
+    map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 18), {
       animate: true,
       duration: 0.4,
     })
@@ -89,7 +89,7 @@ function PlaceMarker({ place, isSelected }) {
         maxWidth={300}
         closeButton={false}
         autoPan
-        offset={[4, -6]}
+        offset={[4, -4]}
       >
         <PlaceMapPopup
           place={place}
@@ -106,10 +106,10 @@ export default function PlacesMap({ places, className }) {
   return (
     <MapContainer
       center={MARRAKECH_CENTER}
-      zoom={13}
-      minZoom={10}
+      zoom={14}
+      minZoom={13}
       zoomControl={false}
-      className={cn('h-full min-h-[400px] w-full rounded-xl', className)}
+      className={cn('h-full min-h-100 w-full', className)}
     >
       <TileLayer
         attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'

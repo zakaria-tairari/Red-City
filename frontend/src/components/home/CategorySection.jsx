@@ -14,7 +14,7 @@ export default function CategorySection({ category }) {
   })
 
   return (
-    <section className="py-16 border-b border-stone-100 last:border-0">
+    <section className="py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-start justify-between gap-4 mb-8">
           <div className="flex items-start gap-4">

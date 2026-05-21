@@ -42,10 +42,10 @@ function ToastItem({ notification, onClose }) {
   }
 
   const borders = {
-    success: 'border-emerald-100 shadow-emerald-100',
-    error: 'border-red-100 shadow-red-100',
-    warning: 'border-amber-100 shadow-amber-100',
-    info: 'border-sky-100 shadow-sky-100',
+    success: 'border-emerald-100',
+    error: 'border-red-100',
+    warning: 'border-amber-100',
+    info: 'border-sky-100',
   }
 
   return (

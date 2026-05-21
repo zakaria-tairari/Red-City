@@ -26,32 +26,29 @@ export default function HeroSection() {
 
   return (
     <section className="flex items-center justify-center bg-white">
-      <div className=" mx-auto max-w-3xl text-center px-4 mt-40 sm:px-6 lg:px-8 w-full">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+      <div className=" mx-auto max-w-3xl text-center px-4 mt-35 sm:px-6 lg:px-8 w-full">
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.7 }}
+          transition={{ duration: 0.7 }}
           className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-stone-800 max-w-4xl leading-tight text-balance"
         >
           Discover the Soul of{' '}
           <span className="text-primary-500">Marrakech</span>
         </motion.h1>
 
-        <motion.p
+        <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="my-10 text-lg text-stone-500"
         >
           Explore Red City like never before — curated places, honest reviews, and intelligent
           recommendations for your perfect trip.
         </motion.p>
 
-        <motion.form
+        <form
           onSubmit={handleSearch}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65 }}
           className="mt-10 flex mx-auto max-w-2xl flex-col gap-3 sm:flex-row transition-all duration-300"
         >
           <div className="relative flex-1">
@@ -63,14 +60,9 @@ export default function HeroSection() {
               className="h-14 pl-12 rounded-2xl bg-white/95 text-stone-900 shadow-md text-base"
             />
           </div>
-        </motion.form>
+        </form>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="mt-12 flex flex-wrap gap-4 items-center justify-center"
-        >
+        <div className="mt-12 flex flex-wrap gap-4 items-center justify-center">
           <Button size="lg" asChild>
             <Link to="/explore">Start Exploring</Link>
           </Button>
@@ -81,7 +73,7 @@ export default function HeroSection() {
           >
             <Link to="/register">Create Account</Link>
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

@@ -22,13 +22,13 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
-          <div className="absolute bg-linear-to-t from-black/80 via-black/30 to-transparent bottom-0 left-0 right-0 h-2/3 p-4 flex flex-col justify-end text-white">
+          <div className="absolute bg-linear-to-t from-black/80 via-black/30 to-transparent bottom-0 left-0 right-0 h-1/2 p-4 flex flex-col justify-end text-white">
             {category && (
               <span className="mb-2 w-fit rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur-sm">
                 {category.name}
               </span>
             )}
-            <h3 className="font-serif text-2xl font-bold md:text-3xl">{place.name}</h3>
+            <h3 className="font-serif text-xl font-bold md:text-2xl">{place.name}</h3>
             <PlaceMeta place={place} light />
           </div>
           <div className="pointer-events-none absolute inset-0 rounded-3xl ring-0 ring-primary-400/0 transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(229,57,34,0.35)] group-hover:ring-2 group-hover:ring-primary-400/50" />
