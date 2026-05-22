@@ -25,11 +25,18 @@ export async function getPlaces({
   return response.data
 }
 
-export async function fetchPlacesByCategory(categoryId, count = 10) {
+export async function fetchPlaces(params) {
+  const response = await api.get("/api/places", {
+    params,
+  })
+  return response.data;
+}
+
+export async function fetchPlacesByCategory(categoryId, limit = 10) {
   const response = await api.get("/api/places", {
     params: {
       category: categoryId,
-      count,
+      limit,
     }
   });
   return response.data;

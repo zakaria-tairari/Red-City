@@ -1,16 +1,19 @@
-import { LayoutGrid, MapPin, SlidersHorizontal } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { LayoutGrid, MapPin, SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select'
-import { CATEGORIES } from '@/data/categories'
-import { cn } from '@/lib/utils'
-import { useUIStore } from '@/store/useUIStore'
+} from "@/components/ui/Select";
+import { CATEGORIES } from "@/data/categories";
+import { cn } from "@/lib/utils";
+import { useUIStore } from "@/store/useUIStore";
+import { fetchCategories } from "@/services/categories";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 export default function SearchFilters({
   query,
@@ -20,7 +23,13 @@ export default function SearchFilters({
   sortBy,
   onSortByChange,
 }) {
-  const { exploreViewMode, setExploreViewMode } = useUIStore()
+  const { t } = useTranslation();
+  const { exploreViewMode, setExploreViewMode } = useUIStore();
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
 
   return (
     <div className="fixed top-16 z-40 border-b w-full border-stone-100 bg-white">
@@ -29,7 +38,7 @@ export default function SearchFilters({
           <div className="relative flex-1">
             <Input
               value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
+              onChange={e => onQueryChange(e.target.value)}
               placeholder="Search places in Marrakech..."
               className="pl-10"
             />
@@ -37,14 +46,19 @@ export default function SearchFilters({
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Select value={category || 'all'} onValueChange={(v) => onCategoryChange(v === 'all' ? '' : v)}>
+            <Select
+              value={category || "all"}
+              onValueChange={v => onCategoryChange(v === "all" ? "" : v)}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All categories</SelectItem>
-                {CATEGORIES.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                {categories?.map(c => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {t(`categories.${c.code}`)}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -65,22 +79,26 @@ export default function SearchFilters({
               <button
                 title="Grid view"
                 type="button"
-                onClick={() => setExploreViewMode('grid')}
+                onClick={() => setExploreViewMode("grid")}
                 className={cn(
-                  'rounded-lg py-1 px-3 transition-colors',
-                  exploreViewMode === 'grid' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
+                  "rounded-lg py-1 px-3 transition-colors",
+                  exploreViewMode === "grid"
+                    ? "bg-primary-600 text-white"
+                    : "text-stone-500 hover:bg-stone-50",
                 )}
                 aria-label="Grid view"
               >
                 <LayoutGrid className="h-4 w-4" />
               </button>
               <button
-                title='Map view'
+                title="Map view"
                 type="button"
-                onClick={() => setExploreViewMode('map')}
+                onClick={() => setExploreViewMode("map")}
                 className={cn(
-                  'rounded-lg py-1 px-3 transition-colors',
-                  exploreViewMode === 'map' ? 'bg-primary-600 text-white' : 'text-stone-500 hover:bg-stone-50'
+                  "rounded-lg py-1 px-3 transition-colors",
+                  exploreViewMode === "map"
+                    ? "bg-primary-600 text-white"
+                    : "text-stone-500 hover:bg-stone-50",
                 )}
                 aria-label="Map view"
               >
@@ -91,5 +109,5 @@ export default function SearchFilters({
         </div>
       </div>
     </div>
-  )
+  );
 }

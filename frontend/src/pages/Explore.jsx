@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { searchPlaces } from "@/services/placesService";
+import { fetchPlaces } from "@/services/places";
 import SearchFilters from "@/components/explore/SearchFilters";
 import ExploreListItem from "@/components/explore/ExploreListItem";
 import { PlaceCard } from "@/components/ui/PlaceCard";
@@ -19,35 +19,30 @@ export default function Explore() {
 
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [minRating, setMinRating] = useState(
-    Number(searchParams.get("rating") || 0),
-  );
-  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "rating");
-  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
 
   const debouncedQuery = useDebounce(query, 400);
 
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["search", debouncedQuery, category, minRating, sortBy, page],
+  const { data: places, isLoading, isFetching } = useQuery({
+    queryKey: ["places", debouncedQuery, category, sortBy],
     queryFn: () =>
-      searchPlaces({
+      fetchPlaces({
         query: debouncedQuery,
         category,
-        minRating,
         sortBy,
-        page,
       }),
     placeholderData: keepPreviousData,
   });
 
   const updateFilters = updates => {
     const params = new URLSearchParams(searchParams);
+
     Object.entries(updates).forEach(([k, v]) => {
       if (v) params.set(k, v);
       else params.delete(k);
     });
+    
     setSearchParams(params);
-    setPage(1);
   };
 
   return (
@@ -62,11 +57,6 @@ export default function Explore() {
         onCategoryChange={v => {
           setCategory(v);
           updateFilters({ category: v });
-        }}
-        minRating={minRating}
-        onMinRatingChange={v => {
-          setMinRating(v);
-          updateFilters({ rating: v || "" });
         }}
         sortBy={sortBy}
         onSortByChange={v => {
@@ -84,7 +74,7 @@ export default function Explore() {
                 <p className="text-sm text-stone-500">
                   {isLoading
                     ? "Searching..."
-                    : `${data?.total ?? 0} places found`}
+                    : `${places?.total ?? 0} places found`}
                   {isFetching && !isLoading && " · Updating..."}
                 </p>
               </div>
@@ -95,7 +85,7 @@ export default function Explore() {
                     ? Array.from({ length: 6 }).map((_, i) => (
                         <Skeleton key={i} className="h-28 w-full rounded-xl" />
                       ))
-                    : data?.items.map(place => (
+                    : places?.map(place => (
                         <ExploreListItem key={place.id} place={place} />
                       ))}
                 </div>
@@ -104,7 +94,7 @@ export default function Explore() {
 
             <div className="flex-1">
               <PlacesMap
-                places={data?.items ?? []}
+                places={places ?? []}
                 className="w-full h-full"
               />
             </div>
@@ -115,7 +105,7 @@ export default function Explore() {
               <p className="text-sm text-stone-500">
                 {isLoading
                   ? "Searching..."
-                  : `${data?.total ?? 0} places found`}
+                  : `${places?.total ?? 0} places found`}
                 {isFetching && !isLoading && " · Updating..."}
               </p>
             </div>
@@ -127,7 +117,7 @@ export default function Explore() {
                       className="aspect-4/3 w-full rounded-2xl"
                     />
                   ))
-                : data?.items.map((place, i) => (
+                : places?.map((place, i) => (
                     <motion.div
                       key={place.id}
                       initial={{ opacity: 0, y: 16 }}
@@ -138,34 +128,10 @@ export default function Explore() {
                     </motion.div>
                   ))}
             </div>
-
-            {data && data.totalPages > 1 && (
-              <div className="mt-10 flex items-center justify-center gap-4">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={page <= 1}
-                  onClick={() => setPage(p => p - 1)}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm text-stone-600">
-                  Page {page} of {data.totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={!data.hasMore}
-                  onClick={() => setPage(p => p + 1)}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
           </div>
         )}
 
-        {!isLoading && data?.items.length === 0 && (
+        {!isLoading && places?.length === 0 && (
           <div className="py-20 text-center">
             <p className="font-serif text-xl text-stone-600">No places found</p>
             <p className="mt-2 text-stone-400">
