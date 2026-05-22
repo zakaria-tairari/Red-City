@@ -13,7 +13,8 @@ class PlacesController extends Controller
     public function index(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
             'category' => $request->category,
-            'search' => $request->search,
+            'q' => $request->q,
+            'sortBy' => $request->sortBy,
         ]));
 
         $places = Cache::remember($cacheKey, 3600, function () use ($request) {
@@ -23,9 +24,32 @@ class PlacesController extends Controller
                 $query->where('category_id', $request->category);
             }
 
-            if ($request->filled('count')) {
-                $query->limit($request->count);
+            if ($request->filled('q')) {
+                $query->where('name', 'LIKE', "%{$request->q}%");
             }
+
+            if ($request->filled('sortBy')) {
+                switch ($request->sortBy) {
+                    case 'rating':
+                        $query->orderByDesc('rating');
+                        break;
+
+                    case 'reviews':
+                        $query->orderByDesc('review_count');
+                        break;
+
+                    case 'name':
+                        $query->orderBy('name');
+                        break;
+                    
+                    default:
+                        $query->latest('created_at');
+                        break;
+                }
+            }
+
+            $limit = $request->limit ?? 12;
+            $query->limit($limit);
 
             return serialize($query->get());
         });
