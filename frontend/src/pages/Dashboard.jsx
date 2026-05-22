@@ -29,7 +29,7 @@ export default function Dashboard() {
           </div>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/dashboard/favorites" className="gap-1.5">
-              View all <ArrowRight className="h-4 w-4" />
+              Afficher tout <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </CardHeader>

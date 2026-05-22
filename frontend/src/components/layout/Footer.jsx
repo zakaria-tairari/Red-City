@@ -5,12 +5,15 @@ import { Input } from '@/components/ui/Input'
 import { CATEGORIES } from '@/data/categories'
 import { useUIStore } from '@/store/useUIStore'
 import { FaInstagram, FaFacebook, FaXTwitter, FaYoutube } from "react-icons/fa6"
+import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
+import { fetchCategories } from '@/services/categories'
 
 const quickLinks = [
-  { label: 'Explore', to: '/explore' },
-  { label: 'About Marrakech', to: '/explore?category=arts-culture' },
-  { label: 'Sign in', to: '/login' },
-  { label: 'Create account', to: '/register' },
+  { label: 'common.home', to: '/'},
+  { label: 'common.exploreLink', to: '/explore' },
+  { label: 'auth.login', to: '/login' },
+  { label: 'auth.register', to: '/register' },
   { label: 'My favorites', to: '/dashboard/favorites' },
 ]
 
@@ -22,6 +25,13 @@ const socialLinks = [
 ]
 
 export default function Footer() {
+  const { t } = useTranslation();
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+
   return (
     <footer className="border-t border-stone-200 bg-stone-900 text-stone-300">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -33,8 +43,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-stone-400">
-              Your intelligent guide to Marrakech — discover hidden riads, world-class dining,
-              desert adventures, and the soul of the Red City.
+              {t("footer.text")}
             </p>
             <div className="mt-6 flex gap-3">
               {socialLinks.map(({ icon: Icon, href, label }) => (
@@ -58,7 +67,7 @@ export default function Footer() {
               {quickLinks.map((link) => (
                 <li key={link.to}>
                   <Link to={link.to} className="text-sm hover:text-primary-400 transition-colors">
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -70,13 +79,13 @@ export default function Footer() {
               Categories
             </h4>
             <ul className="mt-4 space-y-2">
-              {CATEGORIES.slice(0, 6).map((cat) => (
+              {categories?.slice(0, 6).map((cat) => (
                 <li key={cat.id}>
                   <Link
                     to={`/explore?category=${cat.id}`}
                     className="text-sm hover:text-primary-400 transition-colors"
                   >
-                    {cat.name}
+                    {t(`categories.${cat.code}`)}
                   </Link>
                 </li>
               ))}
@@ -88,7 +97,7 @@ export default function Footer() {
               Newsletter
             </h4>
             <p className="mt-4 text-sm text-stone-400">
-              Get curated Marrakech tips and exclusive offers.
+              {t("footer.newsLetter")}
             </p>
             <form
               className="mt-4 flex gap-2"

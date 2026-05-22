@@ -5,8 +5,11 @@ import { ArrowRight } from "lucide-react";
 import { fetchFeaturedPlaces } from "@/services/places";
 import { PlaceCard } from "@/components/ui/PlaceCard";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useTranslation } from "react-i18next";
 
 export default function FeaturedPlaces() {
+  const { t } = useTranslation();
+
   const { data: places, isLoading } = useQuery({
     queryKey: ["featured-places"],
     queryFn: fetchFeaturedPlaces,
@@ -17,17 +20,17 @@ export default function FeaturedPlaces() {
         <div className="flex items-end justify-between gap-4 mb-10">
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-stone-900">
-              Featured Places
+              {t("featured.title")}
             </h2>
-            <p className="mt-2 text-stone-500 max-w-xl">
-              The highest-rated experiences in Marrakech, loved by travelers worldwide.
+            <p className="mt-2 text-stone-500 max-w-xl text-balance">
+              {t("featured.text")}
             </p>
           </div>
           <Link
             to="/explore?sort=rating"
             className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
           >
-            View all <ArrowRight className="h-4 w-4" />
+            {t("common.viewAll")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 

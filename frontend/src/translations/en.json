@@ -1,0 +1,45 @@
+{
+    "hero": {
+        "title": "Discover the soul of <1>Marrakesh</1>",
+        "text": "Explore Red City like never before : curated places, honest reviews, and intelligent recommendations for your perfect trip.",
+        "cardText": "Marrakesh is not a city that you visit, It's a <1>world</1> you feel."
+    },
+
+    "featured": {
+        "title": "Featured Places",
+        "text": "The top-rated experiences in Marrakech, loved by travelers from all over the world."
+    },
+
+    "categories": {
+        "bars-nightlife": "Bars & Clubs",
+        "restaurants": "Restaurants",
+        "activites": "Activities",
+        "shopping": "Shopping",
+        "arts-culture": "Arts & Culture",
+        "spas": "Spas",
+        "hotels": "Hotels & Accommodations",
+        "hotelsShort": "Hotels",
+        "cafes": "Cafes"
+    },
+
+    "auth": {
+        "createAccount": "Create Account",
+        "login": "Sign in",
+        "logout": "Log out",
+        "register": "Register"
+    },
+
+    "common": {
+        "home": "Home",
+        "exploreBtn": "Start Exploring",
+        "exploreLink": "Explore",
+        "viewAll": "View all"
+    },
+
+    "footer": {
+        "text": "Your intelligent guide to Marrakech — discover hidden riads, world-class dining, desert adventures, and the soul of the Red City.",
+        "quikLinks": "Quik Links",
+        "categories": "Categories",
+        "newsLetter": "Get curated Marrakech tips and exclusive offers."
+    }
+}

@@ -4,17 +4,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Compass, Heart, Menu, Search, User, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher"
 
 const navLinks = [
-  { name: 'Explore', to: '/explore' },
-  { name: 'Restaurants', to: '/explore?category=restaurants' },
-  { name: 'Hotels', to: '/explore?category=hotels' },
-  { name: 'Activities', to: '/explore?category=activities' },
+  { name: 'common.home', to: '/'},
+  { name: 'common.exploreLink', to: '/explore' },
+  { name: 'categories.restaurants', to: '/explore?category=restaurants' },
+  { name: 'categories.hotelsShort', to: '/explore?category=hotels' },
+  { name: 'categories.activites', to: '/explore?category=activities' },
 ]
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation();
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white">
@@ -37,7 +41,7 @@ export default function Header() {
                 )
               }
             >
-              {link.name}
+              {t(link.name)}
             </NavLink>
           ))}
         </nav>
@@ -57,8 +61,9 @@ export default function Header() {
             </Link>
           </Button>
           <Button variant="ghost" asChild>
-            <Link to="/login">Sign in</Link>
+            <Link to="/login">{t("auth.login")}</Link>
           </Button>
+          <LanguageSwitcher />
         </div>
 
         <button
@@ -87,7 +92,7 @@ export default function Header() {
                   className="rounded-xl px-4 py-3 text-base font-medium text-stone-700 hover:bg-stone-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {link.name}
+                  {t(link.name)}
                 </Link>
               ))}
               <Link
@@ -105,10 +110,10 @@ export default function Header() {
                   <Link to="/dashboard/favorites" onClick={() => setIsMenuOpen(false)}>Favorites</Link>
                 </Button>
                 <Button variant="ghost" asChild className="w-full">
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Sign in</Link>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
                 </Button>
                 <Button asChild className="w-full">
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>Register</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>S'inscrire</Link>
                 </Button>
               </div>
             </nav>

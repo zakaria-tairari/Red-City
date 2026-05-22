@@ -6,8 +6,11 @@ import * as LucideIcons from 'lucide-react'
 import { fetchPlacesByCategory } from '@/services/places'
 import { PlaceCard } from '@/components/ui/PlaceCard'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useTranslation } from 'react-i18next'
 
 export default function CategorySection({ category }) {
+  const { t } = useTranslation();
+
   const { data: places, isLoading } = useQuery({
     queryKey: ['category-places', category.id],
     queryFn: () => fetchPlacesByCategory(category.id, 10),
@@ -20,7 +23,7 @@ export default function CategorySection({ category }) {
           <div className="flex items-start gap-4">
             <div>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">
-                {category.name}
+                {t(`categories.${category.code}`)}
               </h2>
             </div>
           </div>
@@ -28,7 +31,7 @@ export default function CategorySection({ category }) {
             to={`/explore?category=${category.id}`}
             className="shrink-0 inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 mt-2"
           >
-            View all <ArrowRight className="h-4 w-4" />
+            {t("common.viewAll")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 

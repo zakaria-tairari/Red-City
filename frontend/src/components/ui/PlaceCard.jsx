@@ -3,8 +3,10 @@ import { motion } from 'framer-motion'
 import { MapPin, Star } from 'lucide-react'
 import { cn, formatReviewCount } from '@/lib/utils'
 import { CATEGORY_MAP } from '@/data/categories'
+import { useTranslation } from 'react-i18next'
 
 export function PlaceCard({ place, variant = 'default', className, onMouseEnter, onMouseLeave }) {
+  const { t } = useTranslation();
   const category = place.category;
 
   if (variant === 'featured') {
@@ -25,7 +27,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
           <div className="absolute bg-linear-to-t from-black/80 via-black/30 to-transparent bottom-0 left-0 right-0 h-1/2 p-4 flex flex-col justify-end text-white">
             {category && (
               <span className="mb-2 w-fit rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur-sm">
-                {category.name}
+                {t(`categories.${category.code}`)}
               </span>
             )}
             <h3 className="font-serif text-xl font-bold md:text-2xl">{place.name}</h3>
@@ -86,7 +88,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
           />
           {category && (
             <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-stone-800 backdrop-blur-sm">
-              {category.name}
+              {t(`categories.${category.code}`)}
             </span>
           )}
         </div>

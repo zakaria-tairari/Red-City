@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Search, Utensils, Hotel, Coffee, Palette, Compass } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 const categories = [
   { id: 'restaurants', label: 'Restaurants', icon: Utensils },
@@ -16,6 +18,7 @@ const categories = [
 const BACKGROUND_URL = "/Home.mp4"
 
 export default function HeroSection() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
 
@@ -33,8 +36,12 @@ export default function HeroSection() {
           transition={{ duration: 0.7 }}
           className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-stone-800 max-w-4xl leading-tight text-balance"
         >
-          Discover the Soul of{' '}
-          <span className="text-primary-500">Marrakech</span>
+          <Trans
+            i18nKey="hero.title"
+            components={{
+              1: <span className="text-primary-500" />
+            }}
+          />
         </motion.h1>
 
         <motion.p 
@@ -43,8 +50,7 @@ export default function HeroSection() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="my-10 text-lg text-stone-500"
         >
-          Explore Red City like never before — curated places, honest reviews, and intelligent
-          recommendations for your perfect trip.
+          {t("hero.text")}
         </motion.p>
 
         <form
@@ -64,14 +70,14 @@ export default function HeroSection() {
 
         <div className="mt-12 flex flex-wrap gap-4 items-center justify-center">
           <Button size="lg" asChild>
-            <Link to="/explore">Start Exploring</Link>
+            <Link to="/explore">{t("common.exploreBtn")}</Link>
           </Button>
           <Button
             variant="luxury"
             size="lg"
             asChild
           >
-            <Link to="/register">Create Account</Link>
+            <Link to="/register">{t("auth.createAccount")}</Link>
           </Button>
         </div>
       </div>
