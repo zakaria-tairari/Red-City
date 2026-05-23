@@ -15,10 +15,13 @@ class PlacesController extends Controller
             'category' => $request->category,
             'q' => $request->q,
             'sortBy' => $request->sortBy,
+            'limit' => $request->limit,
+            'page' => $request->page,
         ]));
 
         $places = Cache::remember($cacheKey, 3600, function () use ($request) {
-            $query = Place::with('category', 'media', 'tags');
+            $query = Place::with('category', 'media', 'tags')
+                ->withCount('reviews');
 
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
@@ -30,33 +33,85 @@ class PlacesController extends Controller
 
             if ($request->filled('sortBy')) {
                 switch ($request->sortBy) {
-                    case 'rating':
-                        $query->orderByDesc('rating');
-                        break;
-
+                    //TODO: case 'rating'
+                    
                     case 'reviews':
-                        $query->orderByDesc('review_count');
+                        $query->orderByDesc('reviews_count');
                         break;
 
                     case 'name':
                         $query->orderBy('name');
                         break;
-                    
+
                     default:
-                        $query->latest('created_at');
+                        $query->latest();
                         break;
                 }
             }
 
-            $limit = $request->limit ?? 12;
-            $query->limit($limit);
+            return serialize($query->paginate($request->limit ?? 12));
+        });
+
+        $places = unserialize($places);
+
+        return ApiResponse::success(
+            'Places retrieved successfully',
+            [
+                'items' => PlaceListResource::collection($places->items()),
+                'total' => $places->total(),
+                'current_page' => $places->currentPage(),
+                'last_page' => $places->lastPage(),
+                'per_page' => $places->perPage(),
+            ]
+        );
+    }
+
+    public function all(Request $request) {
+        $cacheKey = 'places_' . md5(json_encode([
+            'category' => $request->category,
+            'q' => $request->q,
+            'sortBy' => $request->sortBy,
+            'limit' => $request->limit,
+        ]));
+
+        $places = Cache::remember($cacheKey, 3600, function () use ($request) {
+            $query = Place::with('category', 'media', 'tags')
+                ->withCount('reviews');
+
+            if ($request->filled('category')) {
+                $query->where('category_id', $request->category);
+            }
+
+            if ($request->filled('q')) {
+                $query->where('name', 'LIKE', "%{$request->q}%");
+            }
+
+            if ($request->filled('sortBy')) {
+                switch ($request->sortBy) {
+                    //TODO: case 'rating'
+                    
+                    case 'reviews':
+                        $query->orderByDesc('reviews_count');
+                        break;
+
+                    case 'name':
+                        $query->orderBy('name');
+                        break;
+
+                    default:
+                        $query->latest();
+                        break;
+                }
+            }
 
             return serialize($query->get());
         });
 
+        $places = unserialize($places);
+
         return ApiResponse::success(
-            'Places retreived successfully', 
-            PlaceListResource::collection(unserialize($places)),
+            'Places retrieved successfully',
+            PlaceListResource::collection($places),
         );
     }
 
