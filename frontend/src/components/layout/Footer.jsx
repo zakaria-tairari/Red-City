@@ -33,7 +33,7 @@ export default function Footer() {
   });
 
   return (
-    <footer className="border-t border-stone-200 bg-stone-900 text-stone-300">
+    <footer className="border-t border-stone-200 bg-stone-900 text-stone-300 mt-20">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">

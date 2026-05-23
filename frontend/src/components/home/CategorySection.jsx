@@ -15,7 +15,7 @@ export default function CategorySection({ category }) {
     queryKey: ['category-places', category.id],
     queryFn: () => fetchPlacesByCategory(category.id, 10),
   })
-
+  
   return (
     <section className="py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -1,17 +1,16 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, MapPin, Star, X } from 'lucide-react'
-import { cn, formatReviewCount, getPriceLabel } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { CATEGORY_MAP } from '@/data/categories'
 
 export function PlaceMapPopup({ place, onClose }) {
-  const category = CATEGORY_MAP[place.category]
-  const priceLabel = place.priceRange ? getPriceLabel(place.priceRange) : null
+  const category = place.category;
 
   return (
     <article className="w-full overflow-hidden bg-white">
       <div className="relative aspect-9/10 overflow-hidden">
         <img
-          src={place.images[0]}
+          src={place.cover?.app_url || place.cover?.original_url}
           alt={place.name}
           className="h-full w-full object-cover"
         />
@@ -39,15 +38,15 @@ export function PlaceMapPopup({ place, onClose }) {
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/85">
             <span className="inline-flex items-center gap-1">
               <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-semibold text-white">{place.rating}</span>
+              <span className="font-semibold text-white">4.5</span>
               <span className="text-white/60">
-                ({formatReviewCount(place.reviewCount)})
+                1.2k
               </span>
             </span>
             <span className="text-white/40">·</span>
             <span className="inline-flex min-w-0 items-center gap-1">
               <MapPin className="h-3 w-3 shrink-0 text-white/70" />
-              <span className="truncate">{place.location}</span>
+              <span className="truncate">{place.area}</span>
             </span>
           </div>
         </div>
@@ -63,9 +62,10 @@ export function PlaceMapPopup({ place, onClose }) {
         <Link
           to={`/places/${place.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="inline-block text-xs font-medium"
+          className="text-xs font-medium flex items-center justify-end gap-1"
         >
-          <span className="text-primary-600 hover:text-primary-700">View details →</span>
+          <span className="text-primary-600 hover:text-primary-700">View details </span>
+          <ArrowRight className=" text-primary-600 hover:text-primary-700 h-3 w-3" />
         </Link>
       </div>
     </article>

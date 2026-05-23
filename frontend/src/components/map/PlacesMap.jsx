@@ -31,7 +31,7 @@ function FitBounds({ places }) {
 
   useEffect(() => {
     if (!places.length) return
-    const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]))
+    const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lon]))
     map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
   }, [map, places])
 
@@ -46,9 +46,10 @@ function FocusSelectedPlace({ places, selectedPlaceId }) {
     const place = places.find((p) => p.id === selectedPlaceId)
     if (!place) return
 
-    map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 18), {
+    map.flyTo([place.lat, place.lon], Math.max(map.getZoom(), 15), {
       animate: true,
-      duration: 0.4,
+      duration: 0.8,
+      easeLinearity: 0.1,
     })
   }, [map, places, selectedPlaceId])
 
@@ -68,7 +69,7 @@ function PlaceMarker({ place, isSelected }) {
   return (
     <Marker
       ref={markerRef}
-      position={[place.lat, place.lng]}
+      position={[Number(place.lat), Number(place.lon)]}
       icon={isSelected ? activeIcon : defaultIcon}
       eventHandlers={{
         click: (e) => {
@@ -106,14 +107,17 @@ export default function PlacesMap({ places, className }) {
   return (
     <MapContainer
       center={MARRAKECH_CENTER}
-      zoom={14}
-      minZoom={13}
+      zoom={12}
+      minZoom={9}
       zoomControl={false}
       className={cn('h-full min-h-100 w-full', className)}
     >
       <TileLayer
         attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        keepBuffer={8}
+        updateWhenIdle={false}
+        updateWhenZooming={false}
       />
       <ZoomControl position="bottomright" />
       <FitBounds places={places} />
