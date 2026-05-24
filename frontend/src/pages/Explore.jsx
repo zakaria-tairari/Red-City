@@ -18,9 +18,9 @@ export default function Explore() {
   const { exploreViewMode } = useUIStore();
   const loadMoreRef = useRef(null);
 
-  const [query, setQuery] = useState(searchParams.get("q") || "");
-  const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
+  const query = searchParams.get("q") || "";
+  const category = searchParams.get("category") || "";
+  const sortBy = searchParams.get("sort") || "name";
 
   const debouncedQuery = useDebounce(query, 400);
 
@@ -33,7 +33,7 @@ export default function Explore() {
   } = useInfiniteQuery({
     queryKey: ["places", debouncedQuery, category, sortBy],
     queryFn: ({ pageParam = 1 }) =>
-      fetchPlaces({ query: debouncedQuery, category, sortBy, page: pageParam }),
+      fetchPlaces({ query: debouncedQuery, category, sortBy, limit: 16, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: lastPage =>
       lastPage.current_page < lastPage.last_page
@@ -66,11 +66,11 @@ export default function Explore() {
     <motion.div className="min-h-screen pt-16">
       <SearchFilters
         query={query}
-        onQueryChange={v => { setQuery(v); updateFilters({ q: v }); }}
+        onQueryChange={v => updateFilters({ q: v })}
         category={category}
-        onCategoryChange={v => { setCategory(v); updateFilters({ category: v }); }}
+        onCategoryChange={v => updateFilters({ category: v })}
         sortBy={sortBy}
-        onSortByChange={v => { setSortBy(v); updateFilters({ sort: v }); }}
+        onSortByChange={v => updateFilters({ sort: v })}
       />
 
       <div className="mx-auto">
@@ -84,7 +84,7 @@ export default function Explore() {
                 </p>
               </div>
 
-              <div className="h-[calc(100vh-200px)] overflow-y-auto scrollbar-hide">
+              <div className="h-[calc(100vh-190px)] overflow-y-auto scrollbar-hide">
                 <div className="space-y-3 pr-2">
                   {isLoading
                     ? Array.from({ length: 6 }).map((_, i) => (
@@ -95,7 +95,7 @@ export default function Explore() {
                       ))
                   }
                   {hasNextPage && (
-                    <div ref={loadMoreRef} className="flex col-span-full justify-center pt-8 pb-10">
+                    <div ref={loadMoreRef} className="flex col-span-full justify-center pt-8 pb-12">
                       <Button
                         variant="default"
                         onClick={handleLoadMore}
@@ -140,7 +140,7 @@ export default function Explore() {
                   ))
               }
               {hasNextPage && (
-                <div ref={loadMoreRef} className="flex col-span-full justify-center py-10">
+                <div ref={loadMoreRef} className="flex col-span-full justify-center pt-8">
                   <Button
                     variant="default"
                     onClick={handleLoadMore}

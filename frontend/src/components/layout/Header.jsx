@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Compass, Heart, Menu, Search, User, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -10,15 +10,18 @@ import LanguageSwitcher from "@/components/ui/LanguageSwitcher"
 const navLinks = [
   { name: 'common.home', to: '/'},
   { name: 'common.exploreLink', to: '/explore' },
-  { name: 'categories.restaurants', to: '/explore?category=restaurants' },
-  { name: 'categories.hotelsShort', to: '/explore?category=hotels' },
-  { name: 'categories.activites', to: '/explore?category=activities' },
+  { name: 'categories.restaurants', to: '/explore?category=2' },
+  { name: 'categories.hotelsShort', to: '/explore?category=7' },
+  { name: 'categories.activites', to: '/explore?category=3' },
 ]
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const isLinkActive = (to) => location.pathname + location.search === to
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white">
@@ -34,10 +37,10 @@ export default function Header() {
             <NavLink
               key={link.to}
               to={link.to}
-              className={({ isActive }) =>
+              className={
                 cn(
                   'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-                  isActive ? 'text-primary-700' : 'text-stone-600 hover:text-primary-600'
+                  isLinkActive(link.to) ? 'text-primary-700' : 'text-stone-600 hover:text-primary-600'
                 )
               }
             >

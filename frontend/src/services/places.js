@@ -32,10 +32,10 @@ export async function fetchPlaces(params) {
   return response.data;
 }
 
-export async function fetchPlacesByCategory(categoryId, limit = 10) {
+export async function fetchPlacesByCategory(category, limit = 12) {
   const response = await api.get("/api/places/all", {
     params: {
-      category: categoryId,
+      category,
       limit,
     }
   });
