@@ -8,6 +8,7 @@ def insert_media(media):
     df = pd.DataFrame(media)
 
     COLUMNS = ["place_id", "type", "ext", "mime", "original_url", "position"]
+    df["position"] = df.groupby('place_id').cumcount()
 
     try:
         df = df.reindex(columns=COLUMNS)

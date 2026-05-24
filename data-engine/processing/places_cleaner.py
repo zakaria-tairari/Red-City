@@ -1,6 +1,11 @@
 import pandas as pd
 
 def clean_places(places, category_id):
+    places = [
+    p for p in places
+    if p.get("coverImage") and p.get("gallery")
+    ]
+        
     df = pd.DataFrame(places)
 
     df = df.drop_duplicates(subset=["documentId"])

@@ -11,7 +11,7 @@ def run_places():
     categories = get_categories()
 
     for category in categories:
-        logger.info(f"Scraping places for category {category["code"]}...")
+        logger.info(f"Scraping places for category {category['code']}...")
         places = fetch_places_by_category(category["code"])
 
         logger.info("Cleaning places...")
@@ -23,20 +23,22 @@ def run_places():
         logger.info("Mapping IDs...")
         mapping = get_places_mapping()
 
+        valid_doc_ids = set(cleaned["document_id"])
         all_media = []
 
-        logger.info("scraping media from places...")
+        logger.info("Scraping media from places...")
         for place in places:
             doc_id = place.get("documentId")
-            place_id = mapping.get(doc_id)
-
-            if not place_id:
+            if doc_id not in valid_doc_ids:
                 continue
 
-            media = extract_media(place, place_id)
-            all_media.extend(media)
+            place_id = mapping.get(doc_id)
+            if not place_id:
+                continue
+            
+            all_media.extend(extract_media(place, place_id))
 
         logger.info("Inserting media...")
         insert_media(all_media)
 
-        logger.info("Pipeline execution successful")
+    logger.info("Pipeline execution successful")

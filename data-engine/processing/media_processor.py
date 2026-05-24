@@ -1,30 +1,32 @@
 def extract_media(place, place_id):
-    media = []
-
     cover = place.get("coverImage")
     gallery = place.get("gallery", []) or []
-    
-    items = []
 
-    if isinstance(cover, dict):
+    items = []
+    cover_url = None
+
+    if isinstance(cover, dict) and cover.get("url"):
+        cover_url = cover.get("url")
         items.append(cover)
 
-    items.extend(gallery)
+    for item in gallery:
+        if item.get("url") != cover_url:
+            items.append(item)
 
-    for i, item in enumerate(items):
+    media = []
+    for item in items:
         url = item.get("url")
         mime = item.get("mime", "")
-        media_type, subtype = mime.split("/")
+        if not url or not mime or "/" not in mime:
+            continue
+        media_type, subtype = mime.split("/", 1)
         ext = "jpg" if subtype == "jpeg" else subtype
-
-        if url:
-            media.append({
-                "place_id": place_id,
-                "type": media_type,
-                "ext": ext,
-                "mime": mime,
-                "original_url": url,
-                "position": i,
-            })
+        media.append({
+            "place_id": place_id,
+            "type": media_type,
+            "ext": ext,
+            "mime": mime,
+            "original_url": url,
+        })
 
     return media
