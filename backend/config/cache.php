@@ -125,6 +125,16 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => [
+        Illuminate\Database\Eloquent\Collection::class,
+        Illuminate\Pagination\LengthAwarePaginator::class,
+        App\Models\User::class,
+        App\Models\Place::class,
+        App\Models\Category::class,
+        App\Models\Media::class,
+        App\Models\Tag::class,
+        App\Models\Translation::class,
+        App\Models\Review::class,
+    ],
 
 ];

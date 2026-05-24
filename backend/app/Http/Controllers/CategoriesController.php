@@ -13,12 +13,12 @@ class CategoriesController extends Controller
     public function index() {
         $categories = Cache::remember('categories', 3600, function () {
             $query = Category::with('places')->get();
-            return serialize($query);
+            return $query;
         });
 
         return ApiResponse::success(
             "Categories retreived successfully", 
-            CategoryResource::collection(unserialize($categories)),
+            CategoryResource::collection($categories),
         );
     }
 
@@ -27,12 +27,12 @@ class CategoriesController extends Controller
 
         $category = Cache::remember($cacheKey, 3600, function () use ($id) {
             $query = Category::with('places')->findOrFail($id);
-            return serialize($query);
+            return $query;
         });
 
         return ApiResponse::success(
             "Category $id retreived successfully", 
-            new CategoryResource(unserialize($category)),
+            new CategoryResource($category),
         );
     }
 }

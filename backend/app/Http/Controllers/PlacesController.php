@@ -13,7 +13,7 @@ class PlacesController extends Controller
     public function index(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
             'category' => $request->category,
-            'q' => $request->q,
+            'query' => $request->query,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
             'page' => $request->page,
@@ -27,8 +27,8 @@ class PlacesController extends Controller
                 $query->where('category_id', $request->category);
             }
 
-            if ($request->filled('q')) {
-                $query->where('name', 'LIKE', "%{$request->q}%");
+            if ($request->filled('query')) {
+                $query->where('name', 'LIKE', "%{$request->query}%");
             }
 
             if ($request->filled('sortBy')) {
@@ -49,10 +49,8 @@ class PlacesController extends Controller
                 }
             }
 
-            return serialize($query->paginate($request->limit ?? 12));
+            return $query->paginate($request->limit ?? 12);
         });
-
-        $places = unserialize($places);
 
         return ApiResponse::success(
             'Places retrieved successfully',
@@ -69,7 +67,7 @@ class PlacesController extends Controller
     public function all(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
             'category' => $request->category,
-            'q' => $request->q,
+            'query' => $request->query,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
         ]));
@@ -82,8 +80,8 @@ class PlacesController extends Controller
                 $query->where('category_id', $request->category);
             }
 
-            if ($request->filled('q')) {
-                $query->where('name', 'LIKE', "%{$request->q}%");
+            if ($request->filled('query')) {
+                $query->where('name', 'LIKE', "%{$request->query}%");
             }
 
             if ($request->filled('sortBy')) {
@@ -104,10 +102,8 @@ class PlacesController extends Controller
                 }
             }
 
-            return serialize($query->get());
+            return $query->get();
         });
-
-        $places = unserialize($places);
 
         return ApiResponse::success(
             'Places retrieved successfully',
@@ -120,12 +116,12 @@ class PlacesController extends Controller
 
         $place = Cache::remember($cacheKey, 3600, function () use ($id) {
             $query = Place::with('category', 'media', 'tags')->findOrFail($id);
-            return serialize($query);
+            return $query;
         });
 
         return ApiResponse::success(
             "Place $id retreived successfully", 
-            new PlaceListResource(unserialize($place)),
+            new PlaceListResource($place),
         );
     }
 
@@ -135,12 +131,12 @@ class PlacesController extends Controller
             Place::with('category', 'media', 'tags')
                 ->limit(5);
 
-            return serialize($query->get());
+            return $query->get();
         });
 
         return ApiResponse::success(
             'Places retreived successfully', 
-            PlaceListResource::collection(unserialize($places)),
+            PlaceListResource::collection($places),
         );
     }
 }
