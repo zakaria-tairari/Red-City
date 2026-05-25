@@ -17,6 +17,7 @@ Route::prefix('places')->controller(PlacesController::class)->group( function ()
     Route::get('/featured', 'featured');
     Route::get('/all', 'all');
     Route::get('/{id}', 'show');
+    Route::get('/{id}/related', 'related');
 });
 
 //Auth routes

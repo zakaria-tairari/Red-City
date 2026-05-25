@@ -23,8 +23,6 @@ class PlaceListResource extends JsonResource
             'lon' => $this->lon,
             'cover' => new MediaResource($this->media->where('position', 0)->first()),
             'tags' => TagResource::collection($this->whenLoaded('tags')),
-            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
-            'translations' => TranslationResource::collection($this->whenLoaded('translations')),
         ];
     }
 }
