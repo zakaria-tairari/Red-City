@@ -26,7 +26,7 @@ export default function Home() {
           <CategorySection key={category.id} category={category} />
         ))}
       </div>
-      <section className="p-10 max-w-7xl mx-auto">
+      <section className="py-15 px-10 max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}

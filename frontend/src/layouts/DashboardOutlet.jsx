@@ -1,9 +1,9 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { ArrowLeft, Heart, LayoutDashboard, Star } from 'lucide-react'
+import { ArrowLeft, Heart, LayoutGrid, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const tabs = [
-  { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
+  { to: '/dashboard', label: 'Overview', icon: LayoutGrid, end: true },
   { to: '/dashboard/favorites', label: 'Favorites', icon: Heart },
   { to: '/dashboard/reviews', label: 'My Reviews', icon: Star },
 ]

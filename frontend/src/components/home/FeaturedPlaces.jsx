@@ -35,7 +35,7 @@ export default function FeaturedPlaces() {
         </div>
 
         {isLoading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-105 col-span-2 lg:row-span-2" />
             <Skeleton className="h-50" />
             <Skeleton className="h-50" />
@@ -44,7 +44,7 @@ export default function FeaturedPlaces() {
           </div>
         ) : (
           <motion.div
-            className="grid gap-6 grid-cols-2 lg:grid-cols-4"
+            className="grid gap-4 grid-cols-2 lg:grid-cols-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}

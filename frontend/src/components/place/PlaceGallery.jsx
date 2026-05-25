@@ -1,78 +1,213 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Expand, Play, X } from 'lucide-react'
-import { Dialog, DialogContent } from '@/components/ui/Dialog'
+import { ChevronLeft, ChevronRight, X, Play, Grid2X2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export default function PlaceGallery({ images = [], videoUrl }) {
-  const [active, setActive] = useState(0)
-  const [fullscreen, setFullscreen] = useState(false)
-  const allMedia = videoUrl ? [{ type: 'video', url: videoUrl }, ...images.map((u) => ({ type: 'image', url: u }))] : images.map((u) => ({ type: 'image', url: u }))
+const PREVIEW_COUNT = 5
 
-  const current = allMedia[active] || allMedia[0]
+function VideoThumb({ url }) {
+  return (
+    <div className="relative flex h-full w-full items-center justify-center bg-stone-800">
+      <video src={url} className="h-full w-full object-cover opacity-80" muted playsInline />
+      <div className="absolute inset-0 flex items-center justify-center">
+          <Play className="h-12 w-12 text-white translate-x-0.5" />
+      </div>
+    </div>
+  )
+}
 
-  const next = () => setActive((i) => (i + 1) % allMedia.length)
-  const prev = () => setActive((i) => (i - 1 + allMedia.length) % allMedia.length)
+function GridPreview({ media, onOpenGallery }) {
+  const preview = media.slice(0, PREVIEW_COUNT)
+  const remainder = media.length - PREVIEW_COUNT
+
+  const count = preview.length
+
+  const gridClass = {
+    1: 'grid-cols-1 grid-rows-1',
+    2: 'grid-cols-2 grid-rows-1',
+    3: 'grid-cols-3 grid-rows-1',
+    4: 'grid-cols-2 grid-rows-2',
+    5: 'grid-cols-3 grid-rows-2',
+    6: 'grid-cols-3 grid-rows-2',
+  }[count] ?? 'grid-cols-3 grid-rows-2'
+
+  const getItemStyle = (i) => {
+    if (count === 3 && i === 0) return 'row-span-1 col-span-1'
+    if (count === 5 && i === 0) return 'row-span-2'
+    return ''
+  }
 
   return (
-    <>
-      <div className="relative aspect-[21/9] min-h-[280px] overflow-hidden rounded-2xl bg-stone-900">
+    <div className="relative overflow-hidden rounded-xl">
+      <div className={cn('grid gap-1', gridClass)} style={{ aspectRatio: count === 1 ? '16/9' : '5/3' }}>
+        {preview.map((item, i) => {
+          const isLast = i === PREVIEW_COUNT - 1 && remainder > 0
+          return (
+            <button
+              key={item.id ?? i}
+              type="button"
+              onClick={() => onOpenGallery(i)}
+              className={cn(
+                'group relative overflow-hidden bg-stone-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-300',
+                getItemStyle(i)
+              )}
+            >
+              {item.type === 'video' ? (
+                <VideoThumb url={item.url} />
+              ) : (
+                <img
+                  src={item.url}
+                  alt=""
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              )}
+              <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/5" />
+              {isLast && remainder > 0 && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 backdrop-blur-[2px]">
+                  <span className="text-3xl font-light text-white">+{remainder}</span>
+                  <span className="mt-1 text-xs font-medium tracking-widest text-white/75 uppercase">more</span>
+                </div>
+              )}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function FullGallery({ media, initialIndex, onClose }) {
+  const [active, setActive] = useState(initialIndex)
+  const thumbsRef = useRef(null)
+  const current = media[active]
+
+  const next = () => setActive((i) => (i + 1) % media.length)
+  const prev = () => setActive((i) => (i - 1 + media.length) % media.length)
+
+  // Scroll active thumb into view
+  useEffect(() => {
+    const container = thumbsRef.current
+    if (!container) return
+    const thumb = container.children[active]
+    if (thumb) {
+      thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    }
+  }, [active])
+
+  // Keyboard nav
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') next()
+      if (e.key === 'ArrowLeft') prev()
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex flex-col bg-black/70 backdrop-blur-2xl"
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-5 py-4 shrink-0">
+        <span className="text-sm font-medium text-white/50 tabular-nums">
+          {active + 1} / {media.length}
+        </span>
+        <button
+          type="button"
+          onClick={onClose}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+          aria-label="Close gallery"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Main media area */}
+      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-16 min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.25 }}
+            className="flex max-h-full max-w-full items-center justify-center"
           >
             {current?.type === 'video' ? (
-              <div className="flex h-full items-center justify-center bg-stone-800">
-                <Play className="h-16 w-16 text-white/80" />
-                <p className="absolute bottom-4 left-4 text-white text-sm">Video preview</p>
-              </div>
+              <video
+                key={current.url}
+                src={current.url}
+                className="max-h-full max-w-full rounded-lg"
+                style={{ maxHeight: 'calc(100vh - 220px)' }}
+                autoPlay
+                controls
+                loop
+                playsInline
+              />
             ) : (
-              <img src={current?.url} alt="" className="h-full w-full object-cover" />
+              <img
+                src={current?.url}
+                alt=""
+                className="max-h-full max-w-full rounded-lg object-contain"
+                style={{ maxHeight: 'calc(100vh - 220px)' }}
+              />
             )}
           </motion.div>
         </AnimatePresence>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-
-        {allMedia.length > 1 && (
+        {/* Nav arrows */}
+        {media.length > 1 && (
           <>
-            <button type="button" onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg hover:bg-white" aria-label="Previous">
+            <button
+              type="button"
+              onClick={prev}
+              className="absolute left-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+              aria-label="Previous"
+            >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <button type="button" onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg hover:bg-white" aria-label="Next">
+            <button
+              type="button"
+              onClick={next}
+              className="absolute right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+              aria-label="Next"
+            >
               <ChevronRight className="h-5 w-5" />
             </button>
           </>
         )}
+      </div>
 
-        <button
-          type="button"
-          onClick={() => setFullscreen(true)}
-          className="absolute right-4 top-4 rounded-full bg-white/90 p-2 shadow-lg hover:bg-white"
-          aria-label="Fullscreen"
+      {/* Thumbnail strip */}
+      <div className="shrink-0 px-4 py-4">
+        <div
+          ref={thumbsRef}
+          className="flex gap-2 overflow-x-auto scrollbar-hide px-2 py-1"
+          style={{ scrollSnapType: 'x mandatory' }}
         >
-          <Expand className="h-5 w-5" />
-        </button>
-
-        <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto scrollbar-hide">
-          {allMedia.map((item, i) => (
+          {media.map((item, i) => (
             <button
-              key={i}
+              key={item.id ?? i}
               type="button"
               onClick={() => setActive(i)}
               className={cn(
-                'h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all',
-                i === active ? 'border-white scale-105' : 'border-transparent opacity-70 hover:opacity-100'
+                'shrink-0 overflow-hidden rounded-lg transition-all duration-200',
+                'h-18 w-25 focus-visible:outline-none',
+                i === active
+                  ? 'opacity-100 scale-107'
+                  : 'opacity-45 hover:opacity-70'
               )}
+              style={{ scrollSnapAlign: 'center' }}
             >
               {item.type === 'video' ? (
                 <div className="flex h-full w-full items-center justify-center bg-stone-700">
-                  <Play className="h-4 w-4 text-white" />
+                  <Play className="h-4 w-4 fill-white text-white" />
                 </div>
               ) : (
                 <img src={item.url} alt="" className="h-full w-full object-cover" />
@@ -81,17 +216,34 @@ export default function PlaceGallery({ images = [], videoUrl }) {
           ))}
         </div>
       </div>
+    </motion.div>
+  )
+}
 
-      <Dialog open={fullscreen} onOpenChange={setFullscreen}>
-        <DialogContent className="max-w-5xl p-0 bg-black border-0 overflow-hidden">
-          <button type="button" onClick={() => setFullscreen(false)} className="absolute right-4 top-4 z-10 rounded-full bg-white/20 p-2 text-white hover:bg-white/30">
-            <X className="h-5 w-5" />
-          </button>
-          {current?.type === 'image' && (
-            <img src={current.url} alt="" className="w-full max-h-[85vh] object-contain" />
-          )}
-        </DialogContent>
-      </Dialog>
+export default function PlaceGallery({ media = [] }) {
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const [startIndex, setStartIndex] = useState(0)
+
+  if (!media.length) return null
+
+  const openGallery = (index) => {
+    setStartIndex(index)
+    setGalleryOpen(true)
+  }
+
+  return (
+    <>
+      <GridPreview media={media} onOpenGallery={openGallery} />
+
+      <AnimatePresence>
+        {galleryOpen && (
+          <FullGallery
+            media={media}
+            initialIndex={startIndex}
+            onClose={() => setGalleryOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }

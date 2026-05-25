@@ -12,7 +12,7 @@ export function PlaceCard({ place, variant = 'default', className, onMouseEnter,
   if (variant === 'featured') {
     return (
       <motion.article
-        className={cn('group relative h-100 overflow-hidden rounded-3xl', className)}
+        className={cn('group relative h-100 overflow-hidden rounded-2xl', className)}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         transition={{ duration: 0.3 }}

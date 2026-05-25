@@ -108,7 +108,7 @@ export default function PlacesMap({ places, className }) {
     <MapContainer
       center={MARRAKECH_CENTER}
       zoom={12}
-      minZoom={9}
+      minZoom={10}
       zoomControl={false}
       className={cn('h-full min-h-100 w-full', className)}
     >

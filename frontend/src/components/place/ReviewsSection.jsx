@@ -88,7 +88,7 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-2">
-        <div>
+        <div className="mt-5">
           <div className="flex items-end gap-4">
             <span className="font-display text-5xl font-bold text-stone-900">{placeRating}</span>
             <div>
@@ -112,7 +112,7 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
         </div>
 
         <form
-          className="rounded-2xl border border-stone-100 bg-stone-50 p-6"
+          className="rounded-2xl border border-stone-300 border-dashed bg-stone-50 p-6"
           onSubmit={handleReviewSubmit}
         >
           <h3 className="font-serif text-lg font-semibold mb-4">Write a review</h3>
@@ -131,11 +131,7 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
               </Select>
             </div>
             <div>
-              <Label>Title</Label>
-              <Input className="mt-1 bg-white" placeholder="Summarize your experience" required type="text" />
-            </div>
-            <div>
-              <Label>Review</Label>
+              <Label>Comment</Label>
               <textarea
                 className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                 placeholder="Share your experience..."
