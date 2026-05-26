@@ -1,45 +1,60 @@
 {
   "hero": {
-    "title": "Descubre el alma de <1>Marrakech</1>",
-    "text": "Explora la Ciudad Roja como nunca antes: lugares seleccionados, reseñas honestas y recomendaciones inteligentes para tu viaje perfecto.",
-    "cardText": "Marrakech no es una ciudad que visitas, es un <1>mundo</1> que sientes."
-  },
-
-  "featured": {
-    "title": "Lugares Destacados",
-    "text": "Las mejores experiencias en Marrakech, amadas por viajeros de todo el mundo."
-  },
-
-  "categories": {
-    "bars-nightlife": "Bares y clubes",
-    "restaurants": "Restaurantes",
-    "activites": "Actividades",
-    "shopping": "Compras",
-    "arts-culture": "Arte y cultura",
-    "spas": "Spas",
-    "hotels": "Hoteles y Aloj.",
-    "hotelsShort": "Hoteles",
-    "cafes": "Cafeterías"
-  },
-
-  "auth": {
-    "createAccount": "Crear cuenta",
-    "login": "Iniciar sesión",
-    "logout": "Cerrar sesión",
-    "register": "Registrarse"
-  },
-
-  "common": {
-    "home": "Inicio",
-    "exploreBtn": "Empezar a explorar",
-    "exploreLink": "Explorar",
-    "viewAll": "Ver todo"
-  },
-
-  "footer": {
-    "text": "Tu guía inteligente de Marrakech — descubre riads escondidos, gastronomía de clase mundial, aventuras en el desierto y el alma de la Ciudad Roja.",
-    "quikLinks": "Enlaces rápidos",
-    "categories": "Categorías",
-    "newsLetter": "Recibe consejos seleccionados de Marrakech y ofertas exclusivas."
-  }
+      "title": "Descubre el alma de <1>Marrakech</1>",
+      "text": "Explora Red City como nunca antes: lugares seleccionados, reseñas honestas y recomendaciones inteligentes para tu viaje perfecto.",
+      "cardText": "Marrakech no es una ciudad que visitas, es un <1>mundo</1> que sientes.",
+      "search": "Buscar restaurantes, hoteles, actividades..."
+    },
+    "featured": {
+      "title": "Lugares destacados",
+      "text": "Las experiencias mejor valoradas en Marrakech, amadas por viajeros de todo el mundo."
+    },
+    "categories": {
+      "bars-nightlife": "Bares y Clubes",
+      "restaurants": "Restaurantes",
+      "activites": "Actividades",
+      "shopping": "Compras",
+      "arts-culture": "Arte y Cultura",
+      "spas": "Spas",
+      "hotels": "Hoteles y Estancias",
+      "hotelsShort": "Hoteles",
+      "cafes": "Cafés"
+    },
+    "auth": {
+      "createAccount": "Crear cuenta",
+      "login": "Iniciar sesión",
+      "logout": "Cerrar sesión",
+      "register": "Registrarse"
+    },
+    "common": {
+      "home": "Inicio",
+      "exploreBtn": "Comenzar a explorar",
+      "exploreLink": "Explorar",
+      "viewAll": "Ver todo",
+      "loading": "Cargando...",
+      "loadMore": "Cargar más",
+      "searching": "Buscando...",
+      "resultsFound": "resultados encontrados",
+      "unfound": "No se encontraron resultados",
+      "clear": "Limpiar",
+      "close": "Cerrar",
+      "navigate": "Cómo llegar"
+    },
+    "search": {
+      "message": "Busca lugares, restaurantes y más",
+      "unfoundMsg": "Pulsa Enter para buscar en Explorar",
+      "label": "Buscar..."
+    },
+    "filters": {
+      "allCategories": "Todas las categorías",
+      "rating": "Mejor valorados",
+      "reviews": "Más reseñas",
+      "name": "Nombre A-Z"
+    },
+    "footer": {
+      "text": "Tu guía inteligente de Marrakech — descubre riads escondidos, gastronomía de clase mundial, aventuras en el desierto y el alma de la Ciudad Roja.",
+      "quikLinks": "Enlaces rápidos",
+      "categories": "Categorías",
+      "newsLetter": "Recibe consejos seleccionados sobre Marrakech y ofertas exclusivas."
+    }
 }

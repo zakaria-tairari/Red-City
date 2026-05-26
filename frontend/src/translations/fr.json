@@ -1,45 +1,60 @@
 {
     "hero": {
-        "title": "Découvrez l'âme de <1>Marrakech</1>",
-        "text": "Explorez Red City comme jamais auparavant : des lieux soigneusement sélectionnés, des avis honnêtes et des recommandations pour un voyage parfait.",
-        "cardText": "Marrakech n'est pas une ville que l'on visite, c'est un <1>monde</1> que l'on ressent."
+      "title": "Découvrez l’âme de <1>Marrakech</1>",
+      "text": "Explorez Red City comme jamais auparavant : des lieux sélectionnés, des avis honnêtes et des recommandations intelligentes pour votre voyage parfait.",
+      "cardText": "Marrakech n’est pas une ville que l’on visite, c’est un <1>monde</1> que l’on ressent.",
+      "search": "Rechercher des restaurants, hôtels, activités..."
     },
-
     "featured": {
-        "title": "Lieux en vedette",
-        "text": "Les expériences les plus appréciées à Marrakech, plébiscitées par les voyageurs du monde entier."
+      "title": "Lieux à la une",
+      "text": "Les expériences les mieux notées à Marrakech, appréciées par des voyageurs du monde entier."
     },
-
     "categories": {
-        "bars-nightlife": "Bars & Clubs",
-        "restaurants": "Restaurants",
-        "activites": "Activités",
-        "shopping": "Shopping",
-        "arts-culture": "Arts & Culture",
-        "spas": "Spas",
-        "hotels": "Hôtels & Séjours",
-        "hotelsShort": "Hôtels",
-        "cafes": "Cafés"
+      "bars-nightlife": "Bars & Clubs",
+      "restaurants": "Restaurants",
+      "activites": "Activités",
+      "shopping": "Shopping",
+      "arts-culture": "Arts & Culture",
+      "spas": "Spas",
+      "hotels": "Hôtels & Séjours",
+      "hotelsShort": "Hôtels",
+      "cafes": "Cafés"
     },
-
     "auth": {
-        "createAccount": "Créer un compte",
-        "login": "Se connecter",
-        "logout": "Déconnexion",
-        "register": "S'inscrire"
+      "createAccount": "Créer un compte",
+      "login": "Se connecter",
+      "logout": "Se déconnecter",
+      "register": "S’inscrire"
     },
-    
     "common": {
-        "home": "Acceuil",
-        "exploreBtn": "Commencez à explorer",
-        "exploreLink": "Explorer",
-        "viewAll": "Afficher tout"
+      "home": "Accueil",
+      "exploreBtn": "Commencer l’exploration",
+      "exploreLink": "Explorer",
+      "viewAll": "Voir tout",
+      "loading": "Chargement...",
+      "loadMore": "Charger plus",
+      "searching": "Recherche...",
+      "resultsFound": "résultats trouvés",
+      "unfound": "Aucun résultat trouvé",
+      "clear": "Effacer",
+      "close": "Fermer",
+      "navigate": "Itinéraire"
     },
-
+    "search": {
+      "message": "Recherchez des lieux, restaurants et plus encore",
+      "unfoundMsg": "Appuyez sur Entrée pour rechercher dans Explorer",
+      "label": "Rechercher..."
+    },
+    "filters": {
+      "allCategories": "Toutes les catégories",
+      "rating": "Les mieux notés",
+      "reviews": "Le plus d’avis",
+      "name": "Nom A-Z"
+    },
     "footer": {
-        "text": "Votre guide intelligent de Marrakech — découvrez des riads cachés, une gastronomie de classe mondiale, des aventures dans le désert et l’âme de la Ville Rouge.",
-        "quikLinks": "Liens rapides",
-        "categories": "Catégories",
-        "newsLetter": "Recevez des conseils sélectionnés sur Marrakech et des offres exclusives."
+      "text": "Votre guide intelligent de Marrakech — découvrez des riads cachés, une gastronomie de classe mondiale, des aventures dans le désert et l’âme de la Ville Rouge.",
+      "quikLinks": "Liens rapides",
+      "categories": "Catégories",
+      "newsLetter": "Recevez des conseils sélectionnés sur Marrakech et des offres exclusives."
     }
 }

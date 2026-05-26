@@ -21,7 +21,7 @@ export default function LanguageSwitcher() {
       value={i18n.language}
       onValueChange={(value) => i18n.changeLanguage(value)}
     >
-      <SelectTrigger className="w-10 h-5 border-none focus:ring-0 hover:text-primary-600">
+      <SelectTrigger className="w-10 h-5 border-none focus:ring-0 hover:text-primary-600 text-xs">
         <SelectValue placeholder="Language" />
       </SelectTrigger>
       <SelectContent>

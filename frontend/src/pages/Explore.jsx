@@ -9,20 +9,18 @@ import { PlaceCard } from "@/components/ui/PlaceCard";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import PlacesMap from "@/components/map/PlacesMap";
-import { useDebounce } from "@/hooks/useDebounce";
 import { useUIStore } from "@/store/useUIStore";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Explore() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { exploreViewMode } = useUIStore();
   const loadMoreRef = useRef(null);
 
-  const query = searchParams.get("q") || "";
   const category = searchParams.get("category") || "";
   const sortBy = searchParams.get("sort") || "name";
-
-  const debouncedQuery = useDebounce(query, 400);
 
   const {
     data,
@@ -31,9 +29,9 @@ export default function Explore() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["places", debouncedQuery, category, sortBy],
+    queryKey: ["places", category, sortBy],
     queryFn: ({ pageParam = 1 }) =>
-      fetchPlaces({ query: debouncedQuery, category, sortBy, limit: 16, page: pageParam }),
+      fetchPlaces({ category, sortBy, limit: 16, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: lastPage =>
       lastPage.current_page < lastPage.last_page
@@ -65,8 +63,6 @@ export default function Explore() {
   return (
     <motion.div className="min-h-screen pt-16">
       <SearchFilters
-        query={query}
-        onQueryChange={v => updateFilters({ q: v })}
         category={category}
         onCategoryChange={v => updateFilters({ category: v })}
         sortBy={sortBy}
@@ -75,12 +71,12 @@ export default function Explore() {
 
       <div className="mx-auto">
         {exploreViewMode === "map" ? (
-          <div className="flex mt-18">
+          <div className="flex mt-16">
             <div className="w-110 px-5 pt-6 border-r border-stone-200">
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-stone-500">
-                  {isLoading ? "Searching..." : `${total} places found`}
-                  {isFetchingNextPage && " · Loading more..."}
+                  {isLoading ? t("common.searching") : `${total} ${t("common.resultsFound")}`}
+                  {isFetchingNextPage && " · " + t("common.loading")}
                 </p>
               </div>
 
@@ -101,7 +97,7 @@ export default function Explore() {
                         onClick={handleLoadMore}
                         disabled={isFetchingNextPage}
                       >
-                        {isFetchingNextPage ? "Loading..." : "Load more"}
+                        {isFetchingNextPage ? t("common.loading") : t("common.loadMore")}
                       </Button>
                     </div>
                   )}
@@ -117,8 +113,8 @@ export default function Explore() {
           <div className="max-w-7xl mx-auto mt-23">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm text-stone-500">
-                {isLoading ? "Searching..." : `${total} places found`}
-                {isFetchingNextPage && " · Loading more..."}
+                  {isLoading ? t("common.searching") : `${total} ${t("common.resultsFound")}`}
+                  {isFetchingNextPage && " · " + t("common.loading")}
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -146,7 +142,7 @@ export default function Explore() {
                     onClick={handleLoadMore}
                     disabled={isFetchingNextPage}
                   >
-                    {isFetchingNextPage ? "Loading..." : "Load more"}
+                    {isFetchingNextPage ? t("common.loading") : t("common.loadMore")}
                   </Button>
                 </div>
               )}
@@ -156,10 +152,7 @@ export default function Explore() {
 
         {!isLoading && allPlaces.length === 0 && (
           <div className="py-20 text-center">
-            <p className="font-serif text-xl text-stone-600">No places found</p>
-            <p className="mt-2 text-stone-400">
-              Try adjusting your filters or search term.
-            </p>
+            <p className="font-serif text-xl text-stone-600">{ t("common.unfound") }</p>
           </div>
         )}
       </div>

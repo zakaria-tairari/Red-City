@@ -2,7 +2,8 @@
     "hero": {
         "title": "Discover the soul of <1>Marrakesh</1>",
         "text": "Explore Red City like never before : curated places, honest reviews, and intelligent recommendations for your perfect trip.",
-        "cardText": "Marrakesh is not a city that you visit, It's a <1>world</1> you feel."
+        "cardText": "Marrakesh is not a city that you visit, It's a <1>world</1> you feel.",
+        "search": "Search restaurants, hotels, activities..."
     },
 
     "featured": {
@@ -33,7 +34,28 @@
         "home": "Home",
         "exploreBtn": "Start Exploring",
         "exploreLink": "Explore",
-        "viewAll": "View all"
+        "viewAll": "View all",
+        "loading": "Loading...",
+        "loadMore": "Load more",
+        "searching": "Searching...",
+        "resultsFound": "results found",
+        "unfound": "No results found",
+        "clear": "Clear",
+        "close": "Close",
+        "navigate": "Navigate"
+    },
+
+    "search": {
+        "message": "Search for places, restaurants, and more",
+        "unfoundMsg": "Press Enter to search in Explore",
+        "label": "Search..."
+    },
+
+    "filters": {
+        "allCategories": "All categories",
+        "rating": "Top rated",
+        "reviews": "Most reviews",
+        "name": "Name A-Z"
     },
 
     "footer": {

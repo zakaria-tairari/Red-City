@@ -43,7 +43,7 @@ export default function HeroSection() {
           className="mt-10 flex items-center gap-3 mx-auto w-full max-w-2xl h-14 px-5 rounded-2xl bg-white shadow-sm border border-stone-200 text-stone-400 text-base hover:border-stone-300 hover:shadow-md transition-all duration-200 text-left"
         >
           <Search className="h-5 w-5 shrink-0 text-stone-400" />
-          <span className="flex-1 truncate">{t('hero.searchPlaceholder', 'Search restaurants, hotels, activities...')}</span>
+          <span className="flex-1 truncate">{t('hero.search')}</span>
           <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-stone-100 px-1.5 py-0.5 text-[11px] text-stone-400 font-sans">
             ⌘+K
           </kbd>
