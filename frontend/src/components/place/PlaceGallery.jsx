@@ -63,7 +63,7 @@ function GridPreview({ media, onOpenGallery }) {
               )}
               <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/5" />
               {isLast && remainder > 0 && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 backdrop-blur-[2px]">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px]">
                   <span className="text-3xl font-light text-white">+{remainder}</span>
                   <span className="mt-1 text-xs font-medium tracking-widest text-white/75 uppercase">more</span>
                 </div>
@@ -111,7 +111,7 @@ function FullGallery({ media, initialIndex, onClose }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex flex-col bg-black/70 backdrop-blur-2xl"
+      className="fixed inset-0 z-50 flex flex-col bg-black/40 backdrop-blur-sm"
     >
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 py-4 shrink-0">

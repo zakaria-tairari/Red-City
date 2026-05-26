@@ -3,9 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Place extends Model
 {
+    use Searchable;
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'summary' => $this->summary,
+            'description' => $this->description,
+        ];
+    }
+
     public function category() {
         return $this->belongsTo(Category::class);
     }

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher"
+import { useSearchStore } from '../../store/useSearchStore'
 
 const navLinks = [
   { name: 'common.home', to: '/'},
@@ -20,6 +21,7 @@ export default function Header() {
   const navigate = useNavigate()
   const { t } = useTranslation();
   const location = useLocation();
+  const { toggle } = useSearchStore()
 
   const isLinkActive = (to) => location.pathname + location.search === to
 
@@ -50,7 +52,7 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/explore')} aria-label="Search">
+          <Button variant="ghost" size="icon" onClick={() => toggle()} aria-label="Search">
             <Search className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon" asChild>

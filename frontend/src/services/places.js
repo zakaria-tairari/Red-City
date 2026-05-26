@@ -32,6 +32,13 @@ export async function fetchRelatedPlaces(id) {
   return response.data;
 }
 
+export async function fetchSearchResults(query) {
+  const response = await api.get(`/api/places/search`, {
+    params: {q: query}
+  });
+  return response.data;
+}
+
 /**
  * Fetch nearby places based on coordinates of a specific place.
  * @param {string|number} placeId - ID of place to search nearby

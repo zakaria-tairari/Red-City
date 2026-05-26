@@ -14,7 +14,6 @@ class PlacesController extends Controller
     public function index(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
             'category' => $request->category,
-            'query' => $request->query,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
             'page' => $request->page,
@@ -26,10 +25,6 @@ class PlacesController extends Controller
 
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
-            }
-
-            if ($request->filled('query')) {
-                $query->where('name', 'LIKE', "%{$request->query}%");
             }
 
             if ($request->filled('sortBy')) {
@@ -68,7 +63,6 @@ class PlacesController extends Controller
     public function all(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
             'category' => $request->category,
-            'query' => $request->query,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
         ]));
@@ -79,10 +73,6 @@ class PlacesController extends Controller
 
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
-            }
-
-            if ($request->filled('query')) {
-                $query->where('name', 'LIKE', "%{$request->query}%");
             }
 
             if ($request->filled('sortBy')) {
@@ -171,6 +161,24 @@ class PlacesController extends Controller
         return ApiResponse::success(
             'Related places retrieved successfully',
             PlaceListResource::collection($places),
+        );
+    }
+
+    public function search(Request $request) {
+        $raw = Place::search($request->q)->raw();
+        $hits = collect($raw['hits']);
+        $ids = $hits->pluck('id');
+
+        $places = Place::with('category', 'media', 'tags')
+            ->whereIn('id', $ids)
+            ->get()
+            ->keyBy('id');
+
+        $ordered = $ids->map(fn($id) => $places[$id])->filter();
+
+        return ApiResponse::success(
+            'Search results retrieved successfully',
+            PlaceListResource::collection($ordered),
         );
     }
 }

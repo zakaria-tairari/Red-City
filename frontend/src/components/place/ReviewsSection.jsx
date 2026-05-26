@@ -133,7 +133,7 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
             <div>
               <Label>Comment</Label>
               <textarea
-                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm min-h-25 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                 placeholder="Share your experience..."
                 required
               />
@@ -147,7 +147,7 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
       <div className="flex items-center gap-4">
         <Filter className="h-4 w-4 text-stone-400" />
         <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-40">
             <SelectValue placeholder="Filter reviews" />
           </SelectTrigger>
           <SelectContent>
