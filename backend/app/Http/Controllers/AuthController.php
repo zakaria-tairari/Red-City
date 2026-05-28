@@ -59,4 +59,19 @@ class AuthController extends Controller
 
         return ApiResponse::success('User logged out successfully');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'first_name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->id,
+        ]);
+
+        $user->update($data);
+
+        return ApiResponse::success('Profile updated successfully', $user->fresh());
+    }
 }

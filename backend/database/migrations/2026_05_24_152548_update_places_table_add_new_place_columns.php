@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('places', function (Blueprint $table) {
-            $table->decimal('avg_rating', 2, 1)->default(0);
+            $table->decimal('avg_rating', 2, 1)->default(0)->after('description');
         });
     }
 

@@ -29,7 +29,9 @@ class PlacesController extends Controller
 
             if ($request->filled('sortBy')) {
                 switch ($request->sortBy) {
-                    //TODO: case 'rating'
+                    case 'rating':
+                        $query->orderByDesc('avg_rating');
+                        break;
                     
                     case 'reviews':
                         $query->orderByDesc('reviews_count');
@@ -77,7 +79,9 @@ class PlacesController extends Controller
 
             if ($request->filled('sortBy')) {
                 switch ($request->sortBy) {
-                    //TODO: case 'rating'
+                    case 'rating':
+                        $query->orderByDesc('avg_rating');
+                        break;
                     
                     case 'reviews':
                         $query->orderByDesc('reviews_count');
@@ -108,7 +112,7 @@ class PlacesController extends Controller
         $cacheKey = 'place_' . $id;
 
         $place = Cache::remember($cacheKey, 3600, function () use ($id) {
-            $query = Place::with('category', 'media', 'tags', 'translations')->findOrFail($id);
+            $query = Place::with('category', 'media', 'tags', 'translations')->withCount('reviews')->findOrFail($id);
             return $query;
         });
 
@@ -120,7 +124,7 @@ class PlacesController extends Controller
 
     public function featured() {
         $places = Cache::remember('featured_places', 3600, function () {
-            $query = Place::with('category', 'media', 'tags')->limit(5);
+            $query = Place::with('category', 'media', 'tags')->withCount('reviews')->limit(5);
 
             return $query->get();
         });
@@ -154,6 +158,7 @@ class PlacesController extends Controller
                 ->pluck('places.id');
 
             return Place::with('category', 'media', 'tags')
+                ->withCount('reviews')
                 ->whereIn('id', $rankedIds)
                 ->get();
         });
@@ -170,7 +175,9 @@ class PlacesController extends Controller
         $ids = $hits->pluck('id');
 
         $places = Place::with('category', 'media', 'tags')
+            ->withCount('reviews')
             ->whereIn('id', $ids)
+            ->limit(20)
             ->get()
             ->keyBy('id');
 

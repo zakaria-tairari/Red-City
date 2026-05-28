@@ -25,6 +25,8 @@ class PlaceResource extends JsonResource
             'address' => $this->address,
             'lat' => $this->lat,
             'lon' => $this->lon,
+            'avg_rating' => $this->avg_rating,
+            'reviews_count' => $this->reviews_count ?? 0,
             'summary' => $this->summary,
             'description' => $this->description,
             'media' => [
