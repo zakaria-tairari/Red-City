@@ -23,7 +23,7 @@ export async function register(userData) {
 
 export async function getProfile() {
   const response = await api.get('/api/user')
-  return response
+  return response.data
 }
 
 export async function updateProfile(data) {

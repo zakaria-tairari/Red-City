@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Compass, Heart, Menu, Search, User, X } from 'lucide-react'
+import { Compass, Heart, Menu, Search, Shield, User, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +23,8 @@ export default function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const { toggle } = useSearchStore()
-  const { isAuthenticated, user, logout } = useAuthStore()
+  const { isAuthenticated, user, logout, isAdmin } = useAuthStore()
+  const userIsAdmin = isAdmin()
 
   const isLinkActive = (to) => location.pathname + location.search === to
 
@@ -65,6 +66,14 @@ export default function Header() {
                   <Heart className="h-5 w-5" />
                 </Link>
               </Button>
+              {userIsAdmin && (
+                <Button variant="ghost" asChild>
+                  <Link to="/admin" className="flex items-center gap-2 text-primary-700">
+                    <Shield className="h-4 w-4" />
+                    <span className="text-sm font-medium">Admin</span>
+                  </Link>
+                </Button>
+              )}
               <Button variant="ghost" asChild>
                 <Link to="/dashboard" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -122,6 +131,11 @@ export default function Header() {
               <div className="mt-4 flex flex-col gap-2 border-t border-stone-100 pt-4">
                 {isAuthenticated ? (
                   <>
+                    {userIsAdmin && (
+                      <Button variant="outline" asChild className="w-full">
+                        <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
+                      </Button>
+                    )}
                     <Button variant="outline" asChild className="w-full">
                       <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
                     </Button>

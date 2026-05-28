@@ -49,10 +49,12 @@ export const useAuthStore = create(
         try {
           const user = await authService.getProfile()
           set({ user, isAuthenticated: true, isLoading: false })
-        } catch (error) {
+        } catch {
           set({ user: null, isAuthenticated: false, isLoading: false })
         }
       },
+
+      isAdmin: () => get().user?.role === 'admin',
       
       resendVerification: async (email) => {
         try {

@@ -12,6 +12,14 @@ import Dashboard from '@/pages/Dashboard'
 import Favorites from '@/pages/Favorites'
 import DashboardReviews from '@/pages/DashboardReviews'
 import DashboardProfile from '@/pages/DashboardProfile'
+import AdminLayout from '@/layouts/AdminLayout'
+import AdminOverview from '@/pages/admin/AdminOverview'
+import AdminPlaces from '@/pages/admin/AdminPlaces'
+import AdminPlaceEdit from '@/pages/admin/AdminPlaceEdit'
+import AdminCategories from '@/pages/admin/AdminCategories'
+import AdminReviews from '@/pages/admin/AdminReviews'
+import AdminUsers from '@/pages/admin/AdminUsers'
+import AdminMedia from '@/pages/admin/AdminMedia'
 import { SearchDialog } from '@/components/search/SearchDialog'
 import ToastContainer from '@/components/layout/ToastContainer'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -27,6 +35,13 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
   if (isAuthenticated) return <Navigate to="/dashboard" replace />
+  return children
+}
+
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
   return children
 }
 
@@ -63,6 +78,23 @@ export default function App() {
             <Route path="reviews" element={<DashboardReviews />} />
             <Route path="profile" element={<DashboardProfile />} />
           </Route>
+        </Route>
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<AdminOverview />} />
+          <Route path="places" element={<AdminPlaces />} />
+          <Route path="places/:id/edit" element={<AdminPlaceEdit />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="reviews" element={<AdminReviews />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="media" element={<AdminMedia />} />
         </Route>
 
         <Route path="/" element={
