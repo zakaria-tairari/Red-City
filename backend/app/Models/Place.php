@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
+#[Fillable([
+    'category_id', 'document_id', 'name', 'email', 'phone', 'website',
+    'area', 'address', 'lat', 'lon', 'summary', 'description',
+    'tags_generated', 'translated', 'avg_rating',
+])]
 class Place extends Model
 {
     use Searchable;

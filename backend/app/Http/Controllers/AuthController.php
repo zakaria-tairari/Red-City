@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +48,7 @@ class AuthController extends Controller
             return ApiResponse::error('Email not verified');
         }
 
-        return ApiResponse::success('User logged in successfully', $request->user());
+        return ApiResponse::success('User logged in successfully', new UserResource($request->user()));
     }
 
     public function logout(Request $request)
@@ -72,6 +73,6 @@ class AuthController extends Controller
 
         $user->update($data);
 
-        return ApiResponse::success('Profile updated successfully', $user->fresh());
+        return ApiResponse::success('Profile updated successfully', new UserResource($user->fresh()));
     }
 }

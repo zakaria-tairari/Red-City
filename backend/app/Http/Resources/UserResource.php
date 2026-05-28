@@ -20,6 +20,11 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            'role' => $this->role,
+            'email_verified_at' => $this->email_verified_at,
+            'reviews_count' => $this->when(isset($this->reviews_count), $this->reviews_count),
+            'favorite_places_count' => $this->when(isset($this->favorite_places_count), $this->favorite_places_count),
+            'created_at' => $this->created_at,
         ];
     }
 }

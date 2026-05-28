@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['username', 'first_name', 'last_name', 'email', 'password'])]
+#[Fillable(['username', 'first_name', 'last_name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -37,5 +37,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function favoritePlaces() {
         return $this->belongsToMany(Place::class, 'favorites');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }

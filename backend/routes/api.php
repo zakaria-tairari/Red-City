@@ -1,10 +1,18 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCategoriesController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminMediaController;
+use App\Http\Controllers\Admin\AdminPlacesController;
+use App\Http\Controllers\Admin\AdminReviewsController;
+use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\PlacesController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\ReviewsController;
+use App\Helpers\ApiResponse;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +50,42 @@ Route::prefix('email')->controller(VerificationController::class)->group(functio
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request $request) {
-    return $request->user();
+    return ApiResponse::success('User retrieved', new UserResource($request->user()));
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->patch('/user/profile', [App\Http\Controllers\AuthController::class, 'updateProfile']);
+
+Route::prefix('admin')->middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
+    Route::get('/stats', [AdminDashboardController::class, 'stats']);
+
+    Route::prefix('places')->controller(AdminPlacesController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('categories')->controller(AdminCategoriesController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('reviews')->controller(AdminReviewsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('users')->controller(AdminUsersController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::patch('/{id}/role', 'updateRole');
+    });
+
+    Route::prefix('media')->controller(AdminMediaController::class)->group(function () {
+        Route::get('/stats', 'stats');
+        Route::get('/', 'index');
+        Route::post('/{id}/retry', 'retry');
+    });
+});
