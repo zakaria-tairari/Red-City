@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/Label'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Progress } from '@/components/ui/Progress'
 import { useUIStore } from '@/store/useUIStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 const schema = z
   .object({
@@ -15,7 +16,7 @@ const schema = z
     lastName: z.string().min(1, 'Required'),
     username: z.string().min(3, 'At least 3 characters'),
     email: z.string().email('Invalid email'),
-    password: z.string().min(8, 'At least 8 characters'),
+    password: z.string().min(6, 'At least 6 characters'),
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
@@ -44,13 +45,14 @@ export default function Register() {
   })
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState({})
-  const [loading, setLoading] = useState(false)
+  
+  const { register, isLoading } = useAuthStore()
 
   const strength = useMemo(() => passwordStrength(form.password), [form.password])
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const result = schema.safeParse(form)
     if (!result.success) {
@@ -62,17 +64,30 @@ export default function Register() {
       return
     }
     setErrors({})
-    setLoading(true)
-    // Template only — wire up your auth API here
-    setTimeout(() => {
-      setLoading(false)
+    
+    const response = await register({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      username: form.username,
+      email: form.email,
+      password: form.password,
+      passwordConfirmation: form.confirmPassword,
+    })
+
+    if (response.success) {
       useUIStore.getState().addNotification({
         type: 'success',
         title: 'Account Created!',
         message: `Welcome, ${form.firstName}! A verification link has been sent to ${form.email}.`,
       })
-      navigate('/verify-email')
-    }, 600)
+      navigate('/verify-email', { state: { email: form.email } })
+    } else {
+      useUIStore.getState().addNotification({
+        type: 'error',
+        title: 'Registration failed',
+        message: response.error || 'An error occurred during registration.',
+      })
+    }
   }
 
 
@@ -80,7 +95,6 @@ export default function Register() {
     <div>
       <h1 className="font-display text-3xl font-bold text-stone-900">Create account</h1>
       <p className="mt-2 text-stone-500">Join Red City and discover Marrakech</p>
-      <p className="mt-1 text-xs text-stone-400">UI template — no auth backend connected</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div className="grid grid-cols-2 gap-4">
@@ -129,8 +143,8 @@ export default function Register() {
           <Label htmlFor="remember" className="font-normal cursor-pointer">Remember me</Label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account...</> : 'Create account'}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account...</> : 'Create account'}
         </Button>
       </form>
 

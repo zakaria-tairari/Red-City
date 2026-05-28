@@ -47,7 +47,7 @@ export default function PlacesRow({ places = [], title, viewAllHref, viewAllLabe
 
   return (
     <section className="py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
 
         <div className="flex items-center justify-between gap-4 mb-8">
           {title && (

@@ -27,11 +27,13 @@ export default function CategorySection({ category }) {
   }
 
   return (
-    <PlacesRow
-      places={places}
-      title={t(`categories.${category.code}`)}
-      viewAllHref={`/explore?category=${category.id}`}
-      viewAllLabel={t('common.viewAll')}
-    />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <PlacesRow
+        places={places}
+        title={t(`categories.${category.code}`)}
+        viewAllHref={`/explore?category=${category.id}`}
+        viewAllLabel={t('common.viewAll')}
+      />
+    </div>
   )
 }

@@ -63,5 +63,24 @@
         "quikLinks": "Quik Links",
         "categories": "Categories",
         "newsLetter": "Get curated Marrakech tips and exclusive offers."
+    },
+    "place": {
+        "notFound": "Place not found",
+        "backToExplore": "Back to explore",
+        "sharedSuccessTitle": "Shared successfully!",
+        "sharedSuccessMsg": "Shared link to \"{{name}}\".",
+        "linkCopiedTitle": "Link Copied!",
+        "linkCopiedMsg": "Copied details link of \"{{name}}\" to clipboard.",
+        "reviews": "reviews",
+        "saved": "Saved",
+        "save": "Save",
+        "share": "Share",
+        "openingMap": "Opening Map Directions",
+        "routingPath": "Routing path to \"{{name}}\" on Google Maps...",
+        "directions": "Directions",
+        "contact": "Contact",
+        "website": "Website",
+        "tags": "Tags",
+        "moreExperiences": "More experiences"
     }
 }

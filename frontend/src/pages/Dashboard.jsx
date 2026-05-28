@@ -1,24 +1,38 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, MapPin, Compass, Sparkles } from 'lucide-react'
-import { MOCK_PLACES } from '@/data/mockPlaces'
+import { ArrowRight, Compass } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { useFavoritesStore } from '@/store/useFavoritesStore'
+import { getUserReviews } from '@/services/reviews'
+import { fetchPlaces } from '@/services/places'
 import { PlaceCard } from '@/components/ui/PlaceCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { getTopRated } from '@/data/mockPlaces'
+import { Skeleton } from '@/components/ui/Skeleton'
 import DashboardStats from '@/components/dashboard/DashboardStats'
-import DashboardRecommendations from '@/components/dashboard/DashboardRecommendations'
+import PlacesRow from "@/components/ui/PlacesRow";
 
 export default function Dashboard() {
-  const favorites = useFavoritesStore((s) => s.favorites)
-  const favoritePlaces = MOCK_PLACES.filter((p) => favorites.includes(p.id)).slice(0, 4)
-  const recommendations = getTopRated(6) // Fetch 6 items for horizontal scrolling layout
+  const { favoritePlaces, isLoading: isFavoritesLoading } = useFavoritesStore()
+
+  const { data: reviewsResponse, isLoading: isReviewsLoading } = useQuery({
+    queryKey: ['userReviews'],
+    queryFn: getUserReviews,
+  })
+
+  const { data: recommendedPlaces, isLoading: isRecommendationsLoading } = useQuery({
+    queryKey: ['recommendedPlaces'],
+    queryFn: () => fetchPlaces({ sortBy: 'reviews', limit: 6 }),
+  })
+
+  const recentFavorites = favoritePlaces.slice(0, 4)
+  const reviewsCount = reviewsResponse?.data?.length || 0
+  const recommendations = recommendedPlaces?.items || []
 
   return (
     <div className="space-y-10">
 
       {/* Reusable Statistics Grid Widget */}
-      <DashboardStats favoritesCount={favorites.length} />
+      <DashboardStats favoritesCount={favoritePlaces.length} reviewsCount={reviewsCount} />
 
       {/* Favorites Collection List */}
       <Card className="overflow-hidden border-stone-100 shadow-sm">
@@ -34,7 +48,13 @@ export default function Dashboard() {
           </Button>
         </CardHeader>
         <CardContent className="p-6">
-          {favoritePlaces.length === 0 ? (
+          {isFavoritesLoading ? (
+            <div className="flex gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-64 w-full rounded-2xl" />
+              ))}
+            </div>
+          ) : recentFavorites.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="rounded-full bg-stone-50 p-4 mb-4">
                 <Compass className="h-8 w-8 text-stone-400" />
@@ -48,7 +68,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {favoritePlaces.map((place) => (
+              {recentFavorites.map((place) => (
                 <PlaceCard key={place.id} place={place} className="h-full" />
               ))}
             </div>
@@ -56,8 +76,20 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Recommended for You scrollable horizontal Section */}
-      <DashboardRecommendations recommendations={recommendations} />
+      {isRecommendationsLoading ? (
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-64" />
+          <div className="flex gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-120 w-72 shrink-0 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <PlacesRow places={recommendations} title={`Recommended for You`} />
+        </div>
+      )}
     </div>
   )
 }

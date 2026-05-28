@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/Label'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Separator } from '@/components/ui/Separator'
 import { useUIStore } from '@/store/useUIStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 const schema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -20,9 +21,10 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState({})
-  const [loading, setLoading] = useState(false)
+  
+  const { login, isLoading } = useAuthStore()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const result = schema.safeParse({ email, password })
     if (!result.success) {
@@ -34,17 +36,32 @@ export default function Login() {
       return
     }
     setErrors({})
-    setLoading(true)
-    // Template only — wire up your auth API here
-    setTimeout(() => {
-      setLoading(false)
+    
+    const response = await login({ email, password })
+    
+    if (response.success) {
       useUIStore.getState().addNotification({
         type: 'success',
         title: 'Welcome Back!',
-        message: `Successfully logged in as ${email}. Experience Marrakech!`,
+        message: `Successfully logged in. Experience Marrakech!`,
       })
       navigate('/dashboard')
-    }, 600)
+    } else {
+      if (response.error === 'Email not verified') {
+        useUIStore.getState().addNotification({
+          type: 'warning',
+          title: 'Email not verified',
+          message: 'Please verify your email to continue.',
+        })
+        navigate('/verify-email', { state: { email } })
+      } else {
+        useUIStore.getState().addNotification({
+          type: 'error',
+          title: 'Login failed',
+          message: response.error || 'An error occurred during login.',
+        })
+      }
+    }
   }
 
 
@@ -52,7 +69,6 @@ export default function Login() {
     <div>
       <h1 className="font-display text-3xl font-bold text-stone-900">Welcome back</h1>
       <p className="mt-2 text-stone-500">Sign in to continue exploring Marrakech</p>
-      <p className="mt-1 text-xs text-stone-400">UI template — no auth backend connected</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div>
@@ -87,8 +103,8 @@ export default function Login() {
           <Label htmlFor="remember" className="font-normal cursor-pointer">Remember me</Label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</> : 'Sign in'}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</> : 'Sign in'}
         </Button>
       </form>
 

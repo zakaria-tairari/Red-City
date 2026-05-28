@@ -1,20 +1,18 @@
-import { Heart, Star, Clock } from 'lucide-react'
+import { Heart, Star } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 
 /**
  * DashboardStats Component
- * Renders a responsive three-column grid displaying key metrics:
- * Saved places, Reviews written, and Places visited.
+ * Renders a responsive grid displaying key metrics:
+ * Saved places and Reviews written.
  *
  * @param {Object} props
  * @param {number} props.favoritesCount - Number of saved places
- * @param {number} [props.reviewsCount=3] - Number of reviews written (mocked)
- * @param {number} [props.visitedCount=12] - Number of places visited (mocked)
+ * @param {number} props.reviewsCount - Number of reviews written
  */
 export default function DashboardStats({
   favoritesCount = 0,
-  reviewsCount = 3,
-  visitedCount = 12,
+  reviewsCount = 0,
 }) {
   const stats = [
     {
@@ -29,16 +27,10 @@ export default function DashboardStats({
       icon: Star,
       color: 'text-amber-500',
     },
-    {
-      label: 'Places visited',
-      value: visitedCount,
-      icon: Clock,
-      color: 'text-stone-500',
-    },
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2">
       {stats.map((stat) => (
         <Card key={stat.label}>
           <CardContent className="flex items-center gap-4 p-6">

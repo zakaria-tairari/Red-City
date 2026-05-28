@@ -1,67 +1,68 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { useUIStore } from './useUIStore'
-import { MOCK_PLACES } from '@/data/mockPlaces'
+import * as favoritesService from '@/services/favorites'
 
-export const useFavoritesStore = create(
-  persist(
-    (set, get) => ({
-      favorites: [],
-      collections: [{ id: 'default', name: 'My Favorites', placeIds: [] }],
+export const useFavoritesStore = create((set, get) => ({
+  favorites: [], // Array of place IDs
+  favoritePlaces: [], // Array of detailed place objects
+  isLoading: false,
 
-      toggleFavorite: (placeId) => {
-        const { favorites, collections } = get()
-        const isFav = favorites.includes(placeId)
-        const newFavorites = isFav
-          ? favorites.filter((id) => id !== placeId)
-          : [...favorites, placeId]
-        const newCollections = collections.map((c) =>
-          c.id === 'default'
-            ? {
-                ...c,
-                placeIds: isFav
-                  ? c.placeIds.filter((id) => id !== placeId)
-                  : [...c.placeIds, placeId],
-              }
-            : c
-        )
-        
-        // Dynamic visual feedback using Toast Container
-        const placeName = MOCK_PLACES.find((p) => p.id === placeId)?.name || 'Place'
-        useUIStore.getState().addNotification({
-          type: isFav ? 'info' : 'success',
-          title: isFav ? 'Removed from Favorites' : 'Saved to Favorites',
-          message: isFav 
-            ? `Removed "${placeName}" from your favorites.`
-            : `Saved "${placeName}" to your favorites collection!`,
-        })
+  fetchFavorites: async () => {
+    set({ isLoading: true })
+    try {
+      const response = await favoritesService.getFavorites()
+      if (response.success) {
+        const places = response.data
+        const placeIds = places.map(p => p.id)
+        set({ favorites: placeIds, favoritePlaces: places, isLoading: false })
+      }
+    } catch (error) {
+      set({ isLoading: false })
+    }
+  },
 
-        set({ favorites: newFavorites, collections: newCollections })
-      },
+  toggleFavorite: async (place) => {
+    const { favorites, favoritePlaces } = get()
+    const isFav = favorites.includes(place.id)
+    
+    // Optimistic update
+    const newFavorites = isFav
+      ? favorites.filter((id) => id !== place.id)
+      : [...favorites, place.id]
+      
+    const newFavoritePlaces = isFav
+      ? favoritePlaces.filter((p) => p.id !== place.id)
+      : [...favoritePlaces, place]
 
-      isFavorite: (placeId) => get().favorites.includes(placeId),
+    set({ favorites: newFavorites, favoritePlaces: newFavoritePlaces })
 
-      removeFavorite: (placeId) => {
-        get().toggleFavorite(placeId)
-      },
+    // Visual feedback
+    useUIStore.getState().addNotification({
+      type: isFav ? 'info' : 'success',
+      title: isFav ? 'Removed from Favorites' : 'Saved to Favorites',
+      message: isFav 
+        ? `Removed "${place.name}" from your favorites.`
+        : `Saved "${place.name}" to your favorites!`,
+    })
 
-      addCollection: (name) => {
-        const id = `col-${Date.now()}`
-        set((state) => ({
-          collections: [...state.collections, { id, name, placeIds: [] }],
-        }))
+    try {
+      // Backend sync
+      await favoritesService.toggleFavorite(place.id)
+    } catch (error) {
+      // Revert on error
+      set({ favorites, favoritePlaces })
+      useUIStore.getState().addNotification({
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to update favorites on the server.',
+      })
+    }
+  },
 
-        // Notification feedback
-        useUIStore.getState().addNotification({
-          type: 'success',
-          title: 'Collection Created',
-          message: `Successfully created custom collection "${name}"!`,
-        })
+  isFavorite: (placeId) => get().favorites.includes(placeId),
 
-        return id
-      },
-    }),
-    { name: 'red-city-favorites' }
-  )
-)
-
+  removeFavorite: async (placeId) => {
+    const place = get().favoritePlaces.find(p => p.id === placeId) || { id: placeId, name: 'Place' }
+    await get().toggleFavorite(place)
+  },
+}))

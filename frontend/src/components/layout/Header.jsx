@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher"
 import { useSearchStore } from '../../store/useSearchStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 const navLinks = [
   { name: 'common.home', to: '/'},
@@ -22,6 +23,7 @@ export default function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const { toggle } = useSearchStore()
+  const { isAuthenticated, user, logout } = useAuthStore()
 
   const isLinkActive = (to) => location.pathname + location.search === to
 
@@ -55,19 +57,29 @@ export default function Header() {
           <Button variant="ghost" size="icon" onClick={() => toggle()} aria-label="Search">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/dashboard/favorites" aria-label="Favorites">
-              <Heart className="h-5 w-5" />
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/dashboard" aria-label="Favorites">
-              <User className="h-5 w-5" />
-            </Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link to="/login">{t("auth.login")}</Link>
-          </Button>
+          
+          {isAuthenticated ? (
+            <>
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/dashboard/favorites" aria-label="Favorites">
+                  <Heart className="h-5 w-5" />
+                </Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/dashboard" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm font-medium">{user?.first_name || 'Dashboard'}</span>
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => logout()}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button variant="ghost" asChild>
+              <Link to="/login">{t("auth.login")}</Link>
+            </Button>
+          )}
           <LanguageSwitcher />
         </div>
 
@@ -108,18 +120,28 @@ export default function Header() {
                 <Search className="h-5 w-5" /> Search places
               </Link>
               <div className="mt-4 flex flex-col gap-2 border-t border-stone-100 pt-4">
-                <Button variant="outline" asChild className="w-full">
-                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                </Button>
-                <Button variant="outline" asChild className="w-full">
-                  <Link to="/dashboard/favorites" onClick={() => setIsMenuOpen(false)}>Favorites</Link>
-                </Button>
-                <Button variant="ghost" asChild className="w-full">
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
-                </Button>
-                <Button asChild className="w-full">
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>S'inscrire</Link>
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <Button variant="outline" asChild className="w-full">
+                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                    </Button>
+                    <Button variant="outline" asChild className="w-full">
+                      <Link to="/dashboard/favorites" onClick={() => setIsMenuOpen(false)}>Favorites</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full" onClick={() => { logout(); setIsMenuOpen(false) }}>
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" asChild className="w-full">
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
+                    </Button>
+                    <Button asChild className="w-full">
+                      <Link to="/register" onClick={() => setIsMenuOpen(false)}>S'inscrire</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </motion.div>

@@ -1,23 +1,41 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { CheckCircle, Loader2, Mail } from 'lucide-react'
+import { CheckCircle, Loader2, Mail, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-
-const DEMO_EMAIL = 'you@example.com'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export default function VerifyEmail() {
+  const location = useLocation()
+  const email = location.state?.email || 'your email address'
+  
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  
+  const { resendVerification } = useAuthStore()
 
-  const handleResend = () => {
+  const handleResend = async () => {
     setStatus('loading')
-    // Template only — wire up your auth API here
-    setTimeout(() => {
+    setError('')
+    setMessage('')
+    
+    if (email === 'your email address') {
+      setStatus('error')
+      setError('Email address not found. Please log in again.')
+      return
+    }
+
+    const response = await resendVerification(email)
+    
+    if (response.success) {
       setStatus('success')
-      setMessage('Verification email sent (demo)')
-    }, 600)
+      setMessage(response.message || 'Verification email sent')
+    } else {
+      setStatus('error')
+      setError(response.error || 'Failed to resend email')
+    }
   }
 
   return (
@@ -35,13 +53,10 @@ export default function VerifyEmail() {
             <CardTitle className="font-display text-2xl">Verify your email</CardTitle>
             <CardDescription>
               We sent a verification link to{' '}
-              <strong className="text-stone-700">{DEMO_EMAIL}</strong>
+              <strong className="text-stone-700">{email}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-stone-500 text-center">
-              UI template — no auth backend connected.
-            </p>
 
             <Button
               variant="outline"
@@ -59,6 +74,12 @@ export default function VerifyEmail() {
             {status === 'success' && (
               <p className="flex items-center justify-center gap-2 text-sm text-emerald-600">
                 <CheckCircle className="h-4 w-4" /> {message}
+              </p>
+            )}
+
+            {status === 'error' && (
+              <p className="flex items-center justify-center gap-2 text-sm text-red-600">
+                <AlertCircle className="h-4 w-4" /> {error}
               </p>
             )}
 

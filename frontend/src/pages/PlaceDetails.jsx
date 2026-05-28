@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {
   Clock,
@@ -12,7 +13,7 @@ import {
   Globe,
   Mail,
 } from "lucide-react";
-import { getOpenStatus, getPriceLabel } from "@/lib/utils";
+import { cn, getOpenStatus, getPriceLabel, formatReviewCount } from "@/lib/utils";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import PlaceGallery from "@/components/place/PlaceGallery";
 import ReviewsSection from "@/components/place/ReviewsSection";
@@ -24,7 +25,6 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { useUIStore } from "@/store/useUIStore";
-import { cn } from "@/lib/utils";
 import { fetchPlaceById, fetchRelatedPlaces } from "../services/places";
 import ReactMarkdown from "react-markdown";
 import PlacesRow from "../components/ui/PlacesRow";
@@ -32,6 +32,7 @@ import PlacesRow from "../components/ui/PlacesRow";
 export default function PlaceDetails() {
   const { id } = useParams();
   const { isFavorite, toggleFavorite } = useFavoritesStore();
+  const { t, i18n } = useTranslation();
 
   const {
     data: place,
@@ -61,9 +62,9 @@ export default function PlaceDetails() {
   if (error || !place) {
     return (
       <div className="pt-32 text-center">
-        <p className="font-serif text-xl">Place not found</p>
+        <p className="font-serif text-xl">{t('place.notFound')}</p>
         <Button asChild className="mt-4">
-          <Link to="/explore">Back to explore</Link>
+          <Link to="/explore">{t('place.backToExplore')}</Link>
         </Button>
       </div>
     );
@@ -79,8 +80,8 @@ export default function PlaceDetails() {
         await navigator.share({ title: place.name, url: window.location.href });
         useUIStore.getState().addNotification({
           type: "success",
-          title: "Shared successfully!",
-          message: `Shared link to "${place.name}".`,
+          title: t('place.sharedSuccessTitle'),
+          message: t('place.sharedSuccessMsg', { name: place.name }),
         });
       } catch (err) {
         // user cancelled
@@ -89,8 +90,8 @@ export default function PlaceDetails() {
       navigator.clipboard?.writeText(window.location.href);
       useUIStore.getState().addNotification({
         type: "success",
-        title: "Link Copied!",
-        message: `Copied details link of "${place.name}" to clipboard.`,
+        title: t('place.linkCopiedTitle'),
+        message: t('place.linkCopiedMsg', { name: place.name }),
       });
     }
   };
@@ -101,6 +102,9 @@ export default function PlaceDetails() {
       url: item.app_url || item.original_url,
     }),
   );
+
+  const currentLang = i18n.language?.substring(0, 2) || 'en';
+  const placeTranslation = place.translations?.find(t => t.language === currentLang) || place;
 
   return (
     <motion.div
@@ -122,28 +126,28 @@ export default function PlaceDetails() {
               {place.name}
             </h1>
             <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-              <RatingStars rating={4.5} />
-              <span className="text-stone-500">1.2k reviews</span>
+              <RatingStars rating={place.avg_rating || 0} />
+              <span className="text-stone-500">{formatReviewCount(place.reviews_count || 0)} {t('place.reviews')}</span>
               <span className="flex items-center gap-1 text-stone-600">
                 <MapPin className="h-4 w-4" />
                 {place.area} - {place.address}
               </span>
             </div>
             <div className="mt-5 pr-20">
-              <ReactMarkdown>{place.summary}</ReactMarkdown>           
+              <ReactMarkdown>{placeTranslation.summary}</ReactMarkdown>           
             </div>
           </div>
 
           <div className="flex gap-2 shrink-0">
             <Button
               variant={fav ? "default" : "outline"}
-              onClick={() => toggleFavorite(place.id)}
+              onClick={() => toggleFavorite(place)}
             >
               <Heart className={cn("h-4 w-4", fav && "fill-current")} />
-              {fav ? "Saved" : "Save"}
+              {fav ? t('place.saved') : t('place.save')}
             </Button>
             <Button variant="outline" onClick={handleShare}>
-              <Share2 className="h-4 w-4" /> Share
+              <Share2 className="h-4 w-4" /> {t('place.share')}
             </Button>
             <Button variant="outline" asChild>
               <a
@@ -153,12 +157,12 @@ export default function PlaceDetails() {
                 onClick={() => {
                   useUIStore.getState().addNotification({
                     type: "info",
-                    title: "Opening Map Directions",
-                    message: `Routing path to "${place.name}" on Google Maps...`,
+                    title: t('place.openingMap'),
+                    message: t('place.routingPath', { name: place.name }),
                   });
                 }}
               >
-                <Navigation className="h-4 w-4" /> Directions
+                <Navigation className="h-4 w-4" /> {t('place.directions')}
               </a>
             </Button>
           </div>
@@ -167,12 +171,12 @@ export default function PlaceDetails() {
         <div className="grid gap-8 lg:grid-cols-3 mt-10">
           <div className="lg:col-span-2 space-y-6">
             <div className="markdown-content">
-              <ReactMarkdown>{place.description}</ReactMarkdown>
+              <ReactMarkdown>{placeTranslation.description}</ReactMarkdown>
             </div>
           </div>
 
           <div className="rounded-2xl border border-stone-300 border-dashed bg-stone-50 p-6 space-y-4 h-fit">
-            <h3 className="font-serif text-xl font-bold">Contact</h3>
+            <h3 className="font-serif text-xl font-bold">{t('place.contact')}</h3>
             <div className="space-y-4">
               {place.phone && (
                 <a
@@ -189,7 +193,7 @@ export default function PlaceDetails() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-stone-600 hover:text-primary-600"
                 >
-                  <Globe className="h-4 w-4" /> Website{" "}
+                  <Globe className="h-4 w-4" /> {t('place.website')}{" "}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               )}
@@ -199,7 +203,7 @@ export default function PlaceDetails() {
                 </p>
               )}
             </div>
-            <h3 className="font-serif text-xl font-bold mt-8">Tags</h3>
+            <h3 className="font-serif text-xl font-bold mt-8">{t('place.tags')}</h3>
             <div>
               {place.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-1">
@@ -216,17 +220,17 @@ export default function PlaceDetails() {
           </div>
         </div>
 
-        <section className="mb-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <PlacesRow
             places={related}
-            title="More experiences"
+            title={t('place.moreExperiences')}
           />
-        </section>
+        </div>
 
         <ReviewsSection
           placeId={place.id}
-          placeRating={4.5}
-          reviewCount={1200}
+          placeRating={place.avg_rating || 0}
+          reviewCount={place.reviews_count || 0}
         />
       </div>
     </motion.div>

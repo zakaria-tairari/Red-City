@@ -112,9 +112,9 @@ function PlaceMeta({ place, light = false, compact = false }) {
     <div className={cn('mt-2 flex flex-wrap items-center gap-2 text-sm', textClass, compact && 'mt-1 text-xs')}>
       <span className="inline-flex items-center gap-1">
         <Star className={cn('h-3.5 w-3.5', light ? 'fill-amber-400 text-amber-400' : 'fill-amber-500 text-amber-500')} />
-        <span className={cn('font-semibold', light ? 'text-white' : 'text-stone-800')}>4.5</span>
+      <span className={cn('font-semibold', light ? 'text-white' : 'text-stone-800')}>{place.avg_rating ?? '—'}</span>
       </span>
-      <span>1.2k</span>
+      <span>{formatReviewCount(place.reviews_count || 0)}</span>
       <span className="inline-flex items-center gap-1">
         <MapPin className="h-3 w-3 shrink-0" />
         {place.area}
