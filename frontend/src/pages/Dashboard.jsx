@@ -14,7 +14,7 @@ import PlacesRow from "@/components/ui/PlacesRow";
 export default function Dashboard() {
   const { favoritePlaces, isLoading: isFavoritesLoading } = useFavoritesStore()
 
-  const { data: reviewsResponse, isLoading: isReviewsLoading } = useQuery({
+  const { data: reviewsResponse } = useQuery({
     queryKey: ['userReviews'],
     queryFn: getUserReviews,
   })
@@ -29,7 +29,7 @@ export default function Dashboard() {
   const recommendations = recommendedPlaces?.items || []
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
 
       {/* Reusable Statistics Grid Widget */}
       <DashboardStats favoritesCount={favoritePlaces.length} reviewsCount={reviewsCount} />
@@ -43,7 +43,7 @@ export default function Dashboard() {
           </div>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/dashboard/favorites" className="gap-1.5">
-              Afficher tout <ArrowRight className="h-4 w-4" />
+              View all <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </CardHeader>
@@ -86,12 +86,9 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <PlacesRow places={recommendations} title={`Recommended for You`} />
-        </div>
+        <PlacesRow places={recommendations} title={`Recommended for You`} />
       )}
     </div>
   )
 }
-
 

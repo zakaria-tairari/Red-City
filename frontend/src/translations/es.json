@@ -49,7 +49,11 @@
       "allCategories": "Todas las categorías",
       "rating": "Mejor valorados",
       "reviews": "Más reseñas",
-      "name": "Nombre A-Z"
+      "name": "Nombre A-Z",
+      "tags": "Etiquetas",
+      "searchTags": "Buscar etiquetas",
+      "selectedTags": "seleccionadas",
+      "clearTags": "Limpiar etiquetas"
     },
     "footer": {
       "text": "Tu guía inteligente de Marrakech — descubre riads escondidos, gastronomía de clase mundial, aventuras en el desierto y el alma de la Ciudad Roja.",

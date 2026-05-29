@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Globe } from 'lucide-react'
-import { getAdminPlace, updateAdminPlace } from '@/services/admin'
+import { ArrowDown, ArrowLeft, ArrowUp, Globe, Image, Plus, Star, Trash2, Upload } from 'lucide-react'
+import { createAdminPlace, getAdminPlace, updateAdminPlace } from '@/services/admin'
 import { fetchCategories } from '@/services/categories'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { AdminErrorState } from '@/components/admin/AdminPageState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
 import { useUIStore } from '@/store/useUIStore'
 import { cn } from '@/lib/utils'
+import { getApiErrorMessage } from '@/lib/admin'
 
 
 const emptyForm = {
+  document_id: '',
   name: '',
   category_id: '',
   email: '',
@@ -28,23 +31,134 @@ const emptyForm = {
   description: '',
 }
 
+const emptyMediaItem = {
+  type: 'image',
+  original_url: '',
+  app_url: '',
+  app_path: '',
+  file: null,
+  preview_url: '',
+  storage_status: 'done',
+}
+
 const emptyTranslations = {
   en: { summary: '', description: '' },
   es: { summary: '', description: '' },
 }
 
+function getInitialForm(place) {
+  if (!place) return emptyForm
+
+  return {
+    document_id: place.document_id ?? '',
+    name: place.name ?? '',
+    category_id: String(place.category?.id ?? ''),
+    email: place.email ?? '',
+    phone: place.phone ?? '',
+    website: place.website ?? '',
+    area: place.area ?? '',
+    address: place.address ?? '',
+    lat: place.lat ?? '',
+    lon: place.lon ?? '',
+    summary: place.summary ?? '',
+    description: place.description ?? '',
+  }
+}
+
+function getInitialTranslations(place) {
+  const loaded = {
+    en: { ...emptyTranslations.en },
+    es: { ...emptyTranslations.es },
+  }
+
+  if (!place?.translations) return loaded
+
+  for (const translation of place.translations) {
+    if (loaded[translation.language]) {
+      loaded[translation.language] = {
+        summary: translation.summary ?? '',
+        description: translation.description ?? '',
+      }
+    }
+  }
+
+  return loaded
+}
+
+function getInitialMedia(place) {
+  if (!place?.media) return []
+
+  const media = [
+    place.media.cover,
+    ...(place.media.gallery ?? []),
+  ].filter(Boolean)
+
+  return media
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    .map((item, index) => ({
+      id: item.id,
+      type: item.type ?? 'image',
+      original_url: item.original_url ?? '',
+      app_url: item.app_url ?? '',
+      app_path: item.app_path ?? '',
+      file: null,
+      preview_url: '',
+      storage_status: item.storage_status ?? 'pending',
+      position: item.position ?? index,
+    }))
+}
+
+function isFile(value) {
+  return typeof File !== 'undefined' && value instanceof File
+}
+
+function appendFormData(formData, key, value) {
+  if (value === undefined) return
+
+  if (value === null) {
+    formData.append(key, '')
+    return
+  }
+
+  if (isFile(value)) {
+    formData.append(key, value)
+    return
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => appendFormData(formData, `${key}[${index}]`, item))
+    return
+  }
+
+  if (typeof value === 'object') {
+    Object.entries(value).forEach(([childKey, childValue]) => {
+      appendFormData(formData, `${key}[${childKey}]`, childValue)
+    })
+    return
+  }
+
+  formData.append(key, value)
+}
+
+function toFormData(data) {
+  const formData = new FormData()
+
+  Object.entries(data).forEach(([key, value]) => appendFormData(formData, key, value))
+
+  return formData
+}
+
 export default function AdminPlaceEdit() {
   const { id } = useParams()
+  const isCreateMode = !id
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const addNotification = useUIStore((s) => s.addNotification)
-  const [form, setForm] = useState(emptyForm)
-  const [translations, setTranslations] = useState(emptyTranslations)
-  const [activeLang, setActiveLang] = useState('en')
 
-  const { data: placeResponse, isLoading } = useQuery({
+  const { data: placeResponse, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['adminPlace', id],
     queryFn: () => getAdminPlace(id),
+    enabled: !isCreateMode,
   })
 
   const { data: categoriesResponse } = useQuery({
@@ -53,57 +167,74 @@ export default function AdminPlaceEdit() {
   })
 
   const place = placeResponse?.data
-
-  useEffect(() => {
-    if (!place) return
-    setForm({
-      name: place.name ?? '',
-      category_id: String(place.category?.id ?? ''),
-      email: place.email ?? '',
-      phone: place.phone ?? '',
-      website: place.website ?? '',
-      area: place.area ?? '',
-      address: place.address ?? '',
-      lat: place.lat ?? '',
-      lon: place.lon ?? '',
-      summary: place.summary ?? '',
-      description: place.description ?? '',
-    })
-
-    // Populate translations from the loaded place data
-    const loaded = { ...emptyTranslations }
-    if (place.translations) {
-      for (const t of place.translations) {
-        if (loaded[t.language]) {
-          loaded[t.language] = {
-            summary: t.summary ?? '',
-            description: t.description ?? '',
-          }
-        }
-      }
-    }
-    setTranslations(loaded)
-  }, [place])
+  const initialForm = useMemo(() => getInitialForm(place), [place])
+  const initialTranslations = useMemo(() => getInitialTranslations(place), [place])
+  const initialMedia = useMemo(() => getInitialMedia(place), [place])
 
   const saveMutation = useMutation({
-    mutationFn: (data) => updateAdminPlace(id, {
-      ...data,
-      category_id: data.category_id ? Number(data.category_id) : undefined,
-      lat: data.lat === '' ? null : Number(data.lat),
-      lon: data.lon === '' ? null : Number(data.lon),
-    }),
+    mutationFn: (data) => {
+      const payload = {
+        ...data,
+        category_id: data.category_id ? Number(data.category_id) : undefined,
+        lat: data.lat === '' ? null : Number(data.lat),
+        lon: data.lon === '' ? null : Number(data.lon),
+      }
+
+      const hasUploads = payload.media?.some((item) => isFile(item.file))
+      const body = hasUploads ? toFormData(payload) : payload
+
+      return isCreateMode ? createAdminPlace(body) : updateAdminPlace(id, body)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminPlaces'] })
-      queryClient.invalidateQueries({ queryKey: ['adminPlace', id] })
-      addNotification({ type: 'success', message: 'Place updated' })
+      if (!isCreateMode) queryClient.invalidateQueries({ queryKey: ['adminPlace', id] })
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] })
+      addNotification({ type: 'success', message: isCreateMode ? 'Place created' : 'Place updated' })
       navigate('/admin/places')
     },
     onError: (err) => {
-      addNotification({ type: 'error', message: err.response?.data?.message || 'Update failed' })
+      addNotification({ type: 'error', message: getApiErrorMessage(err, 'Update failed') })
     },
   })
 
   const categories = categoriesResponse ?? []
+
+  if (!isCreateMode && isLoading) {
+    return <Skeleton className="h-96 w-full rounded-xl" />
+  }
+
+  if (!isCreateMode && isError) {
+    return (
+      <AdminErrorState
+        message={getApiErrorMessage(error, 'Could not load this place.')}
+        onRetry={refetch}
+      />
+    )
+  }
+
+  if (!isCreateMode && !place) {
+    return <AdminErrorState message="Place not found." />
+  }
+
+  return (
+    <PlaceEditForm
+      key={place?.id ?? 'create'}
+      formInitialValue={initialForm}
+      translationsInitialValue={initialTranslations}
+      mediaInitialValue={initialMedia}
+      categories={categories}
+      saveMutation={saveMutation}
+      isCreateMode={isCreateMode}
+    />
+  )
+}
+
+function PlaceEditForm({ formInitialValue, translationsInitialValue, mediaInitialValue, categories, saveMutation, isCreateMode }) {
+  const [form, setForm] = useState(formInitialValue)
+  const [translations, setTranslations] = useState(translationsInitialValue)
+  const [media, setMedia] = useState(mediaInitialValue)
+  const [activeLang, setActiveLang] = useState('en')
+  const addNotification = useUIStore((s) => s.addNotification)
 
   const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }))
 
@@ -113,13 +244,82 @@ export default function AdminPlaceEdit() {
       [lang]: { ...prev[lang], [field]: value },
     }))
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    saveMutation.mutate({ ...form, translations })
+  const updateMedia = (index, field, value) =>
+    setMedia((items) => items.map((item, itemIndex) =>
+      itemIndex === index ? { ...item, [field]: value } : item
+    ))
+
+  const addMedia = () => setMedia((items) => [...items, { ...emptyMediaItem }])
+  const removeMedia = (index) => setMedia((items) => items.filter((_, itemIndex) => itemIndex !== index))
+  const makeCover = (index) =>
+    setMedia((items) => {
+      const next = [...items]
+      const [selected] = next.splice(index, 1)
+      return selected ? [selected, ...next] : items
+    })
+  const moveMedia = (index, direction) =>
+    setMedia((items) => {
+      const target = index + direction
+      if (target < 0 || target >= items.length) return items
+
+      const next = [...items]
+      const current = next[index]
+      next[index] = next[target]
+      next[target] = current
+      return next
+    })
+  const updateMediaFile = (index, file) => {
+    if (!file) return
+
+    setMedia((items) => items.map((item, itemIndex) => {
+      if (itemIndex !== index) return item
+
+      return {
+        ...item,
+        file,
+        preview_url: URL.createObjectURL(file),
+        original_url: item.original_url,
+        storage_status: 'done',
+        type: file.type.startsWith('video/') ? 'video' : 'image',
+      }
+    }))
   }
 
-  if (isLoading) {
-    return <Skeleton className="h-96 w-full rounded-xl" />
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (form.lat !== '' && Number.isNaN(Number(form.lat))) {
+      addNotification({ type: 'error', message: 'Latitude must be a number' })
+      return
+    }
+
+    if (form.lon !== '' && Number.isNaN(Number(form.lon))) {
+      addNotification({ type: 'error', message: 'Longitude must be a number' })
+      return
+    }
+
+    saveMutation.mutate({
+      ...form,
+      document_id: form.document_id.trim() || undefined,
+      name: form.name.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      website: form.website.trim(),
+      area: form.area.trim(),
+      address: form.address.trim(),
+      translations,
+      media: media
+        .map((item, index) => ({
+          id: item.id,
+          type: item.type,
+          original_url: item.original_url?.trim() || undefined,
+          app_url: item.app_path || undefined,
+          file: item.file || undefined,
+          storage_status: item.storage_status,
+          position: index,
+        }))
+        .filter((item) => item.file || item.original_url || item.app_url),
+    })
   }
 
   return (
@@ -135,10 +335,18 @@ export default function AdminPlaceEdit() {
         {/* ── Place details card ── */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl">Edit place</CardTitle>
+            <CardTitle className="font-display text-xl">{isCreateMode ? 'Create place' : 'Edit place'}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm font-medium text-stone-700">Document ID</label>
+                <Input
+                  value={form.document_id}
+                  onChange={(e) => updateField('document_id', e.target.value)}
+                  placeholder="Auto-generated when empty"
+                />
+              </div>
               <div className="sm:col-span-2">
                 <label className="mb-1 block text-sm font-medium text-stone-700">Name</label>
                 <Input value={form.name} onChange={(e) => updateField('name', e.target.value)} required />
@@ -190,6 +398,132 @@ export default function AdminPlaceEdit() {
                 <Input type="number" step="any" value={form.lon} onChange={(e) => updateField('lon', e.target.value)} />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="font-display text-xl flex items-center gap-2">
+                <Image className="h-5 w-5 text-primary-600" />
+                Media
+              </CardTitle>
+              <p className="mt-1 text-sm text-stone-500">
+                Upload images or videos, choose the cover, and reorder the gallery.
+              </p>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={addMedia}>
+              <Plus className="h-4 w-4" />
+              Add media
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {media.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-stone-200 p-6 text-center text-sm text-stone-500">
+                No media added yet.
+              </div>
+            ) : (
+              media.map((item, index) => {
+                const previewUrl = item.preview_url || item.app_url || item.original_url
+                const isCover = index === 0
+
+                return (
+                  <div key={item.id ?? index} className="grid gap-3 rounded-xl border border-stone-100 bg-stone-50/60 p-3 lg:grid-cols-[112px_1fr_156px_112px] lg:items-center">
+                    <div className="relative h-24 overflow-hidden rounded-lg bg-stone-200">
+                      {previewUrl && item.type === 'video' ? (
+                        <video src={previewUrl} className="h-full w-full object-cover" muted />
+                      ) : previewUrl ? (
+                        <img src={previewUrl} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-xs text-stone-500">
+                          #{index + 1}
+                        </div>
+                      )}
+                      {isCover && (
+                        <span className="absolute left-2 top-2 rounded-full bg-primary-600 px-2 py-0.5 text-xs font-semibold text-white">
+                          Cover
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <select
+                          className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm"
+                          value={item.type}
+                          onChange={(e) => updateMedia(index, 'type', e.target.value)}
+                        >
+                          <option value="image">Image</option>
+                          <option value="video">Video</option>
+                        </select>
+                        <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100">
+                          <Upload className="h-4 w-4" />
+                          {item.file || previewUrl ? 'Replace file' : 'Upload file'}
+                          <input
+                            type="file"
+                            accept="image/*,video/mp4,video/webm,video/quicktime"
+                            className="sr-only"
+                            onChange={(e) => updateMediaFile(index, e.target.files?.[0])}
+                          />
+                        </label>
+                      </div>
+                      <p className="truncate text-xs text-stone-500">
+                        {item.file?.name || item.app_path || item.original_url || 'No file selected'}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        type="button"
+                        variant={isCover ? 'default' : 'outline'}
+                        size="icon"
+                        onClick={() => makeCover(index)}
+                        disabled={isCover}
+                        title="Make cover"
+                      >
+                        <Star className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => moveMedia(index, -1)}
+                        disabled={index === 0}
+                        title="Move up"
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => moveMedia(index, 1)}
+                        disabled={index === media.length - 1}
+                        title="Move down"
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 lg:justify-end">
+                      <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-stone-600">
+                        Position {index + 1}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-600"
+                        onClick={() => removeMedia(index)}
+                        title="Remove media"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </CardContent>
         </Card>
 
@@ -300,7 +634,7 @@ export default function AdminPlaceEdit() {
         {/* ── Actions ── */}
         <div className="flex gap-3">
           <Button type="submit" disabled={saveMutation.isPending}>
-            {saveMutation.isPending ? 'Saving...' : 'Save changes'}
+            {saveMutation.isPending ? 'Saving...' : isCreateMode ? 'Create place' : 'Save changes'}
           </Button>
           <Button type="button" variant="outline" asChild>
             <Link to="/admin/places">Cancel</Link>

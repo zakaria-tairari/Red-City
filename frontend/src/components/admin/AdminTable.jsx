@@ -24,10 +24,10 @@ export function AdminTableRow({ children, className }) {
   return <tr className={cn('hover:bg-stone-50/50', className)}>{children}</tr>
 }
 
-export function AdminTableCell({ children, className, header = false }) {
+export function AdminTableCell({ children, className, header = false, ...props }) {
   const Tag = header ? 'th' : 'td'
   return (
-    <Tag className={cn('px-4 py-3', header && 'px-4 py-3', className)}>
+    <Tag className={cn('px-4 py-3', header && 'px-4 py-3', className)} {...props}>
       {children}
     </Tag>
   )

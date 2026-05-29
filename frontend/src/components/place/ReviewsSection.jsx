@@ -210,7 +210,9 @@ export default function ReviewsSection({ placeId, placeRating, reviewCount }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <RatingStars rating={review.rating} showValue={false} size="sm" />
-                    <Badge variant="success">Verified</Badge>
+                    {
+                      review.user.role === 'admin' && <Badge>Admin</Badge>
+                    }
                   </div>
                 </div>
                 <p className="mt-4 text-stone-600 leading-relaxed whitespace-pre-wrap">{review.comment}</p>

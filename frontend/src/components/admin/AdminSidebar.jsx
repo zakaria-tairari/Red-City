@@ -1,38 +1,12 @@
 import { Link, NavLink } from 'react-router-dom'
 import {
   ArrowLeft,
-  FolderTree,
-  Image,
-  LayoutGrid,
-  MapPin,
-  MessageSquare,
-  Users,
   X,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Separator } from '@/components/ui/Separator'
+import { adminNavItems } from '@/components/admin/adminNav'
 import { cn } from '@/lib/utils'
-
-export const adminNavItems = [
-  { to: '/admin', label: 'Overview', icon: LayoutGrid, end: true },
-  { to: '/admin/places', label: 'Places', icon: MapPin },
-  { to: '/admin/categories', label: 'Categories', icon: FolderTree },
-  { to: '/admin/reviews', label: 'Reviews', icon: MessageSquare },
-  { to: '/admin/users', label: 'Users', icon: Users },
-  { to: '/admin/media', label: 'Media', icon: Image },
-]
-
-export function getAdminPageTitle(pathname) {
-  if (pathname === '/admin') return 'Overview'
-  if (pathname.startsWith('/admin/places/') && pathname.endsWith('/edit')) return 'Edit place'
-  if (pathname === '/admin/places') return 'Places'
-  if (pathname === '/admin/categories') return 'Categories'
-  if (pathname === '/admin/reviews') return 'Reviews'
-  if (pathname === '/admin/users') return 'Users'
-  if (pathname === '/admin/media') return 'Media'
-  return 'Admin'
-}
 
 export default function AdminSidebar({ onNavigate, onCloseMobile }) {
   return (

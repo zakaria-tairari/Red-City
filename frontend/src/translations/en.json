@@ -55,7 +55,11 @@
         "allCategories": "All categories",
         "rating": "Top rated",
         "reviews": "Most reviews",
-        "name": "Name A-Z"
+        "name": "Name A-Z",
+        "tags": "Tags",
+        "searchTags": "Search tags",
+        "selectedTags": "selected",
+        "clearTags": "Clear tags"
     },
 
     "footer": {

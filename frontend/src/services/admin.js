@@ -12,7 +12,16 @@ export async function getAdminPlace(id) {
   return api.get(`/api/admin/places/${id}`)
 }
 
+export async function createAdminPlace(data) {
+  return api.post('/api/admin/places', data, getPayloadConfig(data))
+}
+
 export async function updateAdminPlace(id, data) {
+  if (data instanceof FormData) {
+    data.append('_method', 'PATCH')
+    return api.post(`/api/admin/places/${id}`, data, getPayloadConfig(data))
+  }
+
   return api.patch(`/api/admin/places/${id}`, data)
 }
 
@@ -56,6 +65,14 @@ export async function updateAdminUserRole(id, role) {
   return api.patch(`/api/admin/users/${id}/role`, { role })
 }
 
+export async function updateAdminUser(id, data) {
+  return api.patch(`/api/admin/users/${id}`, data)
+}
+
+export async function deleteAdminUser(id) {
+  return api.delete(`/api/admin/users/${id}`)
+}
+
 export async function getAdminMedia(params = {}) {
   return api.get('/api/admin/media', { params })
 }
@@ -66,4 +83,14 @@ export async function getAdminMediaStats() {
 
 export async function retryAdminMedia(id) {
   return api.post(`/api/admin/media/${id}/retry`)
+}
+
+function getPayloadConfig(data) {
+  if (!(data instanceof FormData)) return undefined
+
+  return {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }
 }

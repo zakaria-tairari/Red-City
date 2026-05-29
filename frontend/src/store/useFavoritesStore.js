@@ -16,7 +16,7 @@ export const useFavoritesStore = create((set, get) => ({
         const placeIds = places.map(p => p.id)
         set({ favorites: placeIds, favoritePlaces: places, isLoading: false })
       }
-    } catch (error) {
+    } catch {
       set({ isLoading: false })
     }
   },
@@ -48,7 +48,7 @@ export const useFavoritesStore = create((set, get) => ({
     try {
       // Backend sync
       await favoritesService.toggleFavorite(place.id)
-    } catch (error) {
+    } catch {
       // Revert on error
       set({ favorites, favoritePlaces })
       useUIStore.getState().addNotification({

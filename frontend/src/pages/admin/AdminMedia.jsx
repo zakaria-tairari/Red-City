@@ -4,11 +4,14 @@ import { RefreshCw } from 'lucide-react'
 import { getAdminMedia, getAdminMediaStats, retryAdminMedia } from '@/services/admin'
 import AdminStatCard from '@/components/admin/AdminStatCard'
 import { AdminTable, AdminTableBody, AdminTableCell, AdminTableHead, AdminTableRow } from '@/components/admin/AdminTable'
+import AdminPagination from '@/components/admin/AdminPagination'
+import { AdminEmptyState, AdminErrorState } from '@/components/admin/AdminPageState'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useUIStore } from '@/store/useUIStore'
 import { cn } from '@/lib/utils'
 import { Image } from 'lucide-react'
+import { getApiErrorMessage } from '@/lib/admin'
 
 const statusColors = {
   done: 'bg-emerald-100 text-emerald-800',
@@ -23,12 +26,12 @@ export default function AdminMedia() {
   const queryClient = useQueryClient()
   const addNotification = useUIStore((s) => s.addNotification)
 
-  const { data: statsResponse, isLoading: statsLoading } = useQuery({
+  const { data: statsResponse, isLoading: statsLoading, isError: statsIsError } = useQuery({
     queryKey: ['adminMediaStats'],
     queryFn: getAdminMediaStats,
   })
 
-  const { data: response, isLoading } = useQuery({
+  const { data: response, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ['adminMedia', status, page],
     queryFn: () => getAdminMedia({ status: status || undefined, page }),
   })
@@ -40,7 +43,7 @@ export default function AdminMedia() {
       queryClient.invalidateQueries({ queryKey: ['adminMediaStats'] })
       addNotification({ type: 'success', message: 'Download queued' })
     },
-    onError: (err) => addNotification({ type: 'error', message: err.response?.data?.message || 'Retry failed' }),
+    onError: (err) => addNotification({ type: 'error', message: getApiErrorMessage(err, 'Retry failed') }),
   })
 
   const stats = statsResponse?.data
@@ -49,7 +52,9 @@ export default function AdminMedia() {
 
   return (
     <div className="space-y-6">
-      {statsLoading ? (
+      {statsIsError ? (
+        <AdminErrorState message="Could not load media stats." />
+      ) : statsLoading ? (
         <div className="grid gap-4 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-20 rounded-xl" />
@@ -64,19 +69,29 @@ export default function AdminMedia() {
         </div>
       )}
 
-      <select
-        className="h-10 rounded-xl border border-stone-200 bg-white px-4 text-sm"
-        value={status}
-        onChange={(e) => { setStatus(e.target.value); setPage(1) }}
-      >
-        <option value="">All statuses</option>
-        <option value="pending">Pending</option>
-        <option value="processing">Processing</option>
-        <option value="done">Done</option>
-        <option value="failed">Failed</option>
-      </select>
+      <div className="flex items-center gap-3">
+        <select
+          className="h-10 rounded-xl border border-stone-200 bg-white px-4 text-sm"
+          value={status}
+          onChange={(e) => { setStatus(e.target.value); setPage(1) }}
+        >
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="done">Done</option>
+          <option value="failed">Failed</option>
+        </select>
+        {isFetching && !isLoading && (
+          <span className="text-sm text-stone-400">Refreshing...</span>
+        )}
+      </div>
 
-      {isLoading ? (
+      {isError ? (
+        <AdminErrorState
+          message={getApiErrorMessage(error, 'Could not load media.')}
+          onRetry={refetch}
+        />
+      ) : isLoading ? (
         <Skeleton className="h-64 w-full rounded-xl" />
       ) : (
         <>
@@ -94,7 +109,11 @@ export default function AdminMedia() {
               {items.length === 0 ? (
                 <tr>
                   <AdminTableCell colSpan={5} className="py-8 text-center text-stone-500">
-                    No media found.
+                    <AdminEmptyState
+                      title="No media found"
+                      message="Try a different storage status."
+                      className="py-4"
+                    />
                   </AdminTableCell>
                 </tr>
               ) : (
@@ -128,15 +147,7 @@ export default function AdminMedia() {
             </AdminTableBody>
           </AdminTable>
 
-          {pagination && pagination.last_page > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-stone-500">Page {pagination.current_page} of {pagination.last_page}</p>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</Button>
-                <Button variant="outline" size="sm" disabled={page >= pagination.last_page} onClick={() => setPage((p) => p + 1)}>Next</Button>
-              </div>
-            </div>
-          )}
+          <AdminPagination pagination={pagination} page={page} onPageChange={setPage} />
         </>
       )}
     </div>

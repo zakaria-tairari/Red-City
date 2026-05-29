@@ -10,7 +10,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import PlacesMap from "@/components/map/PlacesMap";
 import { useUIStore } from "@/store/useUIStore";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Explore() {
@@ -20,7 +19,8 @@ export default function Explore() {
   const loadMoreRef = useRef(null);
 
   const category = searchParams.get("category") || "";
-  const sortBy = searchParams.get("sort") || "name";
+  const sortBy = searchParams.get("sort") || "rating";
+  const tags = searchParams.get("tags") || "";
 
   const {
     data,
@@ -29,9 +29,9 @@ export default function Explore() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["places", category, sortBy],
+    queryKey: ["places", category, sortBy, tags],
     queryFn: ({ pageParam = 1 }) =>
-      fetchPlaces({ category, sortBy, limit: 16, page: pageParam }),
+      fetchPlaces({ category, sortBy, tags, limit: 16, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: lastPage =>
       lastPage.current_page < lastPage.last_page
@@ -67,6 +67,8 @@ export default function Explore() {
         onCategoryChange={v => updateFilters({ category: v })}
         sortBy={sortBy}
         onSortByChange={v => updateFilters({ sort: v })}
+        tags={tags}
+        onTagsChange={v => updateFilters({ tags: v })}
       />
 
       <div className="mx-auto">

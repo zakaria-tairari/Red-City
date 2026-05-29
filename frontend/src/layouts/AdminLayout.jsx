@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Menu } from 'lucide-react'
-import AdminSidebar, { getAdminPageTitle } from '@/components/admin/AdminSidebar'
+import AdminSidebar from '@/components/admin/AdminSidebar'
+import { getAdminPageTitle } from '@/components/admin/adminNav'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 

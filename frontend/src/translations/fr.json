@@ -49,7 +49,11 @@
       "allCategories": "Toutes les catégories",
       "rating": "Les mieux notés",
       "reviews": "Le plus d’avis",
-      "name": "Nom A-Z"
+      "name": "Nom A-Z",
+      "tags": "Tags",
+      "searchTags": "Rechercher des tags",
+      "selectedTags": "sélectionnés",
+      "clearTags": "Effacer les tags"
     },
     "footer": {
       "text": "Votre guide intelligent de Marrakech — découvrez des riads cachés, une gastronomie de classe mondiale, des aventures dans le désert et l’âme de la Ville Rouge.",

@@ -1,112 +1,59 @@
-import { useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
-import {
-  createAdminCategory,
-  deleteAdminCategory,
-  getAdminCategories,
-  updateAdminCategory,
-} from '@/services/admin'
+import { useQuery } from '@tanstack/react-query'
+import { FolderTree } from 'lucide-react'
+import { getAdminCategories } from '@/services/admin'
 import { AdminTable, AdminTableBody, AdminTableCell, AdminTableHead, AdminTableRow } from '@/components/admin/AdminTable'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { AdminEmptyState, AdminErrorState } from '@/components/admin/AdminPageState'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { useUIStore } from '@/store/useUIStore'
+import { getApiErrorMessage } from '@/lib/admin'
 
 export default function AdminCategories() {
-  const queryClient = useQueryClient()
-  const addNotification = useUIStore((s) => s.addNotification)
-  const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ name: '', code: '' })
-
-  const { data: response, isLoading } = useQuery({
+  const { data: response, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['adminCategories'],
     queryFn: getAdminCategories,
   })
 
   const categories = response?.data ?? []
-
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['adminCategories'] })
-
-  const createMutation = useMutation({
-    mutationFn: createAdminCategory,
-    onSuccess: () => {
-      invalidate()
-      setForm({ name: '', code: '' })
-      addNotification({ type: 'success', message: 'Category created' })
-    },
-    onError: (err) => addNotification({ type: 'error', message: err.response?.data?.message || 'Create failed' }),
-  })
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => updateAdminCategory(id, data),
-    onSuccess: () => {
-      invalidate()
-      setEditing(null)
-      addNotification({ type: 'success', message: 'Category updated' })
-    },
-    onError: (err) => addNotification({ type: 'error', message: err.response?.data?.message || 'Update failed' }),
-  })
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteAdminCategory,
-    onSuccess: () => {
-      invalidate()
-      addNotification({ type: 'success', message: 'Category deleted' })
-    },
-    onError: (err) => addNotification({ type: 'error', message: err.response?.data?.message || 'Delete failed' }),
-  })
-
-  const startEdit = (cat) => {
-    setEditing(cat.id)
-    setForm({ name: cat.name, code: cat.code })
-  }
+  const totalPlaces = categories.reduce((sum, cat) => sum + (cat.places_count ?? 0), 0)
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="font-display text-lg flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            {editing ? 'Edit category' : 'Add category'}
+            <FolderTree className="h-5 w-5 text-primary-600" />
+            Taxonomy coverage
           </CardTitle>
+          <p className="text-sm text-stone-500">
+            Categories are maintained by the scraped dataset and ETL. Use this view to monitor distribution and spot taxonomy drift.
+          </p>
         </CardHeader>
         <CardContent>
-          <form
-            className="flex flex-col gap-4 sm:flex-row sm:items-end"
-            onSubmit={(e) => {
-              e.preventDefault()
-              if (editing) {
-                updateMutation.mutate({ id: editing, data: form })
-              } else {
-                createMutation.mutate(form)
-              }
-            }}
-          >
-            <div className="flex-1">
-              <label className="mb-1 block text-sm font-medium text-stone-700">Name</label>
-              <Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} required />
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl bg-stone-50 p-4">
+              <p className="text-2xl font-bold text-stone-900">{categories.length}</p>
+              <p className="text-xs text-stone-500">Categories</p>
             </div>
-            <div className="flex-1">
-              <label className="mb-1 block text-sm font-medium text-stone-700">Code</label>
-              <Input value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))} required />
+            <div className="rounded-xl bg-stone-50 p-4">
+              <p className="text-2xl font-bold text-stone-900">{totalPlaces}</p>
+              <p className="text-xs text-stone-500">Assigned places</p>
             </div>
-            <div className="flex gap-2">
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
-                {editing ? 'Update' : 'Create'}
-              </Button>
-              {editing && (
-                <Button type="button" variant="outline" onClick={() => { setEditing(null); setForm({ name: '', code: '' }) }}>
-                  Cancel
-                </Button>
-              )}
+            <div className="rounded-xl bg-stone-50 p-4">
+              <p className="text-2xl font-bold text-stone-900">
+                {categories.filter((cat) => (cat.places_count ?? 0) === 0).length}
+              </p>
+              <p className="text-xs text-stone-500">Empty categories</p>
             </div>
-          </form>
+          </div>
         </CardContent>
       </Card>
 
-      {isLoading ? (
+      {isError ? (
+        <AdminErrorState
+          message={getApiErrorMessage(error, 'Could not load taxonomy coverage.')}
+          onRetry={refetch}
+        />
+      ) : isLoading ? (
         <Skeleton className="h-48 w-full rounded-xl" />
       ) : (
         <AdminTable>
@@ -115,35 +62,37 @@ export default function AdminCategories() {
               <AdminTableCell header>Name</AdminTableCell>
               <AdminTableCell header>Code</AdminTableCell>
               <AdminTableCell header>Places</AdminTableCell>
-              <AdminTableCell header className="text-right">Actions</AdminTableCell>
+              <AdminTableCell header>Share</AdminTableCell>
             </tr>
           </AdminTableHead>
           <AdminTableBody>
-            {categories.map((cat) => (
-              <AdminTableRow key={cat.id}>
-                <AdminTableCell className="font-medium">{cat.name}</AdminTableCell>
-                <AdminTableCell className="font-mono text-stone-600">{cat.code}</AdminTableCell>
-                <AdminTableCell>{cat.places_count ?? 0}</AdminTableCell>
-                <AdminTableCell className="text-right">
-                  <div className="flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => startEdit(cat)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-red-600"
-                      onClick={() => {
-                        if (!window.confirm(`Delete category "${cat.name}"?`)) return
-                        deleteMutation.mutate(cat.id)
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+            {categories.length === 0 ? (
+              <tr>
+                <AdminTableCell colSpan={4}>
+                  <AdminEmptyState title="No categories found" />
                 </AdminTableCell>
-              </AdminTableRow>
-            ))}
+              </tr>
+            ) : (
+              categories.map((cat) => {
+                const share = totalPlaces > 0 ? Math.round(((cat.places_count ?? 0) / totalPlaces) * 100) : 0
+
+                return (
+                  <AdminTableRow key={cat.id}>
+                    <AdminTableCell className="font-medium">{cat.name}</AdminTableCell>
+                    <AdminTableCell className="font-mono text-stone-600">{cat.code}</AdminTableCell>
+                    <AdminTableCell>{cat.places_count ?? 0}</AdminTableCell>
+                    <AdminTableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-32 overflow-hidden rounded-full bg-stone-100">
+                          <div className="h-full rounded-full bg-primary-600" style={{ width: `${share}%` }} />
+                        </div>
+                        <span className="text-sm text-stone-500">{share}%</span>
+                      </div>
+                    </AdminTableCell>
+                  </AdminTableRow>
+                )
+              })
+            )}
           </AdminTableBody>
         </AdminTable>
       )}

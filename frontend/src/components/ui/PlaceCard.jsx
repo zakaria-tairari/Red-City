@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MapPin, Star } from 'lucide-react'
 import { cn, formatReviewCount } from '@/lib/utils'
-import { CATEGORY_MAP } from '@/data/categories'
 import { useTranslation } from 'react-i18next'
 
 export function PlaceCard({ place, variant = 'default', className, onMouseEnter, onMouseLeave }) {
