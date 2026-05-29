@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminCategoriesController extends Controller
 {
@@ -28,6 +29,7 @@ class AdminCategoriesController extends Controller
         ]);
 
         $category = Category::create($data);
+        $this->bumpCategoryCache();
 
         return ApiResponse::success('Category created', new CategoryResource($category), 201);
     }
@@ -42,6 +44,7 @@ class AdminCategoriesController extends Controller
         ]);
 
         $category->update($data);
+        $this->bumpCategoryCache();
 
         return ApiResponse::success('Category updated', new CategoryResource($category->loadCount('places')));
     }
@@ -55,7 +58,15 @@ class AdminCategoriesController extends Controller
         }
 
         $category->delete();
+        $this->bumpCategoryCache();
 
         return ApiResponse::success('Category deleted');
+    }
+
+    private function bumpCategoryCache(): void
+    {
+        Cache::forever('categories_cache_version', (int) Cache::get('categories_cache_version', 1) + 1);
+        Cache::forever('places_cache_version', (int) Cache::get('places_cache_version', 1) + 1);
+        Cache::forever('tags_cache_version', (int) Cache::get('tags_cache_version', 1) + 1);
     }
 }

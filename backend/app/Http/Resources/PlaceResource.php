@@ -16,6 +16,7 @@ class PlaceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'document_id' => $this->document_id,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'name' => $this->name,
             'email' => $this->email,

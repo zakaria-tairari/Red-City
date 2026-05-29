@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['app_url', 'storage_status'])]
+#[Fillable(['place_id', 'type', 'ext', 'mime', 'original_url', 'app_url', 'position', 'storage_status'])]
 class Media extends Model
 {
     public function place() {

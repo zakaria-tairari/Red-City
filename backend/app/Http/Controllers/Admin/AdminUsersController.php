@@ -69,6 +69,34 @@ class AdminUsersController extends Controller
         );
     }
 
+    public function update(Request $request, int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $data = $request->validate([
+            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $id,
+            'first_name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:6|confirmed',
+            'role' => 'sometimes|in:user,admin',
+        ]);
+
+        if ($user->id === $request->user()->id && isset($data['role']) && $data['role'] !== 'admin') {
+            return ApiResponse::error('You cannot remove your own admin role.', 422);
+        }
+
+        if (! empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return ApiResponse::success('User updated', new UserResource($user));
+    }
+
     public function updateRole(Request $request, int $id)
     {
         $data = $request->validate([
@@ -84,5 +112,18 @@ class AdminUsersController extends Controller
         $user->update(['role' => $data['role']]);
 
         return ApiResponse::success('User role updated', new UserResource($user));
+    }
+
+    public function destroy(Request $request, int $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->id === $request->user()->id) {
+            return ApiResponse::error('You cannot delete your own account.', 422);
+        }
+
+        $user->delete();
+
+        return ApiResponse::success('User deleted');
     }
 }

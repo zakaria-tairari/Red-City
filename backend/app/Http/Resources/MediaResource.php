@@ -19,8 +19,10 @@ class MediaResource extends JsonResource
             'type' => $this->type,
             'ext' => $this->ext,
             'original_url' => $this->original_url,
-            'app_url' => asset('storage/' . $this->app_url),
+            'app_path' => $this->app_url,
+            'app_url' => $this->app_url ? asset('storage/' . $this->app_url) : null,
             'position' => $this->position,
+            'storage_status' => $this->storage_status,
         ];
     }
 }

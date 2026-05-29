@@ -13,7 +13,9 @@ class PlacesController extends Controller
 {
     public function index(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
+            'version' => Cache::get('places_cache_version', 1),
             'category' => $request->category,
+            'tags' => $request->tags,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
             'page' => $request->page,
@@ -25,6 +27,12 @@ class PlacesController extends Controller
 
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
+            }
+
+            foreach ($this->tagIds($request) as $tagId) {
+                $query->whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tags.id', $tagId);
+                });
             }
 
             if ($request->filled('sortBy')) {
@@ -64,7 +72,9 @@ class PlacesController extends Controller
 
     public function all(Request $request) {
         $cacheKey = 'places_' . md5(json_encode([
+            'version' => Cache::get('places_cache_version', 1),
             'category' => $request->category,
+            'tags' => $request->tags,
             'sortBy' => $request->sortBy,
             'limit' => $request->limit,
         ]));
@@ -75,6 +85,12 @@ class PlacesController extends Controller
 
             if ($request->filled('category')) {
                 $query->where('category_id', $request->category);
+            }
+
+            foreach ($this->tagIds($request) as $tagId) {
+                $query->whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tags.id', $tagId);
+                });
             }
 
             if ($request->filled('sortBy')) {
@@ -124,7 +140,10 @@ class PlacesController extends Controller
 
     public function featured() {
         $places = Cache::remember('featured_places', 3600, function () {
-            $query = Place::with('category', 'media', 'tags')->withCount('reviews')->limit(5);
+            $query = Place::with('category', 'media', 'tags')
+                ->orderByDesc('avg_rating')
+                ->withCount('reviews')
+                ->limit(5);
 
             return $query->get();
         });
@@ -187,5 +206,19 @@ class PlacesController extends Controller
             'Search results retrieved successfully',
             PlaceListResource::collection($ordered),
         );
+    }
+
+    private function tagIds(Request $request): array
+    {
+        if (! $request->filled('tags')) {
+            return [];
+        }
+
+        return collect(explode(',', $request->tags))
+            ->map(fn ($tag) => (int) trim($tag))
+            ->filter(fn ($tag) => $tag > 0)
+            ->unique()
+            ->values()
+            ->all();
     }
 }

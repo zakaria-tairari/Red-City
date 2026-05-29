@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminReviewsController;
 use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\PlacesController;
+use App\Http\Controllers\TagsController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\ReviewsController;
@@ -21,6 +22,8 @@ Route::prefix('categories')->controller(CategoriesController::class)->group( fun
     Route::get('/', 'index');
     Route::get('/{id}', 'show');
 });
+
+Route::get('/tags', [TagsController::class, 'index']);
 
 Route::prefix('places')->controller(PlacesController::class)->group( function () {
     Route::get('/', 'index');
@@ -60,6 +63,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'verified', 'admin'])->group
 
     Route::prefix('places')->controller(AdminPlacesController::class)->group(function () {
         Route::get('/', 'index');
+        Route::post('/', 'store');
         Route::get('/{id}', 'show');
         Route::patch('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
@@ -80,7 +84,9 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'verified', 'admin'])->group
     Route::prefix('users')->controller(AdminUsersController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/', 'store');
+        Route::patch('/{id}', 'update');
         Route::patch('/{id}/role', 'updateRole');
+        Route::delete('/{id}', 'destroy');
     });
 
     Route::prefix('media')->controller(AdminMediaController::class)->group(function () {

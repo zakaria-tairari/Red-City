@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Cache;
 class CategoriesController extends Controller
 {
     public function index() {
-        $categories = Cache::remember('categories', 3600, function () {
+        $cacheKey = 'categories_' . Cache::get('categories_cache_version', 1);
+
+        $categories = Cache::remember($cacheKey, 3600, function () {
             $query = Category::with('places')->get();
             return $query;
         });
@@ -23,7 +25,7 @@ class CategoriesController extends Controller
     }
 
     public function show(int $id) {
-        $cacheKey = 'category_' . $id;
+        $cacheKey = 'category_' . Cache::get('categories_cache_version', 1) . '_' . $id;
 
         $category = Cache::remember($cacheKey, 3600, function () use ($id) {
             $query = Category::with('places')->findOrFail($id);

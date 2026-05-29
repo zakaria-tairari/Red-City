@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\PlaceListResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
 
@@ -11,9 +12,15 @@ class FavoritesController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $favorites = $user->favoritePlaces()->with(['category', 'media'])->get();
+        $favorites = $user->favoritePlaces()
+            ->with(['category', 'media', 'tags'])
+            ->withCount('reviews')
+            ->get();
 
-        return ApiResponse::success('Favorites retrieved successfully', $favorites);
+        return ApiResponse::success(
+            'Favorites retrieved successfully',
+            PlaceListResource::collection($favorites),
+        );
     }
 
     public function toggle(Request $request)

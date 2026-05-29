@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Models\Place;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ReviewsController extends Controller
 {
@@ -42,6 +43,7 @@ class ReviewsController extends Controller
         $place->save();
 
         $review->load('user');
+        Cache::flush();
 
         return ApiResponse::success('Review submitted successfully', $review);
     }
