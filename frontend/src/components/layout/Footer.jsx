@@ -14,7 +14,7 @@ const quickLinks = [
   { label: 'common.exploreLink', to: '/explore' },
   { label: 'auth.login', to: '/login' },
   { label: 'auth.register', to: '/register' },
-  { label: 'My favorites', to: '/dashboard/favorites' },
+  { label: 'footer.myFavorites', to: '/dashboard/favorites' },
 ]
 
 const socialLinks = [
@@ -61,7 +61,7 @@ export default function Footer() {
 
           <div>
             <h4 className="font-serif text-sm font-semibold uppercase tracking-wider text-white">
-              Quick Links
+              {t("footer.quikLinks")}
             </h4>
             <ul className="mt-4 space-y-2">
               {quickLinks.map((link) => (
@@ -76,7 +76,7 @@ export default function Footer() {
 
           <div>
             <h4 className="font-serif text-sm font-semibold uppercase tracking-wider text-white">
-              Categories
+              {t("footer.categories")}
             </h4>
             <ul className="mt-4 space-y-2">
               {categories?.slice(0, 6).map((cat) => (
@@ -94,7 +94,7 @@ export default function Footer() {
 
           <div className="lg:col-span-2">
             <h4 className="font-serif text-sm font-semibold uppercase tracking-wider text-white">
-              Newsletter
+              {t("footer.newsletterTitle")}
             </h4>
             <p className="mt-4 text-sm text-stone-400">
               {t("footer.newsLetter")}
@@ -108,8 +108,8 @@ export default function Footer() {
                 if (email) {
                   useUIStore.getState().addNotification({
                     type: 'success',
-                    title: 'Subscription Successful!',
-                    message: `You've successfully subscribed as ${email}. Welcome to Red City!`,
+                    title: t('notifications.subscriptionTitle'),
+                    message: t('notifications.subscriptionMessage', { email }),
                   })
                   if (input) input.value = ''
                 }
@@ -117,7 +117,7 @@ export default function Footer() {
             >
               <Input
                 type="email"
-                placeholder="your@email.com"
+                placeholder={t('footer.emailPlaceholder')}
                 className="bg-stone-800 border-stone-700 text-white placeholder:text-stone-500"
                 required
               />
@@ -134,8 +134,8 @@ export default function Footer() {
 
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-stone-800 pt-8 text-sm text-stone-500 sm:flex-row">
-          <p>© {new Date().getFullYear()} Red City. All rights reserved.</p>
-          <p>Made with love in Marrakech</p>
+          <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+          <p>{t('footer.madeIn')}</p>
         </div>
       </div>
     </footer>

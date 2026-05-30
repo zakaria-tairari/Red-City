@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Compass } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { useFavoritesStore } from '@/store/useFavoritesStore'
 import { getUserReviews } from '@/services/reviews'
 import { fetchPlaces } from '@/services/places'
@@ -9,9 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import DashboardStats from '@/components/dashboard/DashboardStats'
-import PlacesRow from "@/components/ui/PlacesRow";
+import PlacesRow from '@/components/ui/PlacesRow'
 
 export default function Dashboard() {
+  const { t } = useTranslation()
   const { favoritePlaces, isLoading: isFavoritesLoading } = useFavoritesStore()
 
   const { data: reviewsResponse } = useQuery({
@@ -30,20 +32,17 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-
-      {/* Reusable Statistics Grid Widget */}
       <DashboardStats favoritesCount={favoritePlaces.length} reviewsCount={reviewsCount} />
 
-      {/* Favorites Collection List */}
       <Card className="overflow-hidden border-stone-100 shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between border-b border-stone-50 bg-stone-50/30 px-6 py-4">
           <div className="space-y-1">
-            <CardTitle className="font-display text-lg">My Favorites</CardTitle>
-            <p className="text-xs text-stone-500">Quick access to saved places</p>
+            <CardTitle className="font-display text-lg">{t('dashboard.myFavoritesTitle')}</CardTitle>
+            <p className="text-xs text-stone-500">{t('dashboard.myFavoritesSubtitle')}</p>
           </div>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/dashboard/favorites" className="gap-1.5">
-              View all <ArrowRight className="h-4 w-4" />
+              {t('dashboard.viewAll')} <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </CardHeader>
@@ -59,11 +58,9 @@ export default function Dashboard() {
               <div className="rounded-full bg-stone-50 p-4 mb-4">
                 <Compass className="h-8 w-8 text-stone-400" />
               </div>
-              <p className="text-stone-500 text-sm max-w-sm mb-4">
-                You haven't saved any places yet. Browse the catalog and save riads, cafés, or souks to view them here.
-              </p>
+              <p className="text-stone-500 text-sm max-w-sm mb-4">{t('dashboard.noFavoritesMessage')}</p>
               <Button asChild size="sm">
-                <Link to="/explore">Start exploring</Link>
+                <Link to="/explore">{t('common.exploreBtn')}</Link>
               </Button>
             </div>
           ) : (
@@ -79,16 +76,15 @@ export default function Dashboard() {
       {isRecommendationsLoading ? (
         <div className="space-y-4">
           <Skeleton className="h-8 w-64" />
-          <div className="flex gap-4">
+          <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-120 w-72 shrink-0 rounded-2xl" />
             ))}
           </div>
         </div>
       ) : (
-        <PlacesRow places={recommendations} title={`Recommended for You`} />
+        <PlacesRow places={recommendations} title={t('dashboard.recommendedForYou')} />
       )}
     </div>
   )
 }
-

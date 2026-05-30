@@ -5,12 +5,10 @@
         "cardText": "Marrakesh is not a city that you visit, It's a <1>world</1> you feel.",
         "search": "Search restaurants, hotels, activities..."
     },
-
     "featured": {
         "title": "Featured Places",
         "text": "The top-rated experiences in Marrakech, loved by travelers from all over the world."
     },
-
     "categories": {
         "bars-nightlife": "Bars & Clubs",
         "restaurants": "Restaurants",
@@ -22,14 +20,130 @@
         "hotelsShort": "Hotels",
         "cafes": "Cafes"
     },
-
     "auth": {
         "createAccount": "Create Account",
         "login": "Sign in",
         "logout": "Log out",
         "register": "Register"
     },
-
+    "nav": {
+        "profile": "Profile",
+        "favorites": "Favorites",
+        "adminPanel": "Admin Panel",
+        "language": "Language",
+        "searchPlaces": "Search places",
+        "search": "Search",
+        "dashboard": "Dashboard"
+    },
+    "authLayout": {
+        "title": "Your journey through Marrakech starts here",
+        "subtitle": "Save favorites, write reviews, and get personalized recommendations."
+    },
+    "login": {
+        "title": "Welcome back",
+        "subtitle": "Sign in to continue exploring Marrakech",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "rememberMe": "Remember me",
+        "submit": "Sign in",
+        "submitting": "Signing in...",
+        "noAccount": "Don't have an account?",
+        "createOne": "Create one"
+    },
+    "register": {
+        "title": "Create account",
+        "subtitle": "Join Red City and discover Marrakech",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "rememberMe": "Remember me",
+        "submit": "Create account",
+        "submitting": "Creating account...",
+        "hasAccount": "Already have an account?",
+        "passwordWeak": "Weak",
+        "passwordGood": "Good",
+        "passwordStrong": "Strong",
+        "passwordStrength": "{{strength}} password"
+    },
+    "forgotPassword": {
+        "title": "Reset password",
+        "subtitle": "Enter your email and we will send you a reset link.",
+        "email": "Email",
+        "submit": "Send reset link",
+        "submitting": "Sending...",
+        "sentMessage": "If an account exists for {{email}}, a reset link is on the way.",
+        "remembered": "Remembered your password?"
+    },
+    "resetPassword": {
+        "title": "Choose new password",
+        "subtitle": "Enter a new password for your Red City account.",
+        "email": "Email",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password",
+        "submit": "Update password",
+        "submitting": "Updating...",
+        "needLink": "Need a new link?",
+        "requestAnother": "Request another"
+    },
+    "verifyEmail": {
+        "title": "Verify your email",
+        "description": "We sent a verification link to",
+        "resend": "Resend verification email",
+        "sending": "Sending...",
+        "continue": "Continue to dashboard",
+        "emailFallback": "your email address"
+    },
+    "validation": {
+        "required": "Required",
+        "email": "Enter a valid email",
+        "invalidEmail": "Invalid email",
+        "passwordMin": "Password must be at least 6 characters",
+        "passwordMinRegister": "At least 6 characters",
+        "usernameMin": "At least 3 characters",
+        "passwordMismatch": "Passwords do not match",
+        "tokenMissing": "Reset token is missing"
+    },
+    "notifications": {
+        "welcomeBackTitle": "Welcome Back!",
+        "welcomeBackMessage": "Successfully logged in. Experience Marrakech!",
+        "emailNotVerifiedTitle": "Email not verified",
+        "emailNotVerifiedMessage": "Please verify your email to continue.",
+        "loginFailedTitle": "Login failed",
+        "loginFailedMessage": "An error occurred during login.",
+        "accountCreatedTitle": "Account Created!",
+        "accountCreatedMessage": "Welcome, {{name}}! A verification link has been sent to {{email}}.",
+        "registrationFailedTitle": "Registration failed",
+        "registrationFailedMessage": "An error occurred during registration.",
+        "checkEmailTitle": "Check your email",
+        "checkEmailMessage": "We sent a password reset link if that email exists.",
+        "resetFailedTitle": "Reset failed",
+        "resetSendFailedMessage": "Could not send reset link.",
+        "passwordUpdatedTitle": "Password updated",
+        "passwordUpdatedMessage": "You can now sign in with your new password.",
+        "resetPasswordFailedMessage": "Could not reset your password.",
+        "profileUpdatedTitle": "Profile Updated",
+        "profileUpdatedMessage": "Your profile information has been saved.",
+        "updateFailedTitle": "Update Failed",
+        "updateFailedMessage": "Something went wrong.",
+        "profileUpdateFailedMessage": "Failed to update profile.",
+        "subscriptionTitle": "Subscription Successful!",
+        "subscriptionMessage": "You've successfully subscribed as {{email}}. Welcome to Red City!",
+        "reviewEmptyTitle": "Submission Failed",
+        "reviewEmptyMessage": "Please enter a review comment before submitting.",
+        "reviewSuccessTitle": "Review Submitted!",
+        "reviewSuccessMessage": "Thank you! Your feedback is now visible in the reviews section below.",
+        "reviewFailedTitle": "Submission Failed",
+        "reviewFailedMessage": "You may have already reviewed this place.",
+        "genericErrorTitle": "Error",
+        "genericErrorMessage": "Something went wrong. Please try again.",
+        "verifyEmailNotFound": "Email address not found. Please log in again.",
+        "verifyEmailSent": "Verification email sent",
+        "verifyEmailResendFailed": "Failed to resend email"
+    },
     "common": {
         "home": "Home",
         "exploreBtn": "Start Exploring",
@@ -42,15 +156,22 @@
         "unfound": "No results found",
         "clear": "Clear",
         "close": "Close",
-        "navigate": "Navigate"
+        "navigate": "Navigate",
+        "emailPlaceholder": "you@example.com",
+        "backToHome": "Back to home",
+        "admin": "Admin"
     },
-
     "search": {
         "message": "Search for places, restaurants, and more",
         "unfoundMsg": "Press Enter to search in Explore",
-        "label": "Search..."
+        "label": "Search...",
+        "results": "Results",
+        "recent": "Recent"
     },
-
+    "map": {
+        "closePopup": "Close popup",
+        "viewDetails": "View details"
+    },
     "filters": {
         "allCategories": "All categories",
         "rating": "Top rated",
@@ -59,14 +180,20 @@
         "tags": "Tags",
         "searchTags": "Search tags",
         "selectedTags": "selected",
-        "clearTags": "Clear tags"
+        "clearTags": "Clear tags",
+        "gridView": "Grid view",
+        "mapView": "Map view"
     },
-
     "footer": {
         "text": "Your intelligent guide to Marrakech — discover hidden riads, world-class dining, desert adventures, and the soul of the Red City.",
-        "quikLinks": "Quik Links",
+        "quikLinks": "Quick Links",
         "categories": "Categories",
-        "newsLetter": "Get curated Marrakech tips and exclusive offers."
+        "newsLetter": "Get curated Marrakech tips and exclusive offers.",
+        "newsletterTitle": "Newsletter",
+        "myFavorites": "My favorites",
+        "emailPlaceholder": "your@email.com",
+        "copyright": "© {{year}} Red City. All rights reserved.",
+        "madeIn": "Made with love in Marrakech"
     },
     "place": {
         "notFound": "Place not found",
@@ -86,5 +213,63 @@
         "website": "Website",
         "tags": "Tags",
         "moreExperiences": "More experiences"
+    },
+    "reviews": {
+        "writeTitle": "Write a review",
+        "yourRating": "Your rating",
+        "comment": "Comment",
+        "placeholder": "Share your experience...",
+        "submit": "Submit review",
+        "submitting": "Submitting...",
+        "alreadyReviewedTitle": "You've reviewed this place",
+        "alreadyReviewedMessage": "Thank you for sharing your experience!",
+        "joinTitle": "Join the community",
+        "joinMessage": "Log in to share your experience.",
+        "loginToReview": "Log in to review",
+        "allRatings": "All ratings",
+        "starsOnly": "{{count}} stars only",
+        "noReviews": "No reviews yet.",
+        "reviewCount": "{{count}} reviews"
+    },
+    "gallery": {
+        "more": "more",
+        "close": "Close gallery",
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "dashboard": {
+        "title": "Your dashboard",
+        "subtitle": "Manage your Marrakech journey",
+        "overview": "Overview",
+        "favorites": "Favorites",
+        "myReviews": "My Reviews",
+        "profile": "Profile",
+        "savedPlaces": "Saved places",
+        "reviewsWritten": "Reviews written",
+        "myFavoritesTitle": "My Favorites",
+        "myFavoritesSubtitle": "Quick access to saved places",
+        "viewAll": "View all",
+        "noFavoritesMessage": "You haven't saved any places yet. Browse the catalog and save riads, cafés, or souks to view them here.",
+        "recommendedForYou": "Recommended for You",
+        "yourFavorites": "Your Favorites",
+        "savedCount": "{{count}} saved places",
+        "shareList": "Share list",
+        "shareTitle": "My Marrakech Favorites",
+        "shareText": "Check out my {{count}} favorite places in Marrakech!",
+        "noFavoritesTitle": "No favorites yet",
+        "noFavoritesHint": "Save places you love to find them here.",
+        "explorePlaces": "Explore places",
+        "removeFavorite": "Remove favorite",
+        "myProfile": "My Profile",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "username": "Username",
+        "email": "Email",
+        "verifiedEmail": "Verified email — cannot be changed",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
+        "myReviewsTitle": "My Reviews",
+        "noReviewsMessage": "You haven't written any reviews yet.",
+        "exploreToReview": "Explore places to review"
     }
 }

@@ -1,9 +1,12 @@
 import { Outlet, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
-const AUTH_IMAGE ='/Login.jpg'
+const AUTH_IMAGE = '/Login.jpg'
 
 export default function AuthLayout() {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="hidden lg:relative lg:block overflow-hidden">
@@ -15,10 +18,10 @@ export default function AuthLayout() {
           </Link>
           <div>
             <h2 className="font-display text-[2.5rem] font-bold leading-tight">
-              Your journey through Marrakech starts here
+              {t('authLayout.title')}
             </h2>
             <p className="mt-4 text-lg text-white/80 max-w-md">
-              Save favorites, write reviews, and get personalized recommendations.
+              {t('authLayout.subtitle')}
             </p>
           </div>
         </div>

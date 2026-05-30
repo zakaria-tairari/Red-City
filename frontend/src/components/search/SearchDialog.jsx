@@ -180,7 +180,7 @@ export function SearchDialog() {
                 {list.length > 0 && (
                   <div className="flex items-center justify-between px-4 pt-3 pb-1">
                     <span className="text-xs font-medium tracking-wide text-stone-400 uppercase">
-                      {query.trim() ? "Results" : "Recent"}
+                      {query.trim() ? t("search.results") : t("search.recent")}
                     </span>
                     {!query.trim() && recent.length > 0 && (
                       <button

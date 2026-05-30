@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { User, Save, CheckCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -9,6 +10,7 @@ import { useUIStore } from '@/store/useUIStore'
 import * as authService from '@/services/auth'
 
 export default function DashboardProfile() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [form, setForm] = useState({
@@ -28,28 +30,27 @@ export default function DashboardProfile() {
     try {
       const response = await authService.updateProfile(form)
       if (response.success) {
-        // Update the user in the auth store
         useAuthStore.setState({ user: response.data })
         useUIStore.getState().addNotification({
           type: 'success',
-          title: 'Profile Updated',
-          message: 'Your profile information has been saved.',
+          title: t('notifications.profileUpdatedTitle'),
+          message: t('notifications.profileUpdatedMessage'),
         })
       } else {
         useUIStore.getState().addNotification({
           type: 'error',
-          title: 'Update Failed',
-          message: response.message || 'Something went wrong.',
+          title: t('notifications.updateFailedTitle'),
+          message: response.message || t('notifications.updateFailedMessage'),
         })
       }
     } catch (error) {
       const errors = error.response?.data?.errors
       const message = errors
         ? Object.values(errors).flat().join(' ')
-        : error.response?.data?.message || 'Failed to update profile.'
+        : error.response?.data?.message || t('notifications.profileUpdateFailedMessage')
       useUIStore.getState().addNotification({
         type: 'error',
-        title: 'Update Failed',
+        title: t('notifications.updateFailedTitle'),
         message,
       })
     } finally {
@@ -59,7 +60,7 @@ export default function DashboardProfile() {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">My Profile</h2>
+      <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">{t('dashboard.myProfile')}</h2>
 
       <Card>
         <CardHeader>
@@ -79,7 +80,7 @@ export default function DashboardProfile() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <Label htmlFor="first_name">First Name</Label>
+                <Label htmlFor="first_name">{t('dashboard.firstName')}</Label>
                 <Input
                   id="first_name"
                   name="first_name"
@@ -90,7 +91,7 @@ export default function DashboardProfile() {
                 />
               </div>
               <div>
-                <Label htmlFor="last_name">Last Name</Label>
+                <Label htmlFor="last_name">{t('dashboard.lastName')}</Label>
                 <Input
                   id="last_name"
                   name="last_name"
@@ -102,7 +103,7 @@ export default function DashboardProfile() {
               </div>
             </div>
             <div>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">{t('dashboard.username')}</Label>
               <Input
                 id="username"
                 name="username"
@@ -113,7 +114,7 @@ export default function DashboardProfile() {
               />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('dashboard.email')}</Label>
               <Input
                 id="email"
                 name="email"
@@ -122,12 +123,12 @@ export default function DashboardProfile() {
                 className="mt-1 bg-stone-100 text-stone-500 cursor-not-allowed"
               />
               <p className="text-xs text-stone-400 mt-1 flex items-center gap-1">
-                <CheckCircle className="h-3 w-3 text-emerald-500" /> Verified email — cannot be changed
+                <CheckCircle className="h-3 w-3 text-emerald-500" /> {t('dashboard.verifiedEmail')}
               </p>
             </div>
             <Button type="submit" disabled={isSubmitting} className="gap-2">
               <Save className="h-4 w-4" />
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? t('dashboard.saving') : t('dashboard.saveChanges')}
             </Button>
           </form>
         </CardContent>

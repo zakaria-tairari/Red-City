@@ -42,7 +42,7 @@ export default function Header() {
   const isLinkActive = to => location.pathname + location.search === to;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-stone-100 bg-white/90 backdrop-blur">
+    <header className="fixed top-0 z-50 w-full border-b border-stone-100 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="group flex items-center gap-2">
@@ -76,7 +76,7 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={() => toggle()}
-            aria-label="Search"
+            aria-label={t("nav.search")}
           >
             <Search className="h-5 w-5" />
           </Button>
@@ -92,7 +92,7 @@ export default function Header() {
                   <User className="h-4 w-4" />
 
                   <span className="text-sm font-medium">
-                    {user?.username || "Dashboard"}
+                    {user?.username || t("nav.dashboard")}
                   </span>
                 </Button>
               </DropdownMenu.Trigger>
@@ -121,7 +121,7 @@ export default function Header() {
                       className="mt-2 flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-stone-700 outline-none transition hover:bg-stone-100"
                     >
                       <User className="h-4 w-4" />
-                      Profile
+                      {t("nav.profile")}
                     </Link>
                   </DropdownMenu.Item>
 
@@ -132,7 +132,7 @@ export default function Header() {
                       className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-stone-700 outline-none transition hover:bg-stone-100"
                     >
                       <Heart className="h-4 w-4" />
-                      Favorites
+                      {t("nav.favorites")}
                     </Link>
                   </DropdownMenu.Item>
 
@@ -144,7 +144,7 @@ export default function Header() {
                         className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-primary-700 outline-none transition hover:bg-primary-50"
                       >
                         <Shield className="h-4 w-4" />
-                        Admin Panel
+                        {t("nav.adminPanel")}
                       </Link>
                     </DropdownMenu.Item>
                   )}
@@ -155,7 +155,7 @@ export default function Header() {
                   <div className="flex items-center justify-between rounded-xl px-3 py-2">
                     <div className="flex items-center gap-3 text-sm text-stone-700">
                       <Globe className="h-4 w-4" />
-                      Language
+                      {t("nav.language")}
                     </div>
 
                     <LanguageSwitcher />
@@ -169,15 +169,18 @@ export default function Header() {
                     className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-600 outline-none transition hover:bg-red-50"
                   >
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    {t("auth.logout")}
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           ) : (
-            <Button variant="ghost" asChild>
-              <Link to="/login">{t("auth.login")}</Link>
-            </Button>
+            <div className="flex gap-2 items-center justify-center">
+              <Button variant="ghost" asChild>
+                <Link to="/login">{t("auth.login")}</Link>
+              </Button>
+              
+            </div>
           )}
         </div>
 
@@ -225,7 +228,7 @@ export default function Header() {
                 className="flex items-center gap-2 rounded-xl px-4 py-3 text-left text-base font-medium text-stone-700 hover:bg-stone-50"
               >
                 <Search className="h-5 w-5" />
-                Search places
+                {t("nav.searchPlaces")}
               </button>
 
               <div className="mt-4 flex flex-col gap-2 border-t border-stone-100 pt-4">
@@ -236,7 +239,7 @@ export default function Header() {
                         to="/dashboard"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Profile
+                        {t("nav.profile")}
                       </Link>
                     </Button>
 
@@ -245,14 +248,14 @@ export default function Header() {
                         to="/dashboard/favorites"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Favorites
+                        {t("nav.favorites")}
                       </Link>
                     </Button>
 
                     {userIsAdmin && (
                       <Button variant="outline" asChild className="w-full">
                         <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                          Admin Panel
+                          {t("nav.adminPanel")}
                         </Link>
                       </Button>
                     )}
@@ -269,7 +272,7 @@ export default function Header() {
                         setIsMenuOpen(false);
                       }}
                     >
-                      Logout
+                      {t("auth.logout")}
                     </Button>
                   </>
                 ) : (

@@ -229,14 +229,11 @@ export default function AdminOverview() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
+      <section>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-medium text-primary-700">Operations overview</p>
             <h2 className="mt-1 font-display text-2xl font-bold text-stone-950">Admin analytics</h2>
-            <p className="mt-2 max-w-2xl text-sm text-stone-500">
-              Monitor content quality, media processing, visitor feedback, and dataset coverage from one place.
-            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" asChild>
@@ -247,20 +244,6 @@ export default function AdminOverview() {
             </Button>
           </div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          {[
-            { label: 'Categories', value: stats?.categories },
-            { label: 'Media assets', value: stats?.media?.total },
-            { label: 'Rated coverage', value: formatPercent(stats?.health?.rated_percent) },
-          ].map((item) => (
-            <div key={item.label} className="rounded-lg border border-stone-100 bg-stone-50 px-4 py-3">
-              <p className="text-xs font-medium uppercase text-stone-500">{item.label}</p>
-              <p className="mt-1 text-lg font-bold text-stone-950">
-                {typeof item.value === 'number' ? formatNumber(item.value) : item.value}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -269,31 +252,27 @@ export default function AdminOverview() {
           value={formatNumber(stats?.places)}
           icon={MapPin}
           description={`${formatPercent(stats?.health?.media_coverage_percent)} have media`}
-          accent="bg-primary-600"
         />
         <AdminStatCard
           label="Reviews"
           value={formatNumber(stats?.reviews)}
           icon={MessageSquare}
-          color="text-amber-600"
+          color="text-emerald-600"
           description={`${formatNumber(stats?.places_with_ratings)} rated places`}
-          accent="bg-amber-500"
         />
         <AdminStatCard
           label="Average rating"
           value={(stats?.average_rating ?? 0).toFixed(1)}
           icon={Star}
-          color="text-emerald-600"
+          color="text-amber-600"
           description="Across rated places"
-          accent="bg-emerald-600"
         />
         <AdminStatCard
           label="Users"
           value={formatNumber(stats?.users)}
           icon={Users}
-          color="text-violet-600"
+          color="text-blue-600"
           description={`${formatNumber(stats?.admins)} admins`}
-          accent="bg-violet-600"
         />
       </div>
 

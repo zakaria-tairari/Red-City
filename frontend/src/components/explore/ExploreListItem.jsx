@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { MapPin, Star, ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/useUIStore";
 
 export default function ExploreListItem({ place }) {
+  const { t } = useTranslation();
   const { selectedPlaceId, setSelectedPlaceId } = useUIStore();
   const isSelected = selectedPlaceId === place.id;
 
@@ -55,7 +57,7 @@ export default function ExploreListItem({ place }) {
           to={`/places/${place.id}`}
           className="group mt-3 flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors"
         >
-          <span>View details</span>
+          <span>{t("map.viewDetails")}</span>
           <ArrowRight className="h-3 w-3" />
         </Link>
       </div>

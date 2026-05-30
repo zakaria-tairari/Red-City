@@ -36,6 +36,23 @@ export async function logout() {
   return response
 }
 
+export async function forgotPassword(email) {
+  await api.get('/sanctum/csrf-cookie');
+  const response = await api.post('/auth/forgot-password', { email })
+  return response
+}
+
+export async function resetPassword({ email, token, password, passwordConfirmation }) {
+  await api.get('/sanctum/csrf-cookie');
+  const response = await api.post('/auth/reset-password', {
+    email,
+    token,
+    password,
+    password_confirmation: passwordConfirmation,
+  })
+  return response
+}
+
 export async function resendVerificationEmail(email) {
   await api.get('/sanctum/csrf-cookie');
   const response = await api.post('/api/email/verification-notification', { email })

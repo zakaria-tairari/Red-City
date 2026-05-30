@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X, Play, Grid2X2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Play } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 const PREVIEW_COUNT = 5
@@ -17,6 +18,7 @@ function VideoThumb({ url }) {
 }
 
 function GridPreview({ media, onOpenGallery }) {
+  const { t } = useTranslation()
   const preview = media.slice(0, PREVIEW_COUNT)
   const remainder = media.length - PREVIEW_COUNT
 
@@ -65,7 +67,7 @@ function GridPreview({ media, onOpenGallery }) {
               {isLast && remainder > 0 && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px]">
                   <span className="text-3xl font-light text-white">+{remainder}</span>
-                  <span className="mt-1 text-xs font-medium tracking-widest text-white/75 uppercase">more</span>
+                  <span className="mt-1 text-xs font-medium tracking-widest text-white/75 uppercase">{t('gallery.more')}</span>
                 </div>
               )}
             </button>
@@ -77,6 +79,7 @@ function GridPreview({ media, onOpenGallery }) {
 }
 
 function FullGallery({ media, initialIndex, onClose }) {
+  const { t } = useTranslation()
   const [active, setActive] = useState(initialIndex)
   const thumbsRef = useRef(null)
   const current = media[active]
@@ -122,7 +125,7 @@ function FullGallery({ media, initialIndex, onClose }) {
           type="button"
           onClick={onClose}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
-          aria-label="Close gallery"
+          aria-label={t('gallery.close')}
         >
           <X className="h-5 w-5" />
         </button>
@@ -168,7 +171,7 @@ function FullGallery({ media, initialIndex, onClose }) {
               type="button"
               onClick={prev}
               className="absolute left-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
-              aria-label="Previous"
+              aria-label={t('gallery.previous')}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -176,7 +179,7 @@ function FullGallery({ media, initialIndex, onClose }) {
               type="button"
               onClick={next}
               className="absolute right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
-              aria-label="Next"
+              aria-label={t('gallery.next')}
             >
               <ChevronRight className="h-5 w-5" />
             </button>

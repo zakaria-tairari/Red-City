@@ -1,8 +1,8 @@
 {
     "hero": {
-      "title": "Découvrez l’âme de <1>Marrakech</1>",
+      "title": "Découvrez l'âme de <1>Marrakech</1>",
       "text": "Explorez Red City comme jamais auparavant : des lieux sélectionnés, des avis honnêtes et des recommandations intelligentes pour votre voyage parfait.",
-      "cardText": "Marrakech n’est pas une ville que l’on visite, c’est un <1>monde</1> que l’on ressent.",
+      "cardText": "Marrakech n'est pas une ville que l'on visite, c'est un <1>monde</1> que l'on ressent.",
       "search": "Rechercher des restaurants, hôtels, activités..."
     },
     "featured": {
@@ -24,11 +24,129 @@
       "createAccount": "Créer un compte",
       "login": "Se connecter",
       "logout": "Se déconnecter",
-      "register": "S’inscrire"
+      "register": "S'inscrire"
+    },
+    "nav": {
+      "profile": "Profil",
+      "favorites": "Favoris",
+      "adminPanel": "Panneau admin",
+      "language": "Langue",
+      "searchPlaces": "Rechercher des lieux",
+      "search": "Rechercher",
+      "dashboard": "Tableau de bord"
+    },
+    "authLayout": {
+      "title": "Votre voyage à Marrakech commence ici",
+      "subtitle": "Enregistrez vos favoris, rédigez des avis et recevez des recommandations personnalisées."
+    },
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous pour continuer à explorer Marrakech",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "rememberMe": "Se souvenir de moi",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ?",
+      "createOne": "Créer un compte"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez Red City et découvrez Marrakech",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d'utilisateur",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "submit": "Créer un compte",
+      "submitting": "Création du compte...",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "passwordWeak": "Faible",
+      "passwordGood": "Correct",
+      "passwordStrong": "Fort",
+      "passwordStrength": "Mot de passe {{strength}}"
+    },
+    "forgotPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "subtitle": "Entrez votre e-mail et nous vous enverrons un lien de réinitialisation.",
+      "email": "E-mail",
+      "submit": "Envoyer le lien",
+      "submitting": "Envoi...",
+      "sentMessage": "Si un compte existe pour {{email}}, un lien de réinitialisation est en route.",
+      "remembered": "Vous vous souvenez de votre mot de passe ?"
+    },
+    "resetPassword": {
+      "title": "Choisir un nouveau mot de passe",
+      "subtitle": "Entrez un nouveau mot de passe pour votre compte Red City.",
+      "email": "E-mail",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "submit": "Mettre à jour le mot de passe",
+      "submitting": "Mise à jour...",
+      "needLink": "Besoin d'un nouveau lien ?",
+      "requestAnother": "En demander un autre"
+    },
+    "verifyEmail": {
+      "title": "Vérifiez votre e-mail",
+      "description": "Nous avons envoyé un lien de vérification à",
+      "resend": "Renvoyer l'e-mail de vérification",
+      "sending": "Envoi...",
+      "continue": "Continuer vers le tableau de bord",
+      "emailFallback": "votre adresse e-mail"
+    },
+    "validation": {
+      "required": "Obligatoire",
+      "email": "Entrez une adresse e-mail valide",
+      "invalidEmail": "E-mail invalide",
+      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordMinRegister": "Au moins 6 caractères",
+      "usernameMin": "Au moins 3 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "tokenMissing": "Le jeton de réinitialisation est manquant"
+    },
+    "notifications": {
+      "welcomeBackTitle": "Bon retour !",
+      "welcomeBackMessage": "Connexion réussie. Vivez Marrakech !",
+      "emailNotVerifiedTitle": "E-mail non vérifié",
+      "emailNotVerifiedMessage": "Veuillez vérifier votre e-mail pour continuer.",
+      "loginFailedTitle": "Échec de la connexion",
+      "loginFailedMessage": "Une erreur s'est produite lors de la connexion.",
+      "accountCreatedTitle": "Compte créé !",
+      "accountCreatedMessage": "Bienvenue, {{name}} ! Un lien de vérification a été envoyé à {{email}}.",
+      "registrationFailedTitle": "Échec de l'inscription",
+      "registrationFailedMessage": "Une erreur s'est produite lors de l'inscription.",
+      "checkEmailTitle": "Vérifiez votre e-mail",
+      "checkEmailMessage": "Nous avons envoyé un lien de réinitialisation si cet e-mail existe.",
+      "resetFailedTitle": "Échec de la réinitialisation",
+      "resetSendFailedMessage": "Impossible d'envoyer le lien de réinitialisation.",
+      "passwordUpdatedTitle": "Mot de passe mis à jour",
+      "passwordUpdatedMessage": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "resetPasswordFailedMessage": "Impossible de réinitialiser votre mot de passe.",
+      "profileUpdatedTitle": "Profil mis à jour",
+      "profileUpdatedMessage": "Vos informations de profil ont été enregistrées.",
+      "updateFailedTitle": "Échec de la mise à jour",
+      "updateFailedMessage": "Une erreur s'est produite.",
+      "profileUpdateFailedMessage": "Échec de la mise à jour du profil.",
+      "subscriptionTitle": "Abonnement réussi !",
+      "subscriptionMessage": "Vous êtes abonné avec {{email}}. Bienvenue sur Red City !",
+      "reviewEmptyTitle": "Échec de l'envoi",
+      "reviewEmptyMessage": "Veuillez saisir un commentaire avant d'envoyer.",
+      "reviewSuccessTitle": "Avis publié !",
+      "reviewSuccessMessage": "Merci ! Votre avis est maintenant visible ci-dessous.",
+      "reviewFailedTitle": "Échec de l'envoi",
+      "reviewFailedMessage": "Vous avez peut-être déjà évalué ce lieu.",
+      "genericErrorTitle": "Erreur",
+      "genericErrorMessage": "Une erreur s'est produite. Veuillez réessayer.",
+      "verifyEmailNotFound": "Adresse e-mail introuvable. Veuillez vous reconnecter.",
+      "verifyEmailSent": "E-mail de vérification envoyé",
+      "verifyEmailResendFailed": "Échec de l'envoi de l'e-mail"
     },
     "common": {
       "home": "Accueil",
-      "exploreBtn": "Commencer l’exploration",
+      "exploreBtn": "Commencer l'exploration",
       "exploreLink": "Explorer",
       "viewAll": "Voir tout",
       "loading": "Chargement...",
@@ -38,28 +156,44 @@
       "unfound": "Aucun résultat trouvé",
       "clear": "Effacer",
       "close": "Fermer",
-      "navigate": "Itinéraire"
+      "navigate": "Itinéraire",
+      "emailPlaceholder": "vous@exemple.com",
+      "backToHome": "Retour à l'accueil",
+      "admin": "Admin"
     },
     "search": {
       "message": "Recherchez des lieux, restaurants et plus encore",
       "unfoundMsg": "Appuyez sur Entrée pour rechercher dans Explorer",
-      "label": "Rechercher..."
+      "label": "Rechercher...",
+      "results": "Résultats",
+      "recent": "Récents"
+    },
+    "map": {
+      "closePopup": "Fermer la fenêtre",
+      "viewDetails": "Voir les détails"
     },
     "filters": {
       "allCategories": "Toutes les catégories",
       "rating": "Les mieux notés",
-      "reviews": "Le plus d’avis",
+      "reviews": "Le plus d'avis",
       "name": "Nom A-Z",
       "tags": "Tags",
       "searchTags": "Rechercher des tags",
       "selectedTags": "sélectionnés",
-      "clearTags": "Effacer les tags"
+      "clearTags": "Effacer les tags",
+      "gridView": "Vue grille",
+      "mapView": "Vue carte"
     },
     "footer": {
-      "text": "Votre guide intelligent de Marrakech — découvrez des riads cachés, une gastronomie de classe mondiale, des aventures dans le désert et l’âme de la Ville Rouge.",
+      "text": "Votre guide intelligent de Marrakech — découvrez des riads cachés, une gastronomie de classe mondiale, des aventures dans le désert et l'âme de la Ville Rouge.",
       "quikLinks": "Liens rapides",
       "categories": "Catégories",
-      "newsLetter": "Recevez des conseils sélectionnés sur Marrakech et des offres exclusives."
+      "newsLetter": "Recevez des conseils sélectionnés sur Marrakech et des offres exclusives.",
+      "newsletterTitle": "Newsletter",
+      "myFavorites": "Mes favoris",
+      "emailPlaceholder": "vous@email.com",
+      "copyright": "© {{year}} Red City. Tous droits réservés.",
+      "madeIn": "Fait avec amour à Marrakech"
     },
     "place": {
         "notFound": "Lieu introuvable",
@@ -79,5 +213,63 @@
         "website": "Site web",
         "tags": "Tags",
         "moreExperiences": "Plus d'expériences"
+    },
+    "reviews": {
+      "writeTitle": "Écrire un avis",
+      "yourRating": "Votre note",
+      "comment": "Commentaire",
+      "placeholder": "Partagez votre expérience...",
+      "submit": "Publier l'avis",
+      "submitting": "Envoi...",
+      "alreadyReviewedTitle": "Vous avez déjà évalué ce lieu",
+      "alreadyReviewedMessage": "Merci d'avoir partagé votre expérience !",
+      "joinTitle": "Rejoignez la communauté",
+      "joinMessage": "Connectez-vous pour partager votre expérience.",
+      "loginToReview": "Se connecter pour évaluer",
+      "allRatings": "Toutes les notes",
+      "starsOnly": "{{count}} étoiles uniquement",
+      "noReviews": "Pas encore d'avis.",
+      "reviewCount": "{{count}} avis"
+    },
+    "gallery": {
+      "more": "de plus",
+      "close": "Fermer la galerie",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "dashboard": {
+      "title": "Votre tableau de bord",
+      "subtitle": "Gérez votre voyage à Marrakech",
+      "overview": "Aperçu",
+      "favorites": "Favoris",
+      "myReviews": "Mes avis",
+      "profile": "Profil",
+      "savedPlaces": "Lieux enregistrés",
+      "reviewsWritten": "Avis rédigés",
+      "myFavoritesTitle": "Mes favoris",
+      "myFavoritesSubtitle": "Accès rapide aux lieux enregistrés",
+      "viewAll": "Voir tout",
+      "noFavoritesMessage": "Vous n'avez pas encore enregistré de lieux. Parcourez le catalogue et enregistrez riads, cafés ou souks pour les retrouver ici.",
+      "recommendedForYou": "Recommandé pour vous",
+      "yourFavorites": "Vos favoris",
+      "savedCount": "{{count}} lieux enregistrés",
+      "shareList": "Partager la liste",
+      "shareTitle": "Mes favoris à Marrakech",
+      "shareText": "Découvrez mes {{count}} lieux favoris à Marrakech !",
+      "noFavoritesTitle": "Aucun favori pour l'instant",
+      "noFavoritesHint": "Enregistrez les lieux que vous aimez pour les retrouver ici.",
+      "explorePlaces": "Explorer les lieux",
+      "removeFavorite": "Retirer des favoris",
+      "myProfile": "Mon profil",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d'utilisateur",
+      "email": "E-mail",
+      "verifiedEmail": "E-mail vérifié — ne peut pas être modifié",
+      "saveChanges": "Enregistrer",
+      "saving": "Enregistrement...",
+      "myReviewsTitle": "Mes avis",
+      "noReviewsMessage": "Vous n'avez pas encore rédigé d'avis.",
+      "exploreToReview": "Explorer pour évaluer"
     }
 }

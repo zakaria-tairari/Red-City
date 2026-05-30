@@ -50,12 +50,10 @@ export default function AdminPlaces() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-stone-900">Dataset quality queues</h2>
-        <p className="mt-1 text-sm text-stone-500">
-          Scraped places stay the source of truth. Use this page to find records that need corrections, enrichment, or media repair.
-        </p>
-      </div>
+        <div>
+            <p className="text-sm font-medium text-primary-700">Quality monitoring</p>
+            <h2 className="mt-1 font-display text-2xl font-bold text-stone-950">Places dataset</h2>
+        </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">

@@ -1,28 +1,22 @@
 import { Heart, Star } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent } from '@/components/ui/Card'
 
-/**
- * DashboardStats Component
- * Renders a responsive grid displaying key metrics:
- * Saved places and Reviews written.
- *
- * @param {Object} props
- * @param {number} props.favoritesCount - Number of saved places
- * @param {number} props.reviewsCount - Number of reviews written
- */
 export default function DashboardStats({
   favoritesCount = 0,
   reviewsCount = 0,
 }) {
+  const { t } = useTranslation()
+
   const stats = [
     {
-      label: 'Saved places',
+      labelKey: 'dashboard.savedPlaces',
       value: favoritesCount,
       icon: Heart,
       color: 'text-primary-600',
     },
     {
-      label: 'Reviews written',
+      labelKey: 'dashboard.reviewsWritten',
       value: reviewsCount,
       icon: Star,
       color: 'text-amber-500',
@@ -32,14 +26,14 @@ export default function DashboardStats({
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {stats.map((stat) => (
-        <Card key={stat.label}>
+        <Card key={stat.labelKey}>
           <CardContent className="flex items-center gap-4 p-6">
             <div className={`rounded-xl bg-stone-50 p-3 ${stat.color}`}>
               <stat.icon className="h-6 w-6" />
             </div>
             <div>
               <p className="text-2xl font-bold text-stone-900">{stat.value}</p>
-              <p className="text-sm text-stone-500">{stat.label}</p>
+              <p className="text-sm text-stone-500">{t(stat.labelKey)}</p>
             </div>
           </CardContent>
         </Card>

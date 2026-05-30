@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { RatingStars } from '@/components/ui/RatingStars'
 import { getUserReviews } from '@/services/reviews'
@@ -7,15 +8,17 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { Button } from '@/components/ui/Button'
 
 export default function DashboardReviews() {
+  const { t } = useTranslation()
   const { data: response, isLoading } = useQuery({
     queryKey: ['userReviews'],
     queryFn: getUserReviews,
   })
 
   const reviews = response?.data || []
+
   return (
     <div>
-      <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">My Reviews</h2>
+      <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">{t('dashboard.myReviewsTitle')}</h2>
       <div className="space-y-4">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 w-full rounded-xl" />)
@@ -40,9 +43,9 @@ export default function DashboardReviews() {
           ))
         ) : (
           <div className="py-12 text-center border rounded-xl border-dashed border-stone-200">
-            <p className="text-stone-500">You haven't written any reviews yet.</p>
+            <p className="text-stone-500">{t('dashboard.noReviewsMessage')}</p>
             <Button asChild variant="outline" className="mt-4">
-              <Link to="/explore">Explore places to review</Link>
+              <Link to="/explore">{t('dashboard.exploreToReview')}</Link>
             </Button>
           </div>
         )}

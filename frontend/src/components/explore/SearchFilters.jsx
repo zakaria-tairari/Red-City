@@ -184,7 +184,7 @@ export default function SearchFilters({
 
           <div className="ml-auto flex shrink-0 rounded-xl border border-stone-200 p-1">
             <button
-              title="Grid view"
+              title={t("filters.gridView")}
               type="button"
               onClick={() => setExploreViewMode("grid")}
               className={cn(
@@ -193,12 +193,12 @@ export default function SearchFilters({
                   ? "bg-primary-600 text-white"
                   : "text-stone-500 hover:bg-stone-50",
               )}
-              aria-label="Grid view"
+              aria-label={t("filters.gridView")}
             >
               <LayoutGrid className="h-4 w-4" />
             </button>
             <button
-              title="Map view"
+              title={t("filters.mapView")}
               type="button"
               onClick={() => setExploreViewMode("map")}
               className={cn(
@@ -207,7 +207,7 @@ export default function SearchFilters({
                   ? "bg-primary-600 text-white"
                   : "text-stone-500 hover:bg-stone-50",
               )}
-              aria-label="Map view"
+              aria-label={t("filters.mapView")}
             >
               <MapPin className="h-4 w-4" />
             </button>

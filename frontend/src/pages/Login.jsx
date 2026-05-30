@@ -1,27 +1,32 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Label } from '@/components/ui/Label'
 import { Checkbox } from '@/components/ui/Checkbox'
-import { Separator } from '@/components/ui/Separator'
 import { useUIStore } from '@/store/useUIStore'
 import { useAuthStore } from '@/store/useAuthStore'
 
-const schema = z.object({
-  email: z.string().email('Enter a valid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-
 export default function Login() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState({})
-  
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t('validation.email')),
+        password: z.string().min(6, t('validation.passwordMin')),
+      }),
+    [t],
+  )
+
   const { login, isLoading } = useAuthStore()
 
   const handleSubmit = async (e) => {
@@ -36,57 +41,58 @@ export default function Login() {
       return
     }
     setErrors({})
-    
+
     const response = await login({ email, password })
-    
+
     if (response.success) {
       useUIStore.getState().addNotification({
         type: 'success',
-        title: 'Welcome Back!',
-        message: `Successfully logged in. Experience Marrakech!`,
+        title: t('notifications.welcomeBackTitle'),
+        message: t('notifications.welcomeBackMessage'),
       })
       navigate('/dashboard')
     } else {
       if (response.error === 'Email not verified') {
         useUIStore.getState().addNotification({
           type: 'warning',
-          title: 'Email not verified',
-          message: 'Please verify your email to continue.',
+          title: t('notifications.emailNotVerifiedTitle'),
+          message: t('notifications.emailNotVerifiedMessage'),
         })
         navigate('/verify-email', { state: { email } })
       } else {
         useUIStore.getState().addNotification({
           type: 'error',
-          title: 'Login failed',
-          message: response.error || 'An error occurred during login.',
+          title: t('notifications.loginFailedTitle'),
+          message: response.error || t('notifications.loginFailedMessage'),
         })
       }
     }
   }
 
-
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-stone-900">Welcome back</h1>
-      <p className="mt-2 text-stone-500">Sign in to continue exploring Marrakech</p>
+      <h1 className="font-display text-3xl font-bold text-stone-900">{t('login.title')}</h1>
+      <p className="mt-2 text-stone-500">{t('login.subtitle')}</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('login.email')}</Label>
           <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1"
-            placeholder="you@example.com"
+            placeholder={t('common.emailPlaceholder')}
           />
           {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
         </div>
         <div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <span className="text-sm text-stone-400">Forgot password? (template)</span>
+            <Label htmlFor="password">{t('login.password')}</Label>
+            <Link to="/forgot-password" className="text-sm font-medium text-primary-600 hover:underline">
+              {t('login.forgotPassword')}
+            </Link>
           </div>
           <Input
             id="password"
@@ -100,29 +106,24 @@ export default function Login() {
 
         <div className="flex items-center gap-2">
           <Checkbox id="remember" checked={remember} onCheckedChange={setRemember} />
-          <Label htmlFor="remember" className="font-normal cursor-pointer">Remember me</Label>
+          <Label htmlFor="remember" className="font-normal cursor-pointer">{t('login.rememberMe')}</Label>
         </div>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</> : 'Sign in'}
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> {t('login.submitting')}
+            </>
+          ) : (
+            t('login.submit')
+          )}
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-4">
-        <Separator className="flex-1" />
-        <span className="text-xs text-stone-400">or continue with</span>
-        <Separator className="flex-1" />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <Button variant="outline" type="button">Google</Button>
-        <Button variant="outline" type="button">Apple</Button>
-      </div>
-
       <p className="mt-8 text-center text-sm text-stone-500">
-        Don&apos;t have an account?{' '}
+        {t('login.noAccount')}{' '}
         <Link to="/register" className="font-medium text-primary-600 hover:underline">
-          Create one
+          {t('login.createOne')}
         </Link>
       </p>
     </div>

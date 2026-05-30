@@ -7,12 +7,10 @@ export default function AdminStatCard({
   icon: Icon,
   color = 'text-primary-600',
   description,
-  accent,
 }) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="relative flex min-h-28 items-center gap-4 p-5">
-        {accent && <div className={cn('absolute inset-x-0 top-0 h-1', accent)} />}
         <div className={cn('rounded-lg bg-stone-50 p-3', color)}>
           <Icon className="h-5 w-5" />
         </div>

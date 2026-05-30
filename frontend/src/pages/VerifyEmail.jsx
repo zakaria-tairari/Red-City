@@ -2,39 +2,41 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CheckCircle, Loader2, Mail, AlertCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export default function VerifyEmail() {
+  const { t } = useTranslation()
   const location = useLocation()
-  const email = location.state?.email || 'your email address'
-  
+  const email = location.state?.email || t('verifyEmail.emailFallback')
+
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  
+
   const { resendVerification } = useAuthStore()
 
   const handleResend = async () => {
     setStatus('loading')
     setError('')
     setMessage('')
-    
-    if (email === 'your email address') {
+
+    if (!location.state?.email) {
       setStatus('error')
-      setError('Email address not found. Please log in again.')
+      setError(t('notifications.verifyEmailNotFound'))
       return
     }
 
     const response = await resendVerification(email)
-    
+
     if (response.success) {
       setStatus('success')
-      setMessage(response.message || 'Verification email sent')
+      setMessage(response.message || t('notifications.verifyEmailSent'))
     } else {
       setStatus('error')
-      setError(response.error || 'Failed to resend email')
+      setError(response.error || t('notifications.verifyEmailResendFailed'))
     }
   }
 
@@ -50,14 +52,13 @@ export default function VerifyEmail() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-100">
               <Mail className="h-8 w-8 text-primary-600" />
             </div>
-            <CardTitle className="font-display text-2xl">Verify your email</CardTitle>
+            <CardTitle className="font-display text-2xl">{t('verifyEmail.title')}</CardTitle>
             <CardDescription>
-              We sent a verification link to{' '}
+              {t('verifyEmail.description')}{' '}
               <strong className="text-stone-700">{email}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-
             <Button
               variant="outline"
               className="w-full"
@@ -65,9 +66,11 @@ export default function VerifyEmail() {
               disabled={status === 'loading'}
             >
               {status === 'loading' ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</>
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t('verifyEmail.sending')}
+                </>
               ) : (
-                'Resend verification email'
+                t('verifyEmail.resend')
               )}
             </Button>
 
@@ -84,7 +87,7 @@ export default function VerifyEmail() {
             )}
 
             <Button asChild className="w-full">
-              <Link to="/dashboard">Continue to dashboard</Link>
+              <Link to="/dashboard">{t('verifyEmail.continue')}</Link>
             </Button>
           </CardContent>
         </Card>
