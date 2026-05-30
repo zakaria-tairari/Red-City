@@ -46,7 +46,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 // Public reviews route
 Route::get('/places/{id}/reviews', [ReviewsController::class, 'index']);
 
-//Email verification routes
 Route::prefix('email')->controller(VerificationController::class)->group(function () {
     Route::post('/verification-notification', 'resend')
         ->middleware(['auth:sanctum', 'throttle:6,1']);
