@@ -15,6 +15,7 @@ class FavoritesController extends Controller
         $favorites = $user->favoritePlaces()
             ->with(['category', 'media', 'tags'])
             ->withCount('reviews')
+            ->orderByDesc('avg_rating')
             ->get();
 
         return ApiResponse::success(
