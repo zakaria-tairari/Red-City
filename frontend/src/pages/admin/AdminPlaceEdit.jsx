@@ -72,6 +72,38 @@ const LANGUAGES = [
   { code: "es", label: "Español" },
 ];
 
+const VIDEO_EXTENSIONS = [
+  ".mp4",
+  ".webm",
+  ".mov",
+  ".m4v",
+  ".ogg",
+  ".ogv",
+  ".mkv",
+];
+
+function mediaTypeFromFile(file) {
+  if (!file) return "image";
+  const name = file.name.toLowerCase();
+  if (VIDEO_EXTENSIONS.some(ext => name.endsWith(ext))) return "video";
+  if (file.type.startsWith("video/")) return "video";
+  return "image";
+}
+
+function mediaTypeFromUrl(url) {
+  if (!url) return "image";
+  const path = url.split("?")[0].toLowerCase();
+  if (VIDEO_EXTENSIONS.some(ext => path.endsWith(ext))) return "video";
+  return "image";
+}
+
+function resolveMediaType(item) {
+  if (item.file) return mediaTypeFromFile(item.file);
+  return mediaTypeFromUrl(
+    item.preview_url || item.app_url || item.original_url,
+  );
+}
+
 // ─────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────
@@ -120,7 +152,7 @@ function getInitialMedia(place) {
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
     .map((item, index) => ({
       id: item.id,
-      type: item.type ?? "image",
+      type: mediaTypeFromUrl(item.app_url || item.original_url),
       original_url: item.original_url ?? "",
       app_url: item.app_url ?? "",
       app_path: item.app_path ?? "",
@@ -290,13 +322,6 @@ function PlaceEditForm({
       [lang]: { ...prev[lang], [field]: value },
     }));
 
-  const updateMedia = (index, field, value) =>
-    setMedia(items =>
-      items.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item,
-      ),
-    );
-
   const addMedia = () => setMedia(items => [...items, { ...emptyMediaItem }]);
 
   const removeMedia = index =>
@@ -306,15 +331,31 @@ function PlaceEditForm({
   const moveMedia = (fromIndex, toIndex) => {
     if (fromIndex === toIndex) return;
     setMedia(items => {
+      const moved = items[fromIndex];
+      if (toIndex === 0 && resolveMediaType(moved) === "video") {
+        addNotification({
+          type: "error",
+          message: "Cover must be an image. Move the video to another position.",
+        });
+        return items;
+      }
       const next = [...items];
-      const [moved] = next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, moved);
+      const [removed] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, removed);
       return next;
     });
   };
 
   const updateMediaFile = (index, file) => {
     if (!file) return;
+    const type = mediaTypeFromFile(file);
+    if (index === 0 && type === "video") {
+      addNotification({
+        type: "error",
+        message: "Cover must be an image. Upload a photo for the cover slot.",
+      });
+      return;
+    }
     setMedia(items =>
       items.map((item, i) => {
         if (i !== index) return item;
@@ -323,7 +364,7 @@ function PlaceEditForm({
           file,
           preview_url: URL.createObjectURL(file),
           storage_status: "done",
-          type: file.type.startsWith("video/") ? "video" : "image",
+          type,
         };
       }),
     );
@@ -339,6 +380,14 @@ function PlaceEditForm({
       addNotification({ type: "error", message: "Longitude must be a number" });
       return;
     }
+    if (media.length > 0 && resolveMediaType(media[0]) === "video") {
+      addNotification({
+        type: "error",
+        message:
+          "Cover must be an image. Reorder media or replace the first item.",
+      });
+      return;
+    }
     saveMutation.mutate({
       ...form,
       document_id: form.document_id.trim() || undefined,
@@ -352,7 +401,7 @@ function PlaceEditForm({
       media: media
         .map((item, index) => ({
           id: item.id,
-          type: item.type,
+          type: resolveMediaType(item),
           original_url: item.original_url?.trim() || undefined,
           app_url: item.app_path || undefined,
           file: item.file || undefined,
@@ -507,7 +556,8 @@ function PlaceEditForm({
                 Media
               </CardTitle>
               <p className="mt-1 text-sm text-stone-500">
-                The first item is automatically used as the cover. Drag to
+                The first item is the cover (images only). Gallery items can be
+                images or videos. Type is set from the file extension. Drag to
                 reorder.
               </p>
             </div>
@@ -538,7 +588,6 @@ function PlaceEditForm({
                 onMove={moveMedia}
                 onRemove={removeMedia}
                 onUpdateFile={updateMediaFile}
-                onUpdateField={updateMedia}
               />
             )}
           </CardContent>
@@ -637,7 +686,7 @@ function PlaceEditForm({
   );
 }
 
-function MediaGrid({ media, onMove, onRemove, onUpdateFile, onUpdateField }) {
+function MediaGrid({ media, onMove, onRemove, onUpdateFile }) {
   const [dragIndex, setDragIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
 
@@ -668,7 +717,9 @@ function MediaGrid({ media, onMove, onRemove, onUpdateFile, onUpdateField }) {
     <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
       {media.map((item, index) => {
         const isCover = index === 0;
-        const previewUrl = item.app_url || item.original_url;
+        const mediaType = resolveMediaType(item);
+        const previewUrl =
+          item.preview_url || item.app_url || item.original_url;
         const isDragging = dragIndex === index;
         const isDragOver = dragOverIndex === index && dragIndex !== index;
 
@@ -688,7 +739,7 @@ function MediaGrid({ media, onMove, onRemove, onUpdateFile, onUpdateField }) {
           >
             {/* Thumbnail */}
             <div className="relative aspect-square w-full overflow-hidden bg-stone-200">
-              {previewUrl && item.type === "video" ? (
+              {previewUrl && mediaType === "video" ? (
                 <video
                   src={previewUrl}
                   className="h-full w-full object-cover"
@@ -738,26 +789,28 @@ function MediaGrid({ media, onMove, onRemove, onUpdateFile, onUpdateField }) {
 
             {/* Footer */}
             <div className="flex items-center gap-2 border-t border-stone-100 p-2">
-              <select
-                className="h-7 flex-1 rounded-lg border border-stone-200 bg-white px-2 text-xs text-stone-700 focus:outline-none focus:ring-1 focus:ring-primary-400"
-                value={item.type}
-                onChange={e => onUpdateField(index, "type", e.target.value)}
-              >
-                <option value="image">Image</option>
-                <option value="video">Video</option>
-              </select>
+              <span className="flex h-7 flex-1 items-center rounded-lg border border-stone-200 bg-stone-50 px-2 text-xs font-medium capitalize text-stone-600">
+                {mediaType}
+              </span>
 
               <label
                 className="flex h-7 cursor-pointer items-center gap-1 rounded-lg border border-stone-200 bg-white px-2 text-xs font-medium text-stone-700 transition-colors hover:bg-stone-50"
-                title="Upload file"
+                title={isCover ? "Upload cover image" : "Upload file"}
               >
                 <Upload className="h-3 w-3" />
                 Upload
                 <input
                   type="file"
-                  accept="image/*,video/mp4,video/webm,video/quicktime"
+                  accept={
+                    isCover
+                      ? "image/*"
+                      : "image/*,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+                  }
                   className="sr-only"
-                  onChange={e => onUpdateFile(index, e.target.files?.[0])}
+                  onChange={e => {
+                    onUpdateFile(index, e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
                 />
               </label>
             </div>

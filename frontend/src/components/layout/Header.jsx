@@ -117,7 +117,7 @@ export default function Header() {
                   {/* Dashboard */}
                   <DropdownMenu.Item asChild>
                     <Link
-                      to="/dashboard"
+                      to="/dashboard/profile"
                       className="mt-2 flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-stone-700 outline-none transition hover:bg-stone-100"
                     >
                       <User className="h-4 w-4" />
@@ -128,7 +128,7 @@ export default function Header() {
                   {/* Favorites */}
                   <DropdownMenu.Item asChild>
                     <Link
-                      to="/dashboard/favorites"
+                      to="/dashboard"
                       className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-stone-700 outline-none transition hover:bg-stone-100"
                     >
                       <Heart className="h-4 w-4" />
@@ -179,7 +179,7 @@ export default function Header() {
               <Button variant="ghost" asChild>
                 <Link to="/login">{t("auth.login")}</Link>
               </Button>
-              
+              <LanguageSwitcher />
             </div>
           )}
         </div>
@@ -236,7 +236,7 @@ export default function Header() {
                   <>
                     <Button variant="outline" asChild className="w-full">
                       <Link
-                        to="/dashboard"
+                        to="/dashboard/profile"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {t("nav.profile")}
@@ -245,7 +245,7 @@ export default function Header() {
 
                     <Button variant="outline" asChild className="w-full">
                       <Link
-                        to="/dashboard/favorites"
+                        to="/dashboard"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {t("nav.favorites")}

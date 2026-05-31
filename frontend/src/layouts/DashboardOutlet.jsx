@@ -7,8 +7,7 @@ export default function DashboardOutlet() {
   const { t } = useTranslation()
 
   const tabs = [
-    { to: '/dashboard', labelKey: 'dashboard.overview', icon: LayoutGrid, end: true },
-    { to: '/dashboard/favorites', labelKey: 'dashboard.favorites', icon: Heart },
+    { to: '/dashboard', labelKey: 'dashboard.favorites', icon: Heart, end: true },
     { to: '/dashboard/reviews', labelKey: 'dashboard.myReviews', icon: Star },
     { to: '/dashboard/profile', labelKey: 'dashboard.profile', icon: User },
   ]
@@ -16,24 +15,9 @@ export default function DashboardOutlet() {
   return (
     <div className="min-h-screen bg-stone-50 pt-16">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-stone-900">
-              {t('dashboard.title')}
-            </h1>
-            <p className="mt-1 text-sm text-stone-500">{t('dashboard.subtitle')}</p>
-          </div>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition-colors hover:text-primary-700"
-          >
-            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
-            {t('common.backToHome')}
-          </Link>
-        </div>
-
+        <div className="flex justify-between items-center mb-8">
         <nav
-          className="mb-5 flex flex-wrap gap-2"
+          className="flex flex-wrap gap-12"
           aria-label="Dashboard sections"
         >
           {tabs.map(({ to, labelKey, icon: Icon, end }) => (
@@ -43,7 +27,7 @@ export default function DashboardOutlet() {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'inline-flex items-center gap-2 px-4 py-2.5 font-semibold transition-all',
+                  'inline-flex items-center gap-2 transition-all text-sm font-semibold',
                   isActive
                     ? 'text-primary-600'
                     : 'text-stone-600 hover:text-primary-700'
@@ -55,6 +39,14 @@ export default function DashboardOutlet() {
             </NavLink>
           ))}
         </nav>
+        <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-stone-600 transition-colors font-semibold hover:text-primary-700"
+          >
+            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
+            {t('common.backToHome')}
+          </Link>
+        </div>
 
         <Outlet />
       </div>

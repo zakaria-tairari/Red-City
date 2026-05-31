@@ -126,10 +126,12 @@ export default function DashboardProfile() {
                 <CheckCircle className="h-3 w-3 text-emerald-500" /> {t('dashboard.verifiedEmail')}
               </p>
             </div>
+            <div className="flex justify-end">
             <Button type="submit" disabled={isSubmitting} className="gap-2">
               <Save className="h-4 w-4" />
               {isSubmitting ? t('dashboard.saving') : t('dashboard.saveChanges')}
             </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

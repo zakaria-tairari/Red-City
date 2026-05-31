@@ -10,7 +10,6 @@ import Register from '@/pages/Register'
 import ForgotPassword from '@/pages/ForgotPassword'
 import ResetPassword from '@/pages/ResetPassword'
 import VerifyEmail from '@/pages/VerifyEmail'
-import Dashboard from '@/pages/Dashboard'
 import Favorites from '@/pages/Favorites'
 import DashboardReviews from '@/pages/DashboardReviews'
 import DashboardProfile from '@/pages/DashboardProfile'
@@ -75,8 +74,7 @@ export default function App() {
               <DashboardOutlet />
             </ProtectedRoute>
           }>
-            <Route index element={<Dashboard />} />
-            <Route path="favorites" element={<Favorites />} />
+            <Route index element={<Favorites />} />
             <Route path="reviews" element={<DashboardReviews />} />
             <Route path="profile" element={<DashboardProfile />} />
           </Route>

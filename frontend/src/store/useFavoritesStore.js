@@ -3,8 +3,8 @@ import { useUIStore } from './useUIStore'
 import * as favoritesService from '@/services/favorites'
 
 export const useFavoritesStore = create((set, get) => ({
-  favorites: [], // Array of place IDs
-  favoritePlaces: [], // Array of detailed place objects
+  favorites: [],
+  favoritePlaces: [],
   isLoading: false,
 
   fetchFavorites: async () => {
@@ -25,7 +25,6 @@ export const useFavoritesStore = create((set, get) => ({
     const { favorites, favoritePlaces } = get()
     const isFav = favorites.includes(place.id)
     
-    // Optimistic update
     const newFavorites = isFav
       ? favorites.filter((id) => id !== place.id)
       : [...favorites, place.id]
@@ -36,7 +35,6 @@ export const useFavoritesStore = create((set, get) => ({
 
     set({ favorites: newFavorites, favoritePlaces: newFavoritePlaces })
 
-    // Visual feedback
     useUIStore.getState().addNotification({
       type: isFav ? 'info' : 'success',
       title: isFav ? 'Removed from Favorites' : 'Saved to Favorites',
@@ -46,10 +44,9 @@ export const useFavoritesStore = create((set, get) => ({
     })
 
     try {
-      // Backend sync
       await favoritesService.toggleFavorite(place.id)
+      await get().fetchFavorites()
     } catch {
-      // Revert on error
       set({ favorites, favoritePlaces })
       useUIStore.getState().addNotification({
         type: 'error',

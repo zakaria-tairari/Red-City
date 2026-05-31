@@ -9,27 +9,12 @@ export default function Favorites() {
   const { t } = useTranslation()
   const { favoritePlaces, removeFavorite, isLoading } = useFavoritesStore()
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: t('dashboard.shareTitle'),
-        text: t('dashboard.shareText', { count: favoritePlaces.length }),
-        url: window.location.href,
-      })
-    }
-  }
-
   return (
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h2 className="font-display text-2xl font-bold text-stone-900">{t('dashboard.yourFavorites')}</h2>
           <p className="text-stone-500">{t('dashboard.savedCount', { count: favoritePlaces.length })}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleShare}>
-            <Share2 className="h-4 w-4" /> {t('dashboard.shareList')}
-          </Button>
         </div>
       </div>
 
@@ -45,7 +30,7 @@ export default function Favorites() {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {favoritePlaces.map((place) => (
             <div key={place.id} className="relative group">
               <PlaceCard place={place} />

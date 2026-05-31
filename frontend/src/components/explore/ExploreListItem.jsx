@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, Star, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { cn, formatReviewCount } from "@/lib/utils";
 import { useUIStore } from "@/store/useUIStore";
 
 export default function ExploreListItem({ place }) {
@@ -45,8 +45,8 @@ export default function ExploreListItem({ place }) {
         </h3>
         <div className="mt-1 flex items-center gap-2 text-xs text-stone-500">
           <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-          <span className="font-medium text-stone-700">4.5</span>
-          <span>1.2k</span>
+          <span className="font-medium text-stone-700">{place.avg_rating ?? '—'}</span>
+          <span>{formatReviewCount(place.reviews_count || 0)}</span>
         </div>
         <p className="mt-1 flex items-center gap-1 text-xs text-stone-400">
           <MapPin className="h-3 w-3" />
