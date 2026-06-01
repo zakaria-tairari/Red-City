@@ -1,24 +1,4 @@
-from pipelines.run_categories import run_categories
-from pipelines.run_places import run_places
-from ai.tags_generator import generate_tags
-from db.tags_seeder import seed_tags
-from translation.translate import translate_places
-from utils.logger import logger
-
-def main():
-    logger.info("Starting full ETL pipeline...")
-    run_categories()
-    run_places()
-    seed_tags()
-    logger.info("ETL finished successfully")
-
-    logger.info("Starting tags generation...")
-    generate_tags()
-    logger.info("Tags generation and insertion successful")
-
-    logger.info("Starting translations...")
-    translate_places()
-    logger.info("Translations generation and insertion successful")
+from pipelines.run_full_pipeline import run_full_pipeline
 
 if __name__ == "__main__":
-    main()
+    run_full_pipeline()
