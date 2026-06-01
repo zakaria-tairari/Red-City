@@ -6,7 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 
 class VerificationController extends Controller
 {
@@ -28,25 +28,35 @@ class VerificationController extends Controller
         return redirect(config('app.frontend_url'));
     }
 
-    public function resend(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
+    public function resend(Request $request) {
+        $request->validate([
+            'email' => ['required', 'email']
+        ]);
 
-        $user = User::where('email', $request->email)->firstOrFail();
+        $email = $request->email;
+        $rateLimitKey = 'verification-resend:' . $email . '|' . $request->ip();
 
-        if ($user->hasVerifiedEmail()) {
-            return ApiResponse::error('Email is already verified', 400);
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+
+            return ApiResponse::error(
+                "Too many requests. Try again in {$seconds} seconds",
+                429
+            );
+        }
+        RateLimiter::hit($rateLimitKey, 60);
+
+        $user = User::where('email', $email)->first();
+        if (!$user || $user->hasVerifiedEmail()) {
+            return ApiResponse::success(
+                'A verification email has been sent'
+            );
         }
 
-        $cacheKey = 'verification_resend_' . $user->id;
-
-        if (Cache::has($cacheKey)) {
-            return ApiResponse::error('Please wait before requesting another link', 429);
-        }
-
-        Cache::put($cacheKey, true, now()->addMinute());
         $user->sendEmailVerificationNotification();
 
-        return ApiResponse::success('Verification link sent. Check your email');
+        return ApiResponse::success(
+            'A verification email has been sent'
+        );
     }
 }

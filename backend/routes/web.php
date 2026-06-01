@@ -11,13 +11,13 @@ Route::get('/', function () {
 });
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
-    Route::post('/forgot-password', 'forgotPassword');
-    Route::post('/reset-password', 'resetPassword');
+    Route::post('/register', 'register')->middleware('throttle:register');
+    Route::post('/login', 'login')->middleware('throttle:login');
+    Route::post('/forgot-password', 'forgotPassword')->middleware('throttle:password-reset');;
+    Route::post('/reset-password', 'resetPassword')->middleware('throttle:password-reset');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
 Route::get('/email/verify/{id}', [VerificationController::class, 'verify'])
-    ->middleware(['signed'])
+    ->middleware(['signed', 'throttle:verification-resend'])
     ->name('verification.verify');

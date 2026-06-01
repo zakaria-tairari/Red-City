@@ -17,47 +17,47 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-//Public routes
-Route::prefix('categories')->controller(CategoriesController::class)->group( function () {
-    Route::get('/', 'index');
-    Route::get('/{id}', 'show');
-});
-
-Route::get('/tags', [TagsController::class, 'index']);
-
-Route::prefix('places')->controller(PlacesController::class)->group( function () {
-    Route::get('/', 'index');
-    Route::get('/search', 'search');
-    Route::get('/featured', 'featured');
-    Route::get('/all', 'all');
-    Route::get('/{id}', 'show');
-    Route::get('/{id}/related', 'related');
-});
-
-//Auth routes
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/favorites', [FavoritesController::class, 'index']);
-    Route::post('/favorites/toggle', [FavoritesController::class, 'toggle']);
+Route::middleware('throttle:api')->group( function () {
+    Route::prefix('categories')->controller(CategoriesController::class)->group( function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
     
-    Route::post('/places/{id}/reviews', [ReviewsController::class, 'store']);
-    Route::get('/user/reviews', [ReviewsController::class, 'userReviews']);
+    Route::get('/tags', [TagsController::class, 'index']);
+    
+    Route::prefix('places')->controller(PlacesController::class)->group( function () {
+        Route::get('/', 'index');
+        Route::get('/search', 'search')->middleware('throttle:search');
+        Route::get('/featured', 'featured');
+        Route::get('/all', 'all');
+        Route::get('/{id}', 'show');
+        Route::get('/{id}/related', 'related');
+    });
+    
+    Route::middleware(['auth:sanctum', 'verified', 'throttle:ugc'])->group(function () {
+        Route::get('/favorites', [FavoritesController::class, 'index']);
+        Route::post('/favorites/toggle', [FavoritesController::class, 'toggle']);
+        
+        Route::post('/places/{id}/reviews', [ReviewsController::class, 'store']);
+        Route::get('/user/reviews', [ReviewsController::class, 'userReviews']);
+    });
+    
+    Route::get('/places/{id}/reviews', [ReviewsController::class, 'index']);
+    
+    Route::prefix('email')->controller(VerificationController::class)->group(function () {
+        Route::post('/verification-notification', 'resend')
+            ->middleware(['auth:sanctum', 'throttle:verification-resend']);
+    });
+    
+    Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request $request) {
+        return ApiResponse::success('User retrieved', new UserResource($request->user()));
+    });
+    
+    Route::middleware(['auth:sanctum', 'verified'])->patch('/user/profile', [App\Http\Controllers\AuthController::class, 'updateProfile']);
 });
 
-// Public reviews route
-Route::get('/places/{id}/reviews', [ReviewsController::class, 'index']);
 
-Route::prefix('email')->controller(VerificationController::class)->group(function () {
-    Route::post('/verification-notification', 'resend')
-        ->middleware(['auth:sanctum', 'throttle:6,1']);
-});
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request $request) {
-    return ApiResponse::success('User retrieved', new UserResource($request->user()));
-});
-
-Route::middleware(['auth:sanctum', 'verified'])->patch('/user/profile', [App\Http\Controllers\AuthController::class, 'updateProfile']);
-
-Route::prefix('admin')->middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'verified', 'admin', 'throttle:admin'])->group(function () {
     Route::get('/stats', [AdminDashboardController::class, 'stats']);
 
     Route::prefix('places')->controller(AdminPlacesController::class)->group(function () {
