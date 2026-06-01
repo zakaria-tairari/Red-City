@@ -6,8 +6,9 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\Process\Process;
+
 
 #[Signature('app:update-dataset')]
 #[Description('Runs the full ETL pipeline')]
@@ -18,33 +19,32 @@ class UpdateDataset extends Command
      */
     public function handle()
     {
-        $projectPath = base_path('../data-engine');
-        $python = $projectPath . '/venv/bin/python';
+        try {
+            $this->info("Triggering data-engine pipeline...");
 
-        $process = new Process([
-            $python,
-            '-m',
-            'main'
-        ]);
+            $response = Http::timeout(3600)
+                ->post('http://127.0.0.1:8001/run-pipeline');
 
-        $process->setWorkingDirectory($projectPath);
-        $process->setTimeout(null);
+            if (!$response->successful()) {
+                throw new \Exception($response->body());
+            }
 
-        $process->run(function ($type, $buffer) {
-            $this->output->write($buffer);
-        });
+            $this->info("ETL pipeline completed successfully");
 
-        if (!$process->isSuccessful()) {
-            Log::error('Python scraper failed', [
-                'error' => $process->getErrorOutput()
+            Artisan::call('app:media-download');
+
+            $this->info("Media download completed");
+
+            return self::SUCCESS;
+
+        } catch (\Exception $e) {
+            Log::error('Pipeline failed', [
+                'error' => $e->getMessage()
             ]);
-            
-            $this->error($process->getErrorOutput());
+
+            $this->error($e->getMessage());
+
             return self::FAILURE;
         }
-
-        Artisan::call('app:media-download');
-
-        return self::SUCCESS;
     }
 }
