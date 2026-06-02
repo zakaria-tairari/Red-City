@@ -2,19 +2,36 @@ import requests
 from config import API_PLACES_URL, HEADERS
 from utils.logger import logger
 
-def fetch_places_by_category(category_code, locale="fr", page=1, page_size=300):
+def fetch_places_by_category(category_code, locale="fr"):
     try:
-        response = requests.get(API_PLACES_URL, headers=HEADERS, params = {
-        "locale": locale,
-        "filters[city][slug][$eq]": "marrakech",
-        "filters[categories][slug][$eq]": category_code,
-        "pagination[page]": page,
-        "pagination[pageSize]": page_size,
-        "populate[0]": "gallery",
-        "populate[1]": "coverImage",
-        "populate[2]": "videos",
-        })
+        response = requests.get(API_PLACES_URL, headers=HEADERS,
+            params={
+                "locale": locale,
+                "filters[city][slug][$eq]": "marrakech",
+                "filters[categories][slug][$eq]": category_code,
+                "pagination[page]": 1,
+                "pagination[pageSize]": 12,
+            },
+        )
+        response.raise_for_status()
+
+        data = response.json()
+        total = data["meta"]["pagination"]["total"]
+
+        response = requests.get(API_PLACES_URL, headers=HEADERS,
+            params={
+                "locale": locale,
+                "filters[city][slug][$eq]": "marrakech",
+                "filters[categories][slug][$eq]": category_code,
+                "pagination[page]": 1,
+                "pagination[pageSize]": total,
+                "populate[0]": "gallery",
+                "populate[1]": "coverImage",
+                "populate[2]": "videos",
+            },
+        )
         logger.info(f"HTTP Request: GET {API_PLACES_URL} | Status: {response.status_code} {response.reason}")
+        response.raise_for_status()
 
         data = response.json().get("data", [])
 

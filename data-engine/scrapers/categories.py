@@ -6,7 +6,8 @@ def fetch_categories():
     try:
         response = requests.get(API_CATEGORIES_URL, headers=HEADERS)
         logger.info(f"HTTP Request: GET {API_CATEGORIES_URL} | Status: {response.status_code} {response.reason}")
-
+        
+        response.raise_for_status()
         data = response.json().get("data", [])
 
         logger.info(f"Scraping successful: {len(data)} categories scraped")
