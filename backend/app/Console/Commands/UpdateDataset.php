@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Place;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -34,6 +35,8 @@ class UpdateDataset extends Command
             Artisan::call('app:media-download');
 
             $this->info("Media download completed");
+
+            Place::query()->searchable();
 
             return self::SUCCESS;
 
