@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 use Throwable;
 
 #[Tries(5)]
-#[Backoff([30, 60, 300])]
+#[Backoff([60, 300, 900])]
 #[UniqueFor(3600)]
 #[Timeout(240)]
 class MediaDownloadJob implements ShouldQueue, ShouldBeUnique

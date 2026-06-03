@@ -23,7 +23,7 @@ class UpdateDataset extends Command
             $this->info("Triggering data-engine pipeline...");
 
             $response = Http::timeout(3600)
-                ->post('http://127.0.0.1:8001/run-pipeline');
+                ->post(config('app.data_engine_url') . '/run-pipeline');
 
             if (!$response->successful()) {
                 throw new \Exception($response->body());
