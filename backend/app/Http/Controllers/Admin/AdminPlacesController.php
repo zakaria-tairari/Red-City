@@ -125,13 +125,13 @@ class AdminPlacesController extends Controller
     {
         $documentRule = 'sometimes|string|max:255|unique:places,document_id';
         if ($placeId) {
-            $documentRule .= ',' . $placeId;
+            $documentRule .= ','.$placeId;
         }
 
         return $request->validate([
             'document_id' => $documentRule,
-            'name' => ($placeId ? 'sometimes' : 'required') . '|required|string|max:255',
-            'category_id' => ($placeId ? 'sometimes' : 'required') . '|required|exists:categories,id',
+            'name' => ($placeId ? 'sometimes' : 'required').'|required|string|max:255',
+            'category_id' => ($placeId ? 'sometimes' : 'required').'|required|exists:categories,id',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'website' => 'nullable|string|max:255',
@@ -218,7 +218,7 @@ class AdminPlacesController extends Controller
         $suffix = 2;
 
         while (Place::where('document_id', $documentId)->exists()) {
-            $documentId = $base . '-' . $suffix;
+            $documentId = $base.'-'.$suffix;
             $suffix++;
         }
 
@@ -227,8 +227,8 @@ class AdminPlacesController extends Controller
 
     private function clearPlaceCache(int $id): void
     {
-        Cache::forget('place_' . $id);
-        Cache::forget('place_related_' . $id);
+        Cache::forget('place_'.$id);
+        Cache::forget('place_related_'.$id);
         Cache::forget('featured_places');
         Cache::forever('places_cache_version', (int) Cache::get('places_cache_version', 1) + 1);
         Cache::forever('tags_cache_version', (int) Cache::get('tags_cache_version', 1) + 1);

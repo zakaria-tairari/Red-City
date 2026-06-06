@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class VerificationController extends Controller
 {
-    public function verify(int $user_id, Request $request) 
+    public function verify(int $user_id, Request $request)
     {
-        if (!$request->hasValidSignature()) {
-            return ApiResponse::error("The URL is invalid or expired", 401);
+        if (! $request->hasValidSignature()) {
+            return ApiResponse::error('The URL is invalid or expired', 401);
         }
 
         $user = User::findOrFail($user_id);
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
         }
 
@@ -28,13 +28,14 @@ class VerificationController extends Controller
         return redirect(config('app.frontend_url'));
     }
 
-    public function resend(Request $request) {
+    public function resend(Request $request)
+    {
         $request->validate([
-            'email' => ['required', 'email']
+            'email' => ['required', 'email'],
         ]);
 
         $email = $request->email;
-        $rateLimitKey = 'verification-resend:' . $email . '|' . $request->ip();
+        $rateLimitKey = 'verification-resend:'.$email.'|'.$request->ip();
 
         if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
@@ -47,7 +48,7 @@ class VerificationController extends Controller
         RateLimiter::hit($rateLimitKey, 60);
 
         $user = User::where('email', $email)->first();
-        if (!$user || $user->hasVerifiedEmail()) {
+        if (! $user || $user->hasVerifiedEmail()) {
             return ApiResponse::success(
                 'A verification email has been sent'
             );

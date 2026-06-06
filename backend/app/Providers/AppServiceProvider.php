@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
             $frontendUrl = rtrim(env('FRONTEND_URL', 'http://127.0.0.1:5173'), '/');
 
-            return $frontendUrl . '/reset-password?token=' . $token . '&email=' . urlencode($notifiable->getEmailForPasswordReset());
+            return $frontendUrl.'/reset-password?token='.$token.'&email='.urlencode($notifiable->getEmailForPasswordReset());
         });
 
         RateLimiter::for('api', function (Request $request) {
@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by(
-                strtolower($request->input('email')) . '|' . $request->ip()
+                strtolower($request->input('email')).'|'.$request->ip()
             );
         });
 
@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('verification-resend', function (Request $request) {
             return Limit::perMinute(3)->by(
-                strtolower($request->input('email')) . '|' . ($request->user()?->id ?: $request->ip())
+                strtolower($request->input('email')).'|'.($request->user()?->id ?: $request->ip())
             );
         });
 
@@ -75,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('search', function (Request $request) {
             return Limit::perMinute(30)->by(
-                ($request->user()?->id ?: $request->ip()) . ':' . ($request->input('q') ?? '')
+                ($request->user()?->id ?: $request->ip()).':'.($request->input('q') ?? '')
             );
         });
     }

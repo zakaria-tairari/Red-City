@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Cache;
 
 class PlacesController extends Controller
 {
-    public function index(Request $request) {
-        $cacheKey = 'places_' . md5(json_encode([
+    public function index(Request $request)
+    {
+        $cacheKey = 'places_'.md5(json_encode([
             'version' => Cache::get('places_cache_version', 1),
             'category' => $request->category,
             'tags' => $request->tags,
@@ -40,7 +41,7 @@ class PlacesController extends Controller
                     case 'rating':
                         $query->orderByDesc('avg_rating');
                         break;
-                    
+
                     case 'reviews':
                         $query->orderByDesc('reviews_count');
                         break;
@@ -70,8 +71,9 @@ class PlacesController extends Controller
         );
     }
 
-    public function all(Request $request) {
-        $cacheKey = 'places_' . md5(json_encode([
+    public function all(Request $request)
+    {
+        $cacheKey = 'places_'.md5(json_encode([
             'version' => Cache::get('places_cache_version', 1),
             'category' => $request->category,
             'tags' => $request->tags,
@@ -98,7 +100,7 @@ class PlacesController extends Controller
                     case 'rating':
                         $query->orderByDesc('avg_rating');
                         break;
-                    
+
                     case 'reviews':
                         $query->orderByDesc('reviews_count');
                         break;
@@ -124,21 +126,24 @@ class PlacesController extends Controller
         );
     }
 
-    public function show(int $id) {
-        $cacheKey = 'place_' . $id;
+    public function show(int $id)
+    {
+        $cacheKey = 'place_'.$id;
 
         $place = Cache::remember($cacheKey, 3600, function () use ($id) {
             $query = Place::with('category', 'media', 'tags', 'translations')->withCount('reviews')->findOrFail($id);
+
             return $query;
         });
 
         return ApiResponse::success(
-            "Place $id retreived successfully", 
+            "Place $id retreived successfully",
             new PlaceResource($place),
         );
     }
 
-    public function featured() {
+    public function featured()
+    {
         $places = Cache::remember('featured_places', 3600, function () {
             $query = Place::with('category', 'media', 'tags')
                 ->orderByDesc('avg_rating')
@@ -149,13 +154,14 @@ class PlacesController extends Controller
         });
 
         return ApiResponse::success(
-            'Places retreived successfully', 
+            'Places retreived successfully',
             PlaceListResource::collection($places),
         );
     }
 
-    public function related(int $id) {
-        $cacheKey = 'place_related_' . $id;
+    public function related(int $id)
+    {
+        $cacheKey = 'place_related_'.$id;
 
         $places = Cache::remember($cacheKey, 3600, function () use ($id) {
 
@@ -188,7 +194,8 @@ class PlacesController extends Controller
         );
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $raw = Place::search($request->q)->raw();
         $hits = collect($raw['hits']);
         $ids = $hits->pluck('id');
@@ -200,7 +207,7 @@ class PlacesController extends Controller
             ->get()
             ->keyBy('id');
 
-        $ordered = $ids->map(fn($id) => $places[$id])->filter();
+        $ordered = $ids->map(fn ($id) => $places[$id])->filter();
 
         return ApiResponse::success(
             'Search results retrieved successfully',

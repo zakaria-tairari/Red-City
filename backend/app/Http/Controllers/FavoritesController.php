@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Resources\PlaceListResource;
-use App\Models\Place;
 use Illuminate\Http\Request;
 
 class FavoritesController extends Controller
@@ -34,7 +33,7 @@ class FavoritesController extends Controller
         $placeId = $request->place_id;
 
         $favorites = $user->favoritePlaces();
-        
+
         $changes = $favorites->toggle($placeId);
         $isFav = count($changes['attached']) > 0;
 

@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Cache;
 
 class TagsController extends Controller
 {
-    public function index(Request $request) {
-        $cacheKey = 'tags_' . md5(json_encode([
+    public function index(Request $request)
+    {
+        $cacheKey = 'tags_'.md5(json_encode([
             'version' => Cache::get('tags_cache_version', 1),
             'category' => $request->category,
         ]));

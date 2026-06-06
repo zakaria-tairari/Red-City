@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('tag_id')->constrained()->onDelete('cascade');
 
             $table->float('score');
-            
+
             $table->primary(['place_id', 'tag_id']);
         });
     }

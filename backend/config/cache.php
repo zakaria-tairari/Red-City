@@ -1,5 +1,14 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Media;
+use App\Models\Place;
+use App\Models\Review;
+use App\Models\Tag;
+use App\Models\Translation;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 return [
@@ -126,15 +135,15 @@ return [
     */
 
     'serializable_classes' => [
-        Illuminate\Database\Eloquent\Collection::class,
-        Illuminate\Pagination\LengthAwarePaginator::class,
-        App\Models\User::class,
-        App\Models\Place::class,
-        App\Models\Category::class,
-        App\Models\Media::class,
-        App\Models\Tag::class,
-        App\Models\Translation::class,
-        App\Models\Review::class,
+        Collection::class,
+        LengthAwarePaginator::class,
+        User::class,
+        Place::class,
+        Category::class,
+        Media::class,
+        Tag::class,
+        Translation::class,
+        Review::class,
     ],
 
 ];

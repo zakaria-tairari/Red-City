@@ -40,7 +40,7 @@ class AdminCategoriesController extends Controller
 
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'code' => 'sometimes|required|string|max:100|unique:categories,code,' . $id,
+            'code' => 'sometimes|required|string|max:100|unique:categories,code,'.$id,
         ]);
 
         $category->update($data);

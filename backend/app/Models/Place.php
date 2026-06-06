@@ -24,27 +24,33 @@ class Place extends Model
         ];
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function media() {
+    public function media()
+    {
         return $this->hasMany(Media::class);
     }
 
-    public function tags() {
+    public function tags()
+    {
         return $this->belongsToMany(Tag::class)->withPivot('score');
     }
 
-    public function translations() {
+    public function translations()
+    {
         return $this->hasMany(Translation::class);
     }
 
-    public function reviews() {
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
 
-    public function UsersFavoritedBy() {
+    public function UsersFavoritedBy()
+    {
         return $this->belongsToMany(User::class, 'favorites');
     }
 }

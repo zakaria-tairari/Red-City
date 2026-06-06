@@ -74,10 +74,10 @@ class AdminUsersController extends Controller
         $user = User::findOrFail($id);
 
         $data = $request->validate([
-            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $id,
+            'username' => 'sometimes|required|string|max:255|unique:users,username,'.$id,
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
+            'email' => 'sometimes|required|email|unique:users,email,'.$id,
             'password' => 'nullable|string|min:6|confirmed',
             'role' => 'sometimes|in:user,admin',
         ]);

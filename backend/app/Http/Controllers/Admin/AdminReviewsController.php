@@ -46,7 +46,7 @@ class AdminReviewsController extends Controller
             $avgRating = Review::where('place_id', $placeId)->avg('rating') ?? 0;
             $place->avg_rating = round($avgRating, 1);
             $place->save();
-            Cache::forget('place_' . $placeId);
+            Cache::forget('place_'.$placeId);
             Cache::forget('featured_places');
             Cache::forever('places_cache_version', (int) Cache::get('places_cache_version', 1) + 1);
         }

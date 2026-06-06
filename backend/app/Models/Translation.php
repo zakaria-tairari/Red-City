@@ -8,7 +8,8 @@ class Translation extends Model
 {
     protected $fillable = ['place_id', 'language', 'summary', 'description'];
 
-    public function place() {
+    public function place()
+    {
         return $this->belongsTo(Place::class);
     }
 }

@@ -21,7 +21,7 @@ use Throwable;
 #[Backoff([60, 300, 900])]
 #[UniqueFor(3600)]
 #[Timeout(240)]
-class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
+class MediaDownloadJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
@@ -33,7 +33,8 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
         //
     }
 
-    public function uniqueId() {
+    public function uniqueId()
+    {
         return $this->mediaId;
     }
 
@@ -45,14 +46,14 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
         try {
             $item = Media::find($this->mediaId);
 
-            if (!$item || $item->storage_status !== 'processing') {
+            if (! $item || $item->storage_status !== 'processing') {
                 return;
             }
 
             $dir = "places/{$item->place_id}";
             Storage::disk('public')->makeDirectory($dir);
 
-            $filename = Str::uuid() . '.' . $item->ext;
+            $filename = Str::uuid().'.'.$item->ext;
             $relativePath = "{$dir}/{$filename}";
             $fullPath = Storage::disk('public')->path($relativePath);
 
@@ -64,25 +65,24 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
                 Log::error('Media download failed', [
                     'media_id' => $item->id,
                     'status' => $response->status(),
-                    'url' => $item->original_url
+                    'url' => $item->original_url,
                 ]);
-                throw new Exception("Media download failed");
+                throw new Exception('Media download failed');
             }
 
             $item->update([
                 'app_url' => $relativePath,
-                'storage_status' => 'done'
+                'storage_status' => 'done',
             ]);
 
             Log::info('Media download successful', [
                 'media_id' => $item->id,
-                'path' => $relativePath
+                'path' => $relativePath,
             ]);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             Log::error('Media download attempt failed', [
                 'media_id' => $this->mediaId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -92,12 +92,12 @@ class MediaDownloadJob implements ShouldQueue, ShouldBeUnique
     public function failed(Throwable $e)
     {
         Media::where('id', $this->mediaId)->update([
-            'storage_status' => 'failed'
+            'storage_status' => 'failed',
         ]);
 
         Log::error('Media job permanently failed', [
             'media_id' => $this->mediaId,
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
         ]);
     }
 }

@@ -38,15 +38,16 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             return ApiResponse::error('Invalid credentials');
         }
 
         $request->session()->regenerate();
 
         $user = $request->user();
-        if (!$user->hasVerifiedEmail()) {
-            Auth::logout();            
+        if (! $user->hasVerifiedEmail()) {
+            Auth::logout();
+
             return ApiResponse::error('Email not verified');
         }
 
@@ -110,7 +111,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->id,
+            'username' => 'sometimes|required|string|max:255|unique:users,username,'.$user->id,
         ]);
 
         $user->update($data);

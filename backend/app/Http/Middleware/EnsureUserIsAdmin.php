@@ -13,7 +13,7 @@ class EnsureUserIsAdmin
     {
         $user = $request->user();
 
-        if (!$user || $user->role !== 'admin') {
+        if (! $user || $user->role !== 'admin') {
             return ApiResponse::error('Forbidden. Admin access required.', 403);
         }
 

@@ -25,7 +25,7 @@ class MediaDownload extends Command
                     $updated = Media::where('id', $item->id)
                         ->where('storage_status', 'pending')
                         ->update([
-                            'storage_status' => 'processing'
+                            'storage_status' => 'processing',
                         ]);
 
                     if ($updated) {
@@ -38,7 +38,7 @@ class MediaDownload extends Command
             });
 
         Log::info('Media jobs dispatched', [
-            'count' => $count
+            'count' => $count,
         ]);
     }
 }
