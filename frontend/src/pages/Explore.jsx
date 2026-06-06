@@ -73,8 +73,8 @@ export default function Explore() {
 
       <div className="mx-auto">
         {exploreViewMode === "map" ? (
-          <div className="flex mt-16">
-            <div className="w-110 px-5 pt-6 border-r border-stone-200">
+          <div className="mt-20 flex flex-col lg:mt-16 lg:h-[calc(100vh-8rem)] lg:flex-row">
+            <div className="order-2 px-4 pt-5 sm:px-6 lg:order-1 lg:w-110 lg:border-r lg:border-stone-200 lg:px-5 lg:pt-6">
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-stone-500">
                   {isLoading ? t("common.searching") : `${total} ${t("common.resultsFound")}`}
@@ -82,7 +82,7 @@ export default function Explore() {
                 </p>
               </div>
 
-              <div className="h-[calc(100vh-190px)] overflow-y-auto scrollbar-hide">
+              <div className="overflow-visible lg:h-[calc(100vh-190px)] lg:overflow-y-auto lg:scrollbar-hide">
                 <div className="space-y-3 pr-2">
                   {isLoading
                     ? Array.from({ length: 6 }).map((_, i) => (
@@ -107,12 +107,12 @@ export default function Explore() {
               </div>
             </div>
 
-            <div className="flex-1">
-              <PlacesMap places={allPlaces} className="w-full h-full" />
+            <div className="order-1 h-[44svh] min-h-80 w-full border-b border-stone-200 lg:order-2 lg:h-full lg:min-h-0 lg:flex-1 lg:border-b-0">
+              <PlacesMap places={allPlaces} className="h-full w-full" />
             </div>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto mt-23">
+          <div className="mx-auto mt-23 max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm text-stone-500">
                   {isLoading ? t("common.searching") : `${total} ${t("common.resultsFound")}`}

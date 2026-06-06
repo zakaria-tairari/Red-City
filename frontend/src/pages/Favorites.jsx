@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Heart, Share2, Trash2 } from 'lucide-react'
+import { Heart, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useFavoritesStore } from '@/store/useFavoritesStore'
 import { PlaceCard } from '@/components/ui/PlaceCard'

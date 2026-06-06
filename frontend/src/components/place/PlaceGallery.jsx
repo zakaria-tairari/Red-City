@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X, Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -84,10 +84,14 @@ function FullGallery({ media, initialIndex, onClose }) {
   const thumbsRef = useRef(null)
   const current = media[active]
 
-  const next = () => setActive((i) => (i + 1) % media.length)
-  const prev = () => setActive((i) => (i - 1 + media.length) % media.length)
+  const next = useCallback(() => {
+    setActive((i) => (i + 1) % media.length)
+  }, [media.length])
 
-  // Scroll active thumb into view
+  const prev = useCallback(() => {
+    setActive((i) => (i - 1 + media.length) % media.length)
+  }, [media.length])
+
   useEffect(() => {
     const container = thumbsRef.current
     if (!container) return
@@ -97,7 +101,6 @@ function FullGallery({ media, initialIndex, onClose }) {
     }
   }, [active])
 
-  // Keyboard nav
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'ArrowRight') next()
@@ -106,7 +109,7 @@ function FullGallery({ media, initialIndex, onClose }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [next, onClose, prev])
 
   return (
     <motion.div
@@ -116,7 +119,6 @@ function FullGallery({ media, initialIndex, onClose }) {
       transition={{ duration: 0.2 }}
       className="fixed inset-0 z-50 flex flex-col bg-stone-950"
     >
-      {/* Top bar */}
       <div className="flex items-center justify-between px-5 py-4 shrink-0">
         <span className="text-sm font-medium text-white/50 tabular-nums">
           {active + 1} / {media.length}
@@ -131,8 +133,7 @@ function FullGallery({ media, initialIndex, onClose }) {
         </button>
       </div>
 
-      {/* Main media area */}
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-16 min-h-0">
+      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-4 min-h-0 sm:px-16">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -164,7 +165,6 @@ function FullGallery({ media, initialIndex, onClose }) {
           </motion.div>
         </AnimatePresence>
 
-        {/* Nav arrows */}
         {media.length > 1 && (
           <>
             <button
@@ -187,7 +187,6 @@ function FullGallery({ media, initialIndex, onClose }) {
         )}
       </div>
 
-      {/* Thumbnail strip */}
       <div className="shrink-0 px-4 py-4">
         <div
           ref={thumbsRef}

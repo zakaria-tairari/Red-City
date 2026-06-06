@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {
-  Clock,
   ExternalLink,
   Heart,
   MapPin,
@@ -13,17 +12,14 @@ import {
   Globe,
   Mail,
 } from "lucide-react";
-import { cn, getOpenStatus, getPriceLabel, formatReviewCount } from "@/lib/utils";
+import { cn, formatReviewCount } from "@/lib/utils";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import PlaceGallery from "@/components/place/PlaceGallery";
 import ReviewsSection from "@/components/place/ReviewsSection";
-import PlacesMap from "@/components/map/PlacesMap";
-import { PlaceCard } from "@/components/ui/PlaceCard";
 import { RatingStars } from "@/components/ui/RatingStars";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { useUIStore } from "@/store/useUIStore";
 import { fetchPlaceById, fetchRelatedPlaces } from "../services/places";
 import ReactMarkdown from "react-markdown";
@@ -71,7 +67,6 @@ export default function PlaceDetails() {
   }
 
   const category = place?.category;
-  const openStatus = getOpenStatus(place.opening_hours);
   const fav = isFavorite(place.id);
 
   const handleShare = async () => {
@@ -83,8 +78,8 @@ export default function PlaceDetails() {
           title: t('place.sharedSuccessTitle'),
           message: t('place.sharedSuccessMsg', { name: place.name }),
         });
-      } catch (err) {
-        // user cancelled
+      } catch {
+        // Share was cancelled by the user.
       }
     } else {
       navigator.clipboard?.writeText(window.location.href);
@@ -96,12 +91,20 @@ export default function PlaceDetails() {
     }
   };
 
-  const galleryMedia = [place.media.cover, ...place.media.gallery].map(
-    item => ({
+  const galleryMedia = [
+    place.media?.cover,
+    ...(place.media?.gallery ?? []),
+  ]
+    .filter(Boolean)
+    .map(item => ({
       type: item.type === "video" ? "video" : "image",
       url: item.app_url || item.original_url,
-    }),
-  );
+    }))
+    .filter(item => item.url);
+
+  const websiteHref = place.website?.startsWith("http")
+    ? place.website
+    : `https://${place.website}`;
 
   const currentLang = i18n.language?.substring(0, 2) || 'en';
   const placeTranslation = place.translations?.find(t => t.language === currentLang) || place;
@@ -112,11 +115,11 @@ export default function PlaceDetails() {
       animate={{ opacity: 1 }}
       className="pt-16"
     >
-      <div className="mx-auto max-w-7xl py-6">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <PlaceGallery media={galleryMedia} />
 
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div>
+          <div className="min-w-0">
             {category && (
               <Badge variant="outline" className="mb-3">
                 {category.name}
@@ -133,12 +136,12 @@ export default function PlaceDetails() {
                 {place.area} - {place.address}
               </span>
             </div>
-            <div className="mt-5 pr-20">
+            <div className="mt-5 lg:pr-20">
               <ReactMarkdown>{placeTranslation.summary}</ReactMarkdown>           
             </div>
           </div>
 
-          <div className="flex gap-2 shrink-0">
+          <div className="flex shrink-0 flex-wrap gap-2">
             <Button
               variant={fav ? "default" : "outline"}
               onClick={() => toggleFavorite(place)}
@@ -168,7 +171,7 @@ export default function PlaceDetails() {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3 mt-10">
+        <div className="mt-10 grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <div className="markdown-content">
               <ReactMarkdown>{placeTranslation.description}</ReactMarkdown>
@@ -188,7 +191,7 @@ export default function PlaceDetails() {
               )}
               {place.website && (
                 <a
-                  href={place.website}
+                href={websiteHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-stone-600 hover:text-primary-600"
@@ -199,7 +202,10 @@ export default function PlaceDetails() {
               )}
               {place.email && (
                 <p className="flex items-center gap-2 text-stone-600">
-                  <Mail className="h-4 w-4" /> {place.email}
+                  <Mail className="h-4 w-4 shrink-0" />
+                  <a href={`mailto:${place.email}`} className="min-w-0 break-all hover:text-primary-600">
+                    {place.email}
+                  </a>
                 </p>
               )}
             </div>
@@ -220,7 +226,7 @@ export default function PlaceDetails() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <PlacesRow
             places={related}
             title={t('place.moreExperiences')}

@@ -23,6 +23,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 const navLinks = [
   { name: "common.home", to: "/" },
   { name: "common.exploreLink", to: "/explore" },
+  { name: "nav.aiGuide", to: "/chat" },
   { name: "categories.restaurants", to: "/explore?category=2" },
   { name: "categories.hotelsShort", to: "/explore?category=7" },
   { name: "categories.activites", to: "/explore?category=3" },

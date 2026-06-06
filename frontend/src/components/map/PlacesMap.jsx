@@ -86,7 +86,7 @@ function PlaceMarker({ place, isSelected }) {
     >
       <Popup
         className="red-city-popup"
-        minWidth={300}
+        minWidth={260}
         maxWidth={300}
         closeButton={false}
         autoPan

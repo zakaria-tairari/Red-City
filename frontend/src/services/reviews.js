@@ -13,6 +13,19 @@ export async function createReview(placeId, reviewData) {
   return response
 }
 
+export async function updateReview(reviewId, reviewData) {
+  const response = await api.put(`/api/reviews/${reviewId}`, {
+    rating: reviewData.rating,
+    comment: reviewData.comment,
+  })
+  return response
+}
+
+export async function deleteReview(reviewId) {
+  const response = await api.delete(`/api/reviews/${reviewId}`)
+  return response
+}
+
 export async function getUserReviews() {
   const response = await api.get('/api/user/reviews')
   return response

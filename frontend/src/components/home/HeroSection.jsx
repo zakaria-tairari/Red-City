@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -8,9 +7,7 @@ import { useSearchStore } from '../../store/useSearchStore'
 
 export default function HeroSection() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { setOpen } = useSearchStore()
-  const [query, setQuery] = useState('')
 
   return (
     <section className="flex items-center justify-center bg-white">

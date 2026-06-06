@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { CATEGORIES } from '@/data/categories'
 import { useUIStore } from '@/store/useUIStore'
 import { FaInstagram, FaFacebook, FaXTwitter, FaYoutube } from "react-icons/fa6"
 import { useTranslation } from 'react-i18next'
@@ -14,7 +13,7 @@ const quickLinks = [
   { label: 'common.exploreLink', to: '/explore' },
   { label: 'auth.login', to: '/login' },
   { label: 'auth.register', to: '/register' },
-  { label: 'footer.myFavorites', to: '/dashboard/favorites' },
+  { label: 'footer.myFavorites', to: '/dashboard' },
 ]
 
 const socialLinks = [

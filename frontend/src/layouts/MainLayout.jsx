@@ -7,6 +7,7 @@ export default function MainLayout() {
   const { exploreViewMode } = useUIStore();
   const location = useLocation();
   const isExplorePage = location.pathname === '/explore'
+  const shouldHideFooter = isExplorePage && exploreViewMode === 'map'
 
   return (
     <>
@@ -14,9 +15,7 @@ export default function MainLayout() {
       <main className="min-h-screen">
         <Outlet />
       </main>
-      {
-        isExplorePage && exploreViewMode === 'map' || <Footer />               
-      }
+      {!shouldHideFooter && <Footer />}
     </>
   )
 }

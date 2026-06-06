@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Check, ChevronDown, LayoutGrid, MapPin, Search, Tag, X } from "lucide-react";
+import { Check, ChevronDown, LayoutGrid, MapPin, Search, Tag } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -43,11 +43,6 @@ export default function SearchFilters({
     queryFn: () => fetchTags({ category }),
   });
 
-  const selectedTagOptions = useMemo(
-    () => tagOptions.filter(tag => selectedTags.includes(String(tag.id))),
-    [selectedTags, tagOptions],
-  );
-
   const filteredTagOptions = useMemo(() => {
     const search = tagSearch.trim().toLowerCase();
 
@@ -65,14 +60,14 @@ export default function SearchFilters({
   };
 
   return (
-    <div className="fixed top-16 z-40 border-b w-full border-stone-100 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+    <div className="fixed top-16 z-40 w-full border-b border-stone-100 bg-white">
+      <div className="mx-auto max-w-7xl px-3 py-3 sm:px-6">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide sm:gap-3">
           <Select
             value={category || "all"}
             onValueChange={v => onCategoryChange(v === "all" ? "" : v)}
           >
-            <SelectTrigger className="w-50">
+            <SelectTrigger className="w-39 sm:w-50">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -86,7 +81,7 @@ export default function SearchFilters({
           </Select>
 
           <Select value={sortBy} onValueChange={onSortByChange}>
-            <SelectTrigger className="w-45">
+            <SelectTrigger className="w-32 sm:w-45">
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
@@ -99,7 +94,7 @@ export default function SearchFilters({
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <DropdownMenu.Root onOpenChange={open => !open && setTagSearch("")}>
               <DropdownMenu.Trigger asChild>
-                <Button type="button" variant="outline" className="shrink-0 px-4 rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0">
+                <Button type="button" variant="outline" className="shrink-0 rounded-xl px-3 focus-visible:ring-0 focus-visible:ring-offset-0 sm:px-4">
                   <Tag className="h-4 w-4" />
                   {t("filters.tags")}
                   {selectedTags.length > 0 && (
@@ -188,7 +183,7 @@ export default function SearchFilters({
               type="button"
               onClick={() => setExploreViewMode("grid")}
               className={cn(
-                "rounded-lg py-2 px-4 transition-colors",
+                "rounded-lg px-3 py-2 transition-colors sm:px-4",
                 exploreViewMode === "grid"
                   ? "bg-primary-600 text-white"
                   : "text-stone-500 hover:bg-stone-50",
@@ -202,7 +197,7 @@ export default function SearchFilters({
               type="button"
               onClick={() => setExploreViewMode("map")}
               className={cn(
-                "rounded-lg py-2 px-4 transition-colors",
+                "rounded-lg px-3 py-2 transition-colors sm:px-4",
                 exploreViewMode === "map"
                   ? "bg-primary-600 text-white"
                   : "text-stone-500 hover:bg-stone-50",

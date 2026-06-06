@@ -8,6 +8,7 @@ export const useAuthStore = create(
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      hasCheckedAuth: false,
       error: null,
 
       login: async (credentials) => {
@@ -15,10 +16,10 @@ export const useAuthStore = create(
         try {
           const response = await authService.login(credentials)
           // The backend returns { status: 'success', message: '...', data: user }
-          set({ user: response.data, isAuthenticated: true, isLoading: false })
+          set({ user: response.data, isAuthenticated: true, isLoading: false, hasCheckedAuth: true })
           return { success: true, user: response.data }
         } catch (error) {
-          set({ isLoading: false, error: error.response?.data?.message || 'Login failed' })
+          set({ isLoading: false, hasCheckedAuth: true, error: error.response?.data?.message || 'Login failed' })
           return { success: false, error: error.response?.data?.message || 'Login failed' }
         }
       },
@@ -40,7 +41,7 @@ export const useAuthStore = create(
         try {
           await authService.logout()
         } finally {
-          set({ user: null, isAuthenticated: false, isLoading: false })
+          set({ user: null, isAuthenticated: false, isLoading: false, hasCheckedAuth: true })
         }
       },
 
@@ -48,9 +49,9 @@ export const useAuthStore = create(
         set({ isLoading: true })
         try {
           const user = await authService.getProfile()
-          set({ user, isAuthenticated: true, isLoading: false })
+          set({ user, isAuthenticated: true, isLoading: false, hasCheckedAuth: true })
         } catch {
-          set({ user: null, isAuthenticated: false, isLoading: false })
+          set({ user: null, isAuthenticated: false, isLoading: false, hasCheckedAuth: true })
         }
       },
 

@@ -26,13 +26,13 @@ export default function Home() {
           <CategorySection key={category.id} category={category} />
         ))}
       </div>
-      <section className="py-15 px-10 max-w-7xl mx-auto">
+      <section className="mx-auto max-w-7xl px-4 py-15 sm:px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col gap-9 items-center justify-center py-8 px-20 rounded-4xl bg-linear-to-br from-stone-700 to-stone-950"
+          className="flex flex-col items-center justify-center gap-9 rounded-4xl bg-linear-to-br from-stone-700 to-stone-950 px-5 py-8 sm:px-10 lg:px-20"
         >
           <motion.h2
             initial={{ opacity: 0 }}
@@ -53,7 +53,7 @@ export default function Home() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: 0.3 }}
-            className="flex items-center justify-center gap-5"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-5"
           >
             <Button asChild>
               <Link to="/explore">{t("common.exploreBtn")}</Link>

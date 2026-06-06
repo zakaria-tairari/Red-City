@@ -244,7 +244,7 @@ export default function AdminUsers() {
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="min-w-3xl">
+        <DialogContent className="md:min-w-3xl">
           <DialogHeader>
             <DialogTitle>Add user</DialogTitle>
           </DialogHeader>
@@ -331,7 +331,7 @@ export default function AdminUsers() {
       </Dialog>
 
       <Dialog open={Boolean(editingUser)} onOpenChange={(open) => !open && setEditingUser(null)}>
-        <DialogContent className="min-w-3xl">
+        <DialogContent className="md:min-w-3xl">
           <DialogHeader>
             <DialogTitle>Edit user</DialogTitle>
           </DialogHeader>

@@ -33,6 +33,7 @@
       "language": "Idioma",
       "searchPlaces": "Buscar lugares",
       "search": "Buscar",
+      "aiGuide": "Guía IA",
       "dashboard": "Panel"
     },
     "authLayout": {
@@ -138,6 +139,10 @@
       "reviewSuccessMessage": "¡Gracias! Tu opinión ya es visible abajo.",
       "reviewFailedTitle": "Error al enviar",
       "reviewFailedMessage": "Es posible que ya hayas reseñado este lugar.",
+      "reviewUpdatedTitle": "¡Reseña actualizada!",
+      "reviewUpdatedMessage": "Tu reseña se actualizó correctamente.",
+      "reviewDeletedTitle": "Reseña eliminada",
+      "reviewDeletedMessage": "Tu reseña ha sido eliminada.",
       "genericErrorTitle": "Error",
       "genericErrorMessage": "Algo salió mal. Inténtalo de nuevo.",
       "verifyEmailNotFound": "Correo no encontrado. Inicia sesión de nuevo.",
@@ -229,7 +234,13 @@
       "allRatings": "Todas las valoraciones",
       "starsOnly": "Solo {{count}} estrellas",
       "noReviews": "Aún no hay reseñas.",
-      "reviewCount": "{{count}} reseñas"
+      "reviewCount": "{{count}} reseñas",
+      "editTitle": "Editar reseña",
+      "deleteTitle": "Eliminar reseña",
+      "cancelEdit": "Cancelar",
+      "saveEdit": "Guardar",
+      "saving": "Guardando...",
+      "edited": "editado"
     },
     "gallery": {
       "more": "más",
@@ -271,5 +282,22 @@
       "myReviewsTitle": "Mis reseñas",
       "noReviewsMessage": "Aún no has escrito reseñas.",
       "exploreToReview": "Explorar para reseñar"
+    },
+    "chat": {
+      "badge": "Guía IA",
+      "title": "Pregunta a Red City",
+      "welcome": "Hola, soy tu guía de Red City. Pregúntame por consejos para Marrakech, itinerarios, rincones especiales, restaurantes o lugares para fotos.",
+      "clear": "Borrar",
+      "thinking": "Buscando las mejores sugerencias...",
+      "placeholder": "Pregunta por lugares, itinerarios, comida, fotos...",
+      "send": "Enviar mensaje",
+      "rating": "valoración",
+      "errorMessage": "No puedo contactar con la guía ahora mismo. Inténtalo de nuevo en un momento.",
+      "suggestions": {
+        "photography": "Mejores fotos",
+        "culture": "Primera visita cultural",
+        "relax": "Tarde relajada",
+        "food": "Restaurantes marroquíes"
+      }
     }
 }

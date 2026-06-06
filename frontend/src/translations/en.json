@@ -33,6 +33,7 @@
         "language": "Language",
         "searchPlaces": "Search places",
         "search": "Search",
+        "aiGuide": "AI Guide",
         "dashboard": "Dashboard"
     },
     "authLayout": {
@@ -138,6 +139,10 @@
         "reviewSuccessMessage": "Thank you! Your feedback is now visible in the reviews section below.",
         "reviewFailedTitle": "Submission Failed",
         "reviewFailedMessage": "You may have already reviewed this place.",
+        "reviewUpdatedTitle": "Review Updated!",
+        "reviewUpdatedMessage": "Your review has been updated successfully.",
+        "reviewDeletedTitle": "Review Deleted",
+        "reviewDeletedMessage": "Your review has been removed.",
         "genericErrorTitle": "Error",
         "genericErrorMessage": "Something went wrong. Please try again.",
         "verifyEmailNotFound": "Email address not found. Please log in again.",
@@ -229,7 +234,13 @@
         "allRatings": "All ratings",
         "starsOnly": "{{count}} stars only",
         "noReviews": "No reviews yet.",
-        "reviewCount": "{{count}} reviews"
+        "reviewCount": "{{count}} reviews",
+        "editTitle": "Edit review",
+        "deleteTitle": "Delete review",
+        "cancelEdit": "Cancel",
+        "saveEdit": "Save",
+        "saving": "Saving...",
+        "edited": "edited"
     },
     "gallery": {
         "more": "more",
@@ -271,5 +282,22 @@
         "myReviewsTitle": "My Reviews",
         "noReviewsMessage": "You haven't written any reviews yet.",
         "exploreToReview": "Explore places to review"
+    },
+    "chat": {
+        "badge": "AI Guide",
+        "title": "Ask Red City",
+        "welcome": "Hi, I am your Red City guide. Ask me for Marrakech tips, itineraries, hidden gems, restaurants, or photo spots.",
+        "clear": "Clear chat",
+        "thinking": "Thinking of the best suggestions...",
+        "placeholder": "Ask for places, itineraries, food, photo spots...",
+        "send": "Send message",
+        "rating": "rating",
+        "errorMessage": "I could not reach the guide right now. Please try again in a moment.",
+        "suggestions": {
+            "photography": "Best photo spots",
+            "culture": "Cultural first visit",
+            "relax": "Relaxing afternoon",
+            "food": "Moroccan restaurants"
+        }
     }
 }

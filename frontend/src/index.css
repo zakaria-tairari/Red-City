@@ -85,7 +85,7 @@
 
 .red-city-popup .leaflet-popup-content {
   margin: 0;
-  width: 300px !important;
+  width: min(300px, calc(100vw - 48px)) !important;
   line-height: inherit;
 }
 
@@ -134,4 +134,40 @@
 
 .markdown-content a {
   @apply text-primary-600 underline;
+}
+
+.chat-markdown {
+  overflow-wrap: anywhere;
+}
+
+.chat-markdown p {
+  @apply mb-2 leading-6;
+}
+
+.chat-markdown p:last-child {
+  @apply mb-0;
+}
+
+.chat-markdown ul,
+.chat-markdown ol {
+  @apply my-2 pl-5;
+}
+
+.chat-markdown li {
+  @apply mb-1 pl-1 leading-6;
+}
+
+.chat-markdown strong {
+  @apply font-semibold text-stone-950;
+}
+
+.chat-markdown table,
+.chat-markdown thead,
+.chat-markdown tbody,
+.chat-markdown tr,
+.chat-markdown th,
+.chat-markdown td,
+.chat-markdown pre,
+.chat-markdown code {
+  display: none;
 }

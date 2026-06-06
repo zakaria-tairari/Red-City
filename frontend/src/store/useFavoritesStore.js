@@ -15,6 +15,8 @@ export const useFavoritesStore = create((set, get) => ({
         const places = response.data
         const placeIds = places.map(p => p.id)
         set({ favorites: placeIds, favoritePlaces: places, isLoading: false })
+      } else {
+        set({ isLoading: false })
       }
     } catch {
       set({ isLoading: false })

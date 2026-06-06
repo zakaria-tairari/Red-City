@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, MapPin, Star, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { formatReviewCount } from '@/lib/utils'
 
 export function PlaceMapPopup({ place, onClose }) {
   const { t } = useTranslation()
@@ -8,12 +9,18 @@ export function PlaceMapPopup({ place, onClose }) {
 
   return (
     <article className="w-full overflow-hidden bg-white">
-      <div className="relative aspect-9/10 overflow-hidden">
-        <img
-          src={place.cover?.app_url || place.cover?.original_url}
-          alt={place.name}
-          className="h-full w-full object-cover"
-        />
+      <div className="relative aspect-9/10 overflow-hidden bg-stone-100">
+        {place.cover?.app_url || place.cover?.original_url ? (
+          <img
+            src={place.cover?.app_url || place.cover?.original_url}
+            alt={place.name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <MapPin className="h-8 w-8 text-stone-300" />
+          </div>
+        )}
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent" />
 
         <button
@@ -38,8 +45,8 @@ export function PlaceMapPopup({ place, onClose }) {
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/85">
             <span className="inline-flex items-center gap-1">
               <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-semibold text-white">4.5</span>
-              <span className="text-white/60">1.2k</span>
+              <span className="font-semibold text-white">{place.avg_rating ?? '—'}</span>
+              <span className="text-white/60">{formatReviewCount(place.reviews_count || 0)}</span>
             </span>
             <span className="text-white/40">·</span>
             <span className="inline-flex min-w-0 items-center gap-1">

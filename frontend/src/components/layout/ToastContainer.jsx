@@ -27,7 +27,7 @@ export default function ToastContainer() {
 }
 
 function ToastItem({ notification, onClose }) {
-  const { id, type = 'success', title, message } = notification
+  const { type = 'success', title, message } = notification
 
   useEffect(() => {
     const timer = setTimeout(onClose, 4000)

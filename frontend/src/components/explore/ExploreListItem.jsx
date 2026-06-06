@@ -28,17 +28,26 @@ export default function ExploreListItem({ place }) {
         }
       }}
       className={cn(
-        "flex w-full cursor-pointer gap-4 rounded-xl border p-3 text-left transition-all",
+        "flex w-full cursor-pointer gap-3 rounded-xl border p-3 text-left transition-all sm:gap-4",
         isSelected
           ? "border-primary-200 bg-primary-50 shadow-md"
           : "border-stone-100 shadow-sm bg-white hover:border-stone-200 hover:shadow-md hover:-translate-y-0.5",
       )}
     >
-      <img
-        src={place.cover?.app_url || place.cover?.original_url}
-        alt={place.name}
-        className="max-h-24 w-20 shrink-0 rounded-lg object-cover"
-      />
+      <div className="h-22 w-18 shrink-0 overflow-hidden rounded-lg bg-stone-100 sm:h-24 sm:w-20">
+        {place.cover?.app_url || place.cover?.original_url ? (
+          <img
+            src={place.cover?.app_url || place.cover?.original_url}
+            alt={place.name}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <MapPin className="h-5 w-5 text-stone-300" />
+          </div>
+        )}
+      </div>
       <div className="min-w-0 flex-1">
         <h3 className="truncate font-serif font-semibold text-stone-900">
           {place.name}
@@ -48,10 +57,12 @@ export default function ExploreListItem({ place }) {
           <span className="font-medium text-stone-700">{place.avg_rating ?? '—'}</span>
           <span>{formatReviewCount(place.reviews_count || 0)}</span>
         </div>
-        <p className="mt-1 flex items-center gap-1 text-xs text-stone-400">
-          <MapPin className="h-3 w-3" />
-          {place.area}
-          {place.distance != null && ` · ${place.distance.toFixed(1)} km`}
+        <p className="mt-1 flex min-w-0 items-center gap-1 text-xs text-stone-400">
+          <MapPin className="h-3 w-3 shrink-0" />
+          <span className="truncate">
+            {place.area}
+            {place.distance != null && ` · ${place.distance.toFixed(1)} km`}
+          </span>
         </p>
         <Link
           to={`/places/${place.id}`}

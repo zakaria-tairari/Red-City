@@ -112,7 +112,7 @@ export default function Register() {
       <p className="mt-2 text-stone-500">{t('register.subtitle')}</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="firstName">{t('register.firstName')}</Label>
             <Input id="firstName" value={form.firstName} onChange={update('firstName')} className="mt-1" />

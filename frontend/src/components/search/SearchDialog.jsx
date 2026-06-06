@@ -11,7 +11,7 @@ import {
   Loader2,
   Star,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatReviewCount } from "@/lib/utils";
 import { useSearchStore } from "@/store/useSearchStore";
 import { fetchSearchResults } from "@/services/places";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -40,13 +40,22 @@ function clearRecent() {
 }
 
 export function SearchDialog() {
+  const setOpen = useSearchStore(state => state.setOpen);
+
+  return (
+    <AnimatePresence>
+      <SearchDialogPanel setOpen={setOpen} />
+    </AnimatePresence>
+  );
+}
+
+function SearchDialogPanel({ setOpen }) {
   const { t } = useTranslation();
-  const { open, setOpen } = useSearchStore();
   const navigate = useNavigate();
   const inputRef = useRef(null);
 
   const [query, setQuery] = useState("");
-  const [recent, setRecent] = useState([]);
+  const [recent, setRecent] = useState(() => getRecent());
   const [active, setActive] = useState(-1);
 
   const debouncedQuery = useDebounce(query);
@@ -61,21 +70,9 @@ export function SearchDialog() {
   const list = query.trim() ? results : recent;
 
   useEffect(() => {
-    return useSearchStore.getState().init();
-  }, [setOpen]);
-
-  useEffect(() => {
-    if (open) {
-      setRecent(getRecent());
-      setQuery("");
-      setActive(-1);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    setActive(-1);
-  }, [query]);
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleClose = useCallback(() => setOpen(false), [setOpen]);
 
@@ -102,7 +99,6 @@ export function SearchDialog() {
 
   // ── Keyboard navigation ───────────────────────────────────────────────────
   useEffect(() => {
-    if (!open) return;
     const onKey = e => {
       if (e.key === "Escape") {
         handleClose();
@@ -124,28 +120,26 @@ export function SearchDialog() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, active, list, handleSelect, handleSubmit, handleClose]);
+  }, [active, list, handleSelect, handleSubmit, handleClose]);
 
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
+    <>
+      <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
             onClick={handleClose}
-          />
+      />
 
-          <motion.div
+      <motion.div
             initial={{ opacity: 0, y: -12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="fixed left-1/2 top-[10vh] z-50 w-full max-w-2xl -translate-x-1/2 px-4"
-          >
+      >
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-stone-900/8">
               {/* Input */}
               <div className="flex items-center gap-3 px-4 py-3.5 border-b border-stone-100">
@@ -157,7 +151,10 @@ export function SearchDialog() {
                 <input
                   ref={inputRef}
                   value={query}
-                  onChange={e => setQuery(e.target.value)}
+                  onChange={e => {
+                    setQuery(e.target.value);
+                    setActive(-1);
+                  }}
                   placeholder={t("search.label")}
                   className="flex-1 bg-transparent text-base text-stone-900 placeholder:text-stone-400 outline-none"
                 />
@@ -230,13 +227,19 @@ export function SearchDialog() {
                             <h3 className="truncate text-xl font-serif font-semibold text-stone-900">
                               {place.name}
                             </h3>
-                            <div className="mt-1 flex items-center gap-2 text-xs text-stone-500">
-                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                              <span className="font-medium text-stone-700">
-                                4.5
-                              </span>
-                              <span>1.2k</span>
-                            </div>
+                            {(place.avg_rating || place.reviews_count) && (
+                              <div className="mt-1 flex items-center gap-2 text-xs text-stone-500">
+                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                {place.avg_rating && (
+                                  <span className="font-medium text-stone-700">
+                                    {Number(place.avg_rating).toFixed(1)}
+                                  </span>
+                                )}
+                                {place.reviews_count > 0 && (
+                                  <span>{formatReviewCount(place.reviews_count)}</span>
+                                )}
+                              </div>
+                            )}
                             <p className="mt-1 flex items-center gap-1 text-xs text-stone-400">
                               <MapPin className="h-3 w-3" />
                               {place.area}
@@ -291,9 +294,7 @@ export function SearchDialog() {
                 <span className="text-xs text-stone-400">{ t("common.close") }</span>
               </div>
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+      </motion.div>
+    </>
   );
 }
